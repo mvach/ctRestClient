@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Get the directory of the script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Navigate to the project root (assuming the script is in the scripts folder)
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_ROOT"
+
+# Define the output directory for the binaries
+OUTPUT_DIR="$PROJECT_ROOT/bin/ctRestClient"
+
+# Clean the output directory
+echo "Cleaning the output directory..."
+rm -rf "$OUTPUT_DIR"
+
+# Create the output directory if it doesn't exist
+mkdir -p "$OUTPUT_DIR"
+
+echo ""
+echo "Building for Windows (64 bit)..."
+GOOS=windows GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient-windows-amd64.exe"
+
+echo ""
+echo "Building for macOS (Intel)..."
+GOOS=darwin GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient-darwin-amd64"
+
+echo ""
+echo "Building for macOS (M1/M2)..."
+GOOS=darwin GOARCH=arm64 go build -o "$OUTPUT_DIR/ctRestClient-darwin-arm64"
+
+echo ""
+echo "Building for Linux (64 bit)..."
+GOOS=linux GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient-linux-amd64"
+
+echo ""
+echo "Builds completed."
+echo "Binaries are located in the $OUTPUT_DIR directory."

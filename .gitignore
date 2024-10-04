@@ -4,6 +4,8 @@
 # Binaries for programs and plugins
 *.exe
 *.exe~
+*-arm64
+*-amd64
 *.dll
 *.so
 *.dylib
@@ -23,3 +25,12 @@ go.work.sum
 
 # env file
 .env
+
+.timetracker
+local/
+export/
+bin/
+test/
+
+# Build results in project root
+ctRestClient*
