@@ -1,33 +1,38 @@
 package restendpoints
 
 import (
-    "ctRestClient/httpclient"
-    "encoding/json"
-    "fmt"
-    "io"
+	"ctRestClient/httpclient"
+	"encoding/json"
+	"fmt"
+	"io"
 
-    "net/http"
+	"net/http"
+	"net/url"
 )
 
-
-type dynamicGroupsEndpoint struct {
+type groupsEndpoint struct {
     httpclient httpclient.HTTPClient
 }
 
-func NewDynamicGroupsEndpoint(httpclient httpclient.HTTPClient) *dynamicGroupsEndpoint {
-    return &dynamicGroupsEndpoint{
+func NewGroupsEndpoint(httpclient httpclient.HTTPClient) *groupsEndpoint {
+    return &groupsEndpoint{
         httpclient: httpclient,
     }
 }
 
-func (c *dynamicGroupsEndpoint) GetDynamicGroupIds() (*DynamicGroupIdsResponseJson, error) {
+func (c *groupsEndpoint) GetGroupName(groupId int) (*GroupsResponseJson, error) {
 
     req, err := http.NewRequest("GET", "", nil)
     if err != nil {
         return nil, fmt.Errorf("failed to create request, %w", err)
     }
 
-    req.URL.Path = "/api/dynamicgroups"
+    params := url.Values{}
+    params.Add("ids[]", fmt.Sprintf("%d", groupId))
+    encodedQueryParam := params.Encode()
+
+    req.URL.Path = fmt.Sprintf("/api/groups?%s", encodedQueryParam)
+
 
     resp, err := c.httpclient.Do(req)
     if err != nil {
@@ -44,7 +49,7 @@ func (c *dynamicGroupsEndpoint) GetDynamicGroupIds() (*DynamicGroupIdsResponseJs
         return nil, fmt.Errorf("failed to read response body, %w", err)
     }
 
-    var response DynamicGroupIdsResponseJson
+    var response GroupsResponseJson
     if err := json.Unmarshal(body, &response); err != nil {
         return nil, fmt.Errorf("response body is not containing expected json, %w", err)
     }

@@ -9,5 +9,5 @@ import (
 
 func TestConfig(t *testing.T) {
     RegisterFailHandler(Fail)
-    RunSpecs(t, "DynamicGroups Suite")
+    RunSpecs(t, "Restendpoints Suite")
 }

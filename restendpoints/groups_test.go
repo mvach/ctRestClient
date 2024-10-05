@@ -13,7 +13,7 @@ import (
     "ctRestClient/restendpoints"
 )
 
-var _ = Describe("DynamicGroupsEndpoint", func() {
+var _ = Describe("GroupsEndpoint", func() {
 
     var (
         httpClient *httpclientfakes.FakeHTTPClient
@@ -23,36 +23,38 @@ var _ = Describe("DynamicGroupsEndpoint", func() {
         httpClient = &httpclientfakes.FakeHTTPClient{}
     })
 
-    var _ = Describe("GetDynamicGroupIds", func() {
+    var _ = Describe("GetGroupName", func() {
 
-        It("returns dynamic groups", func() {
+        It("returns groupname", func() {
             httpResponse := &http.Response{
                 StatusCode: 200,
                 Body: io.NopCloser(bytes.NewBufferString(
                     `{
                         "data": [
-                            10,
-                            11,
-                            12
+                            {
+                                "id": 10,
+                                "guid": "1234",
+                                "name": "group1"
+                            }
                         ],
                         "meta": {
-                            "count": 3
+                            "count": 1
                         }
                     }`))}
             httpClient.DoReturns(httpResponse, nil)
 
-            dynamicGroupsEndpoint := restendpoints.NewDynamicGroupsEndpoint(httpClient)
-            resp, err := dynamicGroupsEndpoint.GetDynamicGroupIds()
+            groupsEndpoint := restendpoints.NewGroupsEndpoint(httpClient)
+            resp, err := groupsEndpoint.GetGroupName(10)
 
             Expect(err).NotTo(HaveOccurred())
-            Expect(resp.Data).To(Equal([]int{10, 11, 12}))
+            Expect(resp.Data[0].Name).To(Equal("group1"))
         })
 
         It("returns an error if the request cannot be send", func() {
             httpClient.DoReturns(nil, errors.New("request failed"))
 
-            dynamicGroupsEndpoint := restendpoints.NewDynamicGroupsEndpoint(httpClient)
-            _, err := dynamicGroupsEndpoint.GetDynamicGroupIds()
+            groupsEndpoint := restendpoints.NewGroupsEndpoint(httpClient)
+            _, err := groupsEndpoint.GetGroupName(10)
 
             Expect(err).To(HaveOccurred())
             Expect(err.Error()).To(Equal("failed to send request, request failed"))
@@ -68,8 +70,8 @@ var _ = Describe("DynamicGroupsEndpoint", func() {
                     }`))}
             httpClient.DoReturns(httpResponse, nil)
 
-            dynamicGroupsEndpoint := restendpoints.NewDynamicGroupsEndpoint(httpClient)
-            _, err := dynamicGroupsEndpoint.GetDynamicGroupIds()
+            groupsEndpoint := restendpoints.NewGroupsEndpoint(httpClient)
+            _, err := groupsEndpoint.GetGroupName(10)
 
             Expect(err).To(HaveOccurred())
             Expect(err.Error()).To(Equal("received non-200 response code: 404"))
@@ -84,8 +86,8 @@ var _ = Describe("DynamicGroupsEndpoint", func() {
                     }`))}
             httpClient.DoReturns(httpResponse, nil)
 
-            dynamicGroupsEndpoint := restendpoints.NewDynamicGroupsEndpoint(httpClient)
-            _, err := dynamicGroupsEndpoint.GetDynamicGroupIds()
+            groupsEndpoint := restendpoints.NewGroupsEndpoint(httpClient)
+            _, err := groupsEndpoint.GetGroupName(10)
 
             Expect(err).To(HaveOccurred())
             Expect(err.Error()).To(ContainSubstring("response body is not containing expected json"))
