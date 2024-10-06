@@ -1,13 +1,13 @@
-package restendpoints
+package rest
 
 import (
-	"ctRestClient/httpclient"
-	"encoding/json"
-	"fmt"
-	"io"
+    "ctRestClient/httpclient"
+    "encoding/json"
+    "fmt"
+    "io"
 
-	"net/http"
-	"net/url"
+    "net/http"
+    "net/url"
 )
 
 //counterfeiter:generate . GroupsEndpoint
@@ -39,7 +39,6 @@ func (c groupsEndpoint) GetGroupName(groupId int) ([]GroupsResponse, error) {
     encodedQueryParam := params.Encode()
 
     req.URL.Path = fmt.Sprintf("/api/groups?%s", encodedQueryParam)
-
 
     resp, err := c.httpclient.Do(req)
     if err != nil {
@@ -77,7 +76,6 @@ func (c groupsEndpoint) GetGroupMembers(groupId int) ([]GroupsMembersResponse, e
     encodedQueryParam := params.Encode()
 
     req.URL.Path = fmt.Sprintf("/api/groups/members?%s", encodedQueryParam)
-
 
     resp, err := c.httpclient.Do(req)
     if err != nil {

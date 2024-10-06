@@ -1,3 +1,3 @@
-package restendpoints
+package rest
 
 //go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate

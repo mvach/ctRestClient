@@ -1,4 +1,4 @@
-package restendpoints
+package rest
 
 import (
     "ctRestClient/httpclient"
@@ -7,31 +7,36 @@ import (
     "io"
 
     "net/http"
+    "net/url"
 )
 
-//counterfeiter:generate . DynamicGroupsEndpoint
-type DynamicGroupsEndpoint interface {
-    GetDynamicGroupIds() ([]int, error)
+//counterfeiter:generate . PersonsEndpoint
+type PersonsEndpoint interface {
+    GetPerson(personId int) (json.RawMessage, error)
 }
 
-type dynamicGroupsEndpoint struct {
+type personsEndpoint struct {
     httpclient httpclient.HTTPClient
 }
 
-func NewDynamicGroupsEndpoint(httpclient httpclient.HTTPClient) DynamicGroupsEndpoint {
-    return dynamicGroupsEndpoint{
+func NewPersonsEndpoint(httpclient httpclient.HTTPClient) PersonsEndpoint {
+    return personsEndpoint{
         httpclient: httpclient,
     }
 }
 
-func (c dynamicGroupsEndpoint) GetDynamicGroupIds() ([]int, error) {
+func (c personsEndpoint) GetPerson(personId int) (json.RawMessage, error) {
 
     req, err := http.NewRequest("GET", "", nil)
     if err != nil {
         return nil, fmt.Errorf("failed to create request, %w", err)
     }
 
-    req.URL.Path = "/api/dynamicgroups"
+    params := url.Values{}
+    params.Add("ids[]", fmt.Sprintf("%d", personId))
+    encodedQueryParam := params.Encode()
+
+    req.URL.Path = fmt.Sprintf("api/persons?%s", encodedQueryParam)
 
     resp, err := c.httpclient.Do(req)
     if err != nil {
@@ -48,7 +53,7 @@ func (c dynamicGroupsEndpoint) GetDynamicGroupIds() ([]int, error) {
         return nil, fmt.Errorf("failed to read response body, %w", err)
     }
 
-    var response DynamicGroupIdsResponseJson
+    var response PersonResponseJson
     if err := json.Unmarshal(body, &response); err != nil {
         return nil, fmt.Errorf("response body is not containing expected json, %w", err)
     }

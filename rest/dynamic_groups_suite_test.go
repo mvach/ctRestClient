@@ -1,4 +1,4 @@
-package restendpoints_test
+package rest_test
 
 import (
     "testing"
@@ -9,5 +9,5 @@ import (
 
 func TestConfig(t *testing.T) {
     RegisterFailHandler(Fail)
-    RunSpecs(t, "Restendpoints Suite")
+    RunSpecs(t, "Rest Suite")
 }

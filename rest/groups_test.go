@@ -1,4 +1,4 @@
-package restendpoints_test
+package rest_test
 
 import (
     "bytes"
@@ -10,7 +10,7 @@ import (
     . "github.com/onsi/gomega"
 
     "ctRestClient/httpclient/httpclientfakes"
-    "ctRestClient/restendpoints"
+    "ctRestClient/rest"
 )
 
 var _ = Describe("GroupsEndpoint", func() {
@@ -43,7 +43,7 @@ var _ = Describe("GroupsEndpoint", func() {
                     }`))}
             httpClient.DoReturns(httpResponse, nil)
 
-            groupsEndpoint := restendpoints.NewGroupsEndpoint(httpClient)
+            groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
             resp, err := groupsEndpoint.GetGroupName(10)
 
             Expect(err).NotTo(HaveOccurred())
@@ -53,7 +53,7 @@ var _ = Describe("GroupsEndpoint", func() {
         It("returns an error if the request cannot be send", func() {
             httpClient.DoReturns(nil, errors.New("request failed"))
 
-            groupsEndpoint := restendpoints.NewGroupsEndpoint(httpClient)
+            groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
             _, err := groupsEndpoint.GetGroupName(10)
 
             Expect(err).To(HaveOccurred())
@@ -70,7 +70,7 @@ var _ = Describe("GroupsEndpoint", func() {
                     }`))}
             httpClient.DoReturns(httpResponse, nil)
 
-            groupsEndpoint := restendpoints.NewGroupsEndpoint(httpClient)
+            groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
             _, err := groupsEndpoint.GetGroupName(10)
 
             Expect(err).To(HaveOccurred())
@@ -86,7 +86,7 @@ var _ = Describe("GroupsEndpoint", func() {
                     }`))}
             httpClient.DoReturns(httpResponse, nil)
 
-            groupsEndpoint := restendpoints.NewGroupsEndpoint(httpClient)
+            groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
             _, err := groupsEndpoint.GetGroupName(10)
 
             Expect(err).To(HaveOccurred())
@@ -116,7 +116,7 @@ var _ = Describe("GroupsEndpoint", func() {
                     }`))}
             httpClient.DoReturns(httpResponse, nil)
 
-            groupsEndpoint := restendpoints.NewGroupsEndpoint(httpClient)
+            groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
             resp, err := groupsEndpoint.GetGroupMembers(10)
 
             Expect(err).NotTo(HaveOccurred())
@@ -127,7 +127,7 @@ var _ = Describe("GroupsEndpoint", func() {
         It("returns an error if the request cannot be send", func() {
             httpClient.DoReturns(nil, errors.New("request failed"))
 
-            groupsEndpoint := restendpoints.NewGroupsEndpoint(httpClient)
+            groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
             _, err := groupsEndpoint.GetGroupMembers(10)
 
             Expect(err).To(HaveOccurred())
@@ -144,7 +144,7 @@ var _ = Describe("GroupsEndpoint", func() {
                     }`))}
             httpClient.DoReturns(httpResponse, nil)
 
-            groupsEndpoint := restendpoints.NewGroupsEndpoint(httpClient)
+            groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
             _, err := groupsEndpoint.GetGroupMembers(10)
 
             Expect(err).To(HaveOccurred())
@@ -160,7 +160,7 @@ var _ = Describe("GroupsEndpoint", func() {
                     }`))}
             httpClient.DoReturns(httpResponse, nil)
 
-            groupsEndpoint := restendpoints.NewGroupsEndpoint(httpClient)
+            groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
             _, err := groupsEndpoint.GetGroupMembers(10)
 
             Expect(err).To(HaveOccurred())

@@ -2,8 +2,8 @@ package app_test
 
 import (
     "ctRestClient/app"
-    "ctRestClient/restendpoints"
-    "ctRestClient/restendpoints/restendpointsfakes"
+    "ctRestClient/rest"
+    "ctRestClient/rest/restfakes"
     "encoding/json"
     "errors"
 
@@ -14,25 +14,25 @@ import (
 var _ = Describe("GroupExporter", func() {
 
     var (
-        dynamicGroupsEndpoint *restendpointsfakes.FakeDynamicGroupsEndpoint
-        groupsEndpoint        *restendpointsfakes.FakeGroupsEndpoint
-        personsEndpoint       *restendpointsfakes.FakePersonsEndpoint
+        dynamicGroupsEndpoint *restfakes.FakeDynamicGroupsEndpoint
+        groupsEndpoint        *restfakes.FakeGroupsEndpoint
+        personsEndpoint       *restfakes.FakePersonsEndpoint
     )
 
     BeforeEach(func() {
-        dynamicGroupsEndpoint = &restendpointsfakes.FakeDynamicGroupsEndpoint{}
-        groupsEndpoint = &restendpointsfakes.FakeGroupsEndpoint{}
-        personsEndpoint = &restendpointsfakes.FakePersonsEndpoint{}
+        dynamicGroupsEndpoint = &restfakes.FakeDynamicGroupsEndpoint{}
+        groupsEndpoint = &restfakes.FakeGroupsEndpoint{}
+        personsEndpoint = &restfakes.FakePersonsEndpoint{}
 
         dynamicGroupsEndpoint.GetDynamicGroupIdsReturns([]int{1, 2}, nil)
         groupsEndpoint.GetGroupNameReturns(
-            []restendpoints.GroupsResponse{
+            []rest.GroupsResponse{
                 {ID: 1, Name: "foo_group"},
                 {ID: 1, Name: "bar_group"},
             }, nil,
         )
         groupsEndpoint.GetGroupMembersReturns(
-            []restendpoints.GroupsMembersResponse{
+            []rest.GroupsMembersResponse{
                 {PersonId: 1, GroupId: 1},
                 {PersonId: 2, GroupId: 1},
             }, nil,
@@ -95,7 +95,7 @@ var _ = Describe("GroupExporter", func() {
 
         It("returns an error if group names cannot be resolved", func() {
             groupsEndpoint.GetGroupNameReturns(nil, errors.New("boom"))
-                
+
             personData, err := app.NewGroupExporter().ExportPersonData(
                 "foo_group_name",
                 dynamicGroupsEndpoint,
@@ -108,9 +108,9 @@ var _ = Describe("GroupExporter", func() {
 
         It("returns an error if group names are empty", func() {
             groupsEndpoint.GetGroupNameReturns(
-                []restendpoints.GroupsResponse{}, nil,
+                []rest.GroupsResponse{}, nil,
             )
-                
+
             personData, err := app.NewGroupExporter().ExportPersonData(
                 "foo_group_name",
                 dynamicGroupsEndpoint,
@@ -123,7 +123,7 @@ var _ = Describe("GroupExporter", func() {
 
         It("returns an error if group members cannot be resolved", func() {
             groupsEndpoint.GetGroupMembersReturns(nil, errors.New("boom"))
-                
+
             personData, err := app.NewGroupExporter().ExportPersonData(
                 "foo_group_name",
                 dynamicGroupsEndpoint,

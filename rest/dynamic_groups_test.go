@@ -1,4 +1,4 @@
-package restendpoints_test
+package rest_test
 
 import (
     "bytes"
@@ -10,7 +10,7 @@ import (
     . "github.com/onsi/gomega"
 
     "ctRestClient/httpclient/httpclientfakes"
-    "ctRestClient/restendpoints"
+    "ctRestClient/rest"
 )
 
 var _ = Describe("DynamicGroupsEndpoint", func() {
@@ -41,7 +41,7 @@ var _ = Describe("DynamicGroupsEndpoint", func() {
                     }`))}
             httpClient.DoReturns(httpResponse, nil)
 
-            dynamicGroupsEndpoint := restendpoints.NewDynamicGroupsEndpoint(httpClient)
+            dynamicGroupsEndpoint := rest.NewDynamicGroupsEndpoint(httpClient)
             groupIds, err := dynamicGroupsEndpoint.GetDynamicGroupIds()
 
             Expect(err).NotTo(HaveOccurred())
@@ -51,7 +51,7 @@ var _ = Describe("DynamicGroupsEndpoint", func() {
         It("returns an error if the request cannot be send", func() {
             httpClient.DoReturns(nil, errors.New("request failed"))
 
-            dynamicGroupsEndpoint := restendpoints.NewDynamicGroupsEndpoint(httpClient)
+            dynamicGroupsEndpoint := rest.NewDynamicGroupsEndpoint(httpClient)
             _, err := dynamicGroupsEndpoint.GetDynamicGroupIds()
 
             Expect(err).To(HaveOccurred())
@@ -68,7 +68,7 @@ var _ = Describe("DynamicGroupsEndpoint", func() {
                     }`))}
             httpClient.DoReturns(httpResponse, nil)
 
-            dynamicGroupsEndpoint := restendpoints.NewDynamicGroupsEndpoint(httpClient)
+            dynamicGroupsEndpoint := rest.NewDynamicGroupsEndpoint(httpClient)
             _, err := dynamicGroupsEndpoint.GetDynamicGroupIds()
 
             Expect(err).To(HaveOccurred())
@@ -84,7 +84,7 @@ var _ = Describe("DynamicGroupsEndpoint", func() {
                     }`))}
             httpClient.DoReturns(httpResponse, nil)
 
-            dynamicGroupsEndpoint := restendpoints.NewDynamicGroupsEndpoint(httpClient)
+            dynamicGroupsEndpoint := rest.NewDynamicGroupsEndpoint(httpClient)
             _, err := dynamicGroupsEndpoint.GetDynamicGroupIds()
 
             Expect(err).To(HaveOccurred())

@@ -23,11 +23,11 @@
             "mode": "test",
             "program": "${workspaceFolder}/httpclient",
         }, {
-            "name": "Launch Restendpoints Package",
+            "name": "Launch Rest Package",
             "type": "go",
             "request": "launch",
             "mode": "test",
-            "program": "${workspaceFolder}/restendpoints",
+            "program": "${workspaceFolder}/rest",
         },
     ]
 }

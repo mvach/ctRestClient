@@ -1,7 +1,7 @@
 package app
 
 import (
-    "ctRestClient/restendpoints"
+    "ctRestClient/rest"
     "encoding/json"
     "fmt"
 )
@@ -11,9 +11,9 @@ type GroupName2IDMap map[string]int
 type GroupExporter interface {
     ExportPersonData(
         groupname string,
-        dynamicGroupsEndpoint restendpoints.DynamicGroupsEndpoint,
-        groupsEndpoint restendpoints.GroupsEndpoint,
-        personsEndpoint restendpoints.PersonsEndpoint,
+        dynamicGroupsEndpoint rest.DynamicGroupsEndpoint,
+        groupsEndpoint rest.GroupsEndpoint,
+        personsEndpoint rest.PersonsEndpoint,
     ) ([]json.RawMessage, error)
 }
 
@@ -26,9 +26,9 @@ func NewGroupExporter() GroupExporter {
 
 func (g groupExporter) ExportPersonData(
     groupname string,
-    dynamicGroupsEndpoint restendpoints.DynamicGroupsEndpoint,
-    groupsEndpoint restendpoints.GroupsEndpoint,
-    personsEndpoint restendpoints.PersonsEndpoint,
+    dynamicGroupsEndpoint rest.DynamicGroupsEndpoint,
+    groupsEndpoint rest.GroupsEndpoint,
+    personsEndpoint rest.PersonsEndpoint,
 ) ([]json.RawMessage, error) {
 
     var result []json.RawMessage
@@ -56,8 +56,8 @@ func (g groupExporter) ExportPersonData(
 }
 
 func (g groupExporter) resolveGroupNames2IDs(
-    dynamicGroupsEndpoint restendpoints.DynamicGroupsEndpoint,
-    groupsEndpoint restendpoints.GroupsEndpoint,
+    dynamicGroupsEndpoint rest.DynamicGroupsEndpoint,
+    groupsEndpoint rest.GroupsEndpoint,
 ) (GroupName2IDMap, error) {
     groupName2IDMap := make(GroupName2IDMap)
 
