@@ -47,7 +47,7 @@ var _ = Describe("PersonsEndpoint", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			var data []map[string]interface{}
-			err = json.Unmarshal(resp.Data, &data)
+			err = json.Unmarshal(resp, &data)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(data).To(HaveLen(1))

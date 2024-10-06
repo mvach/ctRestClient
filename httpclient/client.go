@@ -13,15 +13,15 @@ type httpClient struct {
     authToken string
 }
 
-func NewHTTPClient(hostname string, authToken string) *httpClient {
-    return &httpClient{
+func NewHTTPClient(hostname string, authToken string) HTTPClient {
+    return httpClient{
         client:    &http.Client{},
         authToken: authToken,
         hostname:   hostname,
     }
 }
 
-func (c *httpClient) Do(req *http.Request) (*http.Response, error) {
+func (c httpClient) Do(req *http.Request) (*http.Response, error) {
     // Set common headers
     req.Header.Set("Accept", "application/json")
     req.Header.Set("Authorization", "Login "+c.authToken)

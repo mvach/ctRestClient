@@ -9,18 +9,22 @@ import (
     "net/http"
 )
 
+//counterfeiter:generate . DynamicGroupsEndpoint
+type DynamicGroupsEndpoint interface {
+    GetDynamicGroupIds() ([]int, error)
+}
 
 type dynamicGroupsEndpoint struct {
     httpclient httpclient.HTTPClient
 }
 
-func NewDynamicGroupsEndpoint(httpclient httpclient.HTTPClient) *dynamicGroupsEndpoint {
-    return &dynamicGroupsEndpoint{
+func NewDynamicGroupsEndpoint(httpclient httpclient.HTTPClient) DynamicGroupsEndpoint {
+    return dynamicGroupsEndpoint{
         httpclient: httpclient,
     }
 }
 
-func (c *dynamicGroupsEndpoint) GetDynamicGroupIds() (*DynamicGroupIdsResponseJson, error) {
+func (c dynamicGroupsEndpoint) GetDynamicGroupIds() ([]int, error) {
 
     req, err := http.NewRequest("GET", "", nil)
     if err != nil {
@@ -49,5 +53,5 @@ func (c *dynamicGroupsEndpoint) GetDynamicGroupIds() (*DynamicGroupIdsResponseJs
         return nil, fmt.Errorf("response body is not containing expected json, %w", err)
     }
 
-    return &response, nil
+    return response.Data, nil
 }

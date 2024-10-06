@@ -10,17 +10,22 @@ import (
 	"net/url"
 )
 
+//counterfeiter:generate . PersonsEndpoint
+type PersonsEndpoint interface {
+    GetPerson(personId int) (json.RawMessage, error)
+}
+
 type personsEndpoint struct {
     httpclient httpclient.HTTPClient
 }
 
-func NewPersonsEndpoint(httpclient httpclient.HTTPClient) *personsEndpoint {
-    return &personsEndpoint{
+func NewPersonsEndpoint(httpclient httpclient.HTTPClient) PersonsEndpoint {
+    return personsEndpoint{
         httpclient: httpclient,
     }
 }
 
-func (c *personsEndpoint) GetPerson(personId int) (*PersonResponseJson, error) {
+func (c personsEndpoint) GetPerson(personId int) (json.RawMessage, error) {
 
     req, err := http.NewRequest("GET", "", nil)
     if err != nil {
@@ -54,5 +59,5 @@ func (c *personsEndpoint) GetPerson(personId int) (*PersonResponseJson, error) {
         return nil, fmt.Errorf("response body is not containing expected json, %w", err)
     }
 
-    return &response, nil
+    return response.Data, nil
 }

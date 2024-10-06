@@ -1,20 +1,20 @@
 package restendpoints
 
 type GroupsResponseJson struct {
-	Data []GroupsResponseItem `json:"data"`
+	Data []GroupsResponse `json:"data"`
 }
 
-type GroupsResponseItem struct {
+type GroupsResponse struct {
 	ID   int    `json:"id"`
 	GUID string `json:"guid"`
 	Name string `json:"name"`
 }
 
 type GroupsMembersResponseJson struct {
-	Data []GroupsMembersResponseItem `json:"data"`
+	Data []GroupsMembersResponse `json:"data"`
 }
 
-type GroupsMembersResponseItem struct {
+type GroupsMembersResponse struct {
 	PersonId          int    `json:"personId"`
 	GroupId           int    `json:"groupId"`
 	GroupTypeRoleId   int    `json:"groupTypeRoleId"`

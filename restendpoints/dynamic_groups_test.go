@@ -42,10 +42,10 @@ var _ = Describe("DynamicGroupsEndpoint", func() {
             httpClient.DoReturns(httpResponse, nil)
 
             dynamicGroupsEndpoint := restendpoints.NewDynamicGroupsEndpoint(httpClient)
-            resp, err := dynamicGroupsEndpoint.GetDynamicGroupIds()
+            groupIds, err := dynamicGroupsEndpoint.GetDynamicGroupIds()
 
             Expect(err).NotTo(HaveOccurred())
-            Expect(resp.Data).To(Equal([]int{10, 11, 12}))
+            Expect(groupIds).To(Equal([]int{10, 11, 12}))
         })
 
         It("returns an error if the request cannot be send", func() {

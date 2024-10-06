@@ -10,17 +10,24 @@ import (
 	"net/url"
 )
 
+//counterfeiter:generate . GroupsEndpoint
+type GroupsEndpoint interface {
+    GetGroupName(groupId int) ([]GroupsResponse, error)
+
+    GetGroupMembers(groupId int) ([]GroupsMembersResponse, error)
+}
+
 type groupsEndpoint struct {
     httpclient httpclient.HTTPClient
 }
 
-func NewGroupsEndpoint(httpclient httpclient.HTTPClient) *groupsEndpoint {
-    return &groupsEndpoint{
+func NewGroupsEndpoint(httpclient httpclient.HTTPClient) GroupsEndpoint {
+    return groupsEndpoint{
         httpclient: httpclient,
     }
 }
 
-func (c *groupsEndpoint) GetGroupName(groupId int) (*GroupsResponseJson, error) {
+func (c groupsEndpoint) GetGroupName(groupId int) ([]GroupsResponse, error) {
 
     req, err := http.NewRequest("GET", "", nil)
     if err != nil {
@@ -54,10 +61,10 @@ func (c *groupsEndpoint) GetGroupName(groupId int) (*GroupsResponseJson, error) 
         return nil, fmt.Errorf("response body is not containing expected json, %w", err)
     }
 
-    return &response, nil
+    return response.Data, nil
 }
 
-func (c *groupsEndpoint) GetGroupMembers(groupId int) (*GroupsMembersResponseJson, error) {
+func (c groupsEndpoint) GetGroupMembers(groupId int) ([]GroupsMembersResponse, error) {
 
     req, err := http.NewRequest("GET", "", nil)
     if err != nil {
@@ -92,5 +99,5 @@ func (c *groupsEndpoint) GetGroupMembers(groupId int) (*GroupsMembersResponseJso
         return nil, fmt.Errorf("response body is not containing expected json, %w", err)
     }
 
-    return &response, nil
+    return response.Data, nil
 }

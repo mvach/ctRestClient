@@ -47,7 +47,7 @@ var _ = Describe("GroupsEndpoint", func() {
             resp, err := groupsEndpoint.GetGroupName(10)
 
             Expect(err).NotTo(HaveOccurred())
-            Expect(resp.Data[0].Name).To(Equal("group1"))
+            Expect(resp[0].Name).To(Equal("group1"))
         })
 
         It("returns an error if the request cannot be send", func() {
@@ -120,8 +120,8 @@ var _ = Describe("GroupsEndpoint", func() {
             resp, err := groupsEndpoint.GetGroupMembers(10)
 
             Expect(err).NotTo(HaveOccurred())
-            Expect(resp.Data[0].PersonId).To(Equal(1))
-            Expect(resp.Data[1].PersonId).To(Equal(2))
+            Expect(resp[0].PersonId).To(Equal(1))
+            Expect(resp[1].PersonId).To(Equal(2))
         })
 
         It("returns an error if the request cannot be send", func() {
