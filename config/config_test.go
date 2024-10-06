@@ -30,7 +30,7 @@ var _ = Describe("Config", func() {
             yamlContent := `
 ---
 instances:
-  - instance: foo
+  - hostname: foo.com
     groups:
     - name: foo_group_0
       fields:
@@ -39,7 +39,7 @@ instances:
     - name: foo_group_1
       fields:
       - foo_field_3
-  - instance: bar
+  - hostname: bar.com
     groups:
     - name: bar_group_0
       fields:
@@ -53,14 +53,14 @@ instances:
             Expect(err).ToNot(HaveOccurred())
             Expect(cfg.Instances).To(HaveLen(2))
 
-            Expect(cfg.Instances[0].Instance).To(Equal("foo"))
+            Expect(cfg.Instances[0].HostName).To(Equal("foo.com"))
             Expect(cfg.Instances[0].Groups).To(HaveLen(2))
             Expect(cfg.Instances[0].Groups[0].Name).To(Equal("foo_group_0"))
             Expect(cfg.Instances[0].Groups[0].Fields).To(Equal([]string{"foo_field_1", "foo_field_2"}))
             Expect(cfg.Instances[0].Groups[1].Name).To(Equal("foo_group_1"))
             Expect(cfg.Instances[0].Groups[1].Fields).To(Equal([]string{"foo_field_3"}))
 
-            Expect(cfg.Instances[1].Instance).To(Equal("bar"))
+            Expect(cfg.Instances[1].HostName).To(Equal("bar.com"))
             Expect(cfg.Instances[1].Groups).To(HaveLen(1))
             Expect(cfg.Instances[1].Groups[0].Name).To(Equal("bar_group_0"))
             Expect(cfg.Instances[1].Groups[0].Fields).To(Equal([]string{"bar_field_1"}))
@@ -131,8 +131,8 @@ instances: []
             })
         })
 
-        var _ = Describe("instance property errors", func() {
-            It("returns an error if mandatory instance field is missing", func() {
+        var _ = Describe("hostname property errors", func() {
+            It("returns an error if mandatory hostname field is missing", func() {
                 yamlContent := `
 ---
 instances:
@@ -144,16 +144,16 @@ instances:
 
                 cfg, err := config.LoadConfig(tempFile.Name())
                 Expect(err).To(HaveOccurred())
-                Expect(err.Error()).To(Equal("failed to validate the config file, property instance is not set"))
+                Expect(err.Error()).To(Equal("failed to validate the config file, property hostname is not set"))
                 Expect(cfg).To(BeNil())
 
             })
 
-            It("returns an error if mandatory instances field is nil", func() {
+            It("returns an error if mandatory hostname field is nil", func() {
                 yamlContent := `
 ---
 instances:
-  - instance:
+  - hostname:
 `
                 _, err := tempFile.Write([]byte(yamlContent))
                 Expect(err).ToNot(HaveOccurred())
@@ -161,7 +161,7 @@ instances:
 
                 cfg, err := config.LoadConfig(tempFile.Name())
                 Expect(err).To(HaveOccurred())
-                Expect(err.Error()).To(Equal("failed to validate the config file, property instance is not set"))
+                Expect(err.Error()).To(Equal("failed to validate the config file, property hostname is not set"))
                 Expect(cfg).To(BeNil())
 
             })
@@ -172,7 +172,7 @@ instances:
                 yamlContent := `
 ---
 instances:
-  - instance: foo
+  - hostname: foo
 `
                 _, err := tempFile.Write([]byte(yamlContent))
                 Expect(err).ToNot(HaveOccurred())
@@ -189,7 +189,7 @@ instances:
                 yamlContent := `
 ---
 instances:
-  - instance: foo
+  - hostname: foo
     groups:
 `
                 _, err := tempFile.Write([]byte(yamlContent))
@@ -207,7 +207,7 @@ instances:
                 yamlContent := `
 ---
 instances:
-  - instance: foo
+  - hostname: foo
     groups: "not_array"
 `
                 _, err := tempFile.Write([]byte(yamlContent))
@@ -225,7 +225,7 @@ instances:
                 yamlContent := `
 ---
 instances:
-  - instance: foo
+  - hostname: foo
     groups: []
 `
                 _, err := tempFile.Write([]byte(yamlContent))
@@ -245,7 +245,7 @@ instances:
                 yamlContent := `
 ---
 instances:
-  - instance: foo
+  - hostname: foo
     groups: 
       - foo: bar
 `
@@ -264,7 +264,7 @@ instances:
                 yamlContent := `
 ---
 instances:
-  - instance: foo
+  - hostname: foo
     groups: 
       - name:
 `
@@ -285,7 +285,7 @@ instances:
                 yamlContent := `
 ---
 instances:
-  - instance: foo
+  - hostname: foo
     groups:
       - name: foo_group_0
 `
@@ -304,7 +304,7 @@ instances:
                 yamlContent := `
 ---
 instances:
-  - instance: foo
+  - hostname: foo
     groups:
       - name: foo_group_0
         fields:
@@ -324,7 +324,7 @@ instances:
                 yamlContent := `
 ---
 instances:
-  - instance: foo
+  - hostname: foo
     groups:
       - name: foo_group_0
         fields: "not_array"
@@ -344,7 +344,7 @@ instances:
                 yamlContent := `
 ---
 instances:
-  - instance: foo
+  - hostname: foo
     groups:
       - name: foo_group_0
         fields: []
