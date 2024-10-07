@@ -8,6 +8,7 @@ import (
 
 type GroupName2IDMap map[string]int
 
+//counterfeiter:generate . GroupExporter
 type GroupExporter interface {
     ExportPersonData(
         groupname string,
@@ -44,12 +45,12 @@ func (g groupExporter) ExportPersonData(
     }
 
     for _, groupMember := range groupMembers {
-        personJson, err := personsEndpoint.GetPerson(groupMember.PersonId)
+        personsJson, err := personsEndpoint.GetPerson(groupMember.PersonId)
         if err != nil {
             return nil, fmt.Errorf("failed to resolve person with id %d, %w", groupMember.PersonId, err)
         }
 
-        result = append(result, personJson)
+        result = append(result, personsJson...)
     }
 
     return result, nil

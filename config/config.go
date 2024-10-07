@@ -1,11 +1,13 @@
 package config
 
 import (
-    "errors"
-    "fmt"
-    "os"
+	"errors"
+	"fmt"
+	"os"
+	"regexp"
+	"strings"
 
-    "gopkg.in/yaml.v3"
+	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
@@ -21,6 +23,24 @@ type Group struct {
     Name    string   `yaml:"name"`
     MergeBy string   `yaml:"merge_by,omitempty"`
     Fields  []string `yaml:"fields"`
+}
+
+func (g Group) SanitizedGroupName() string {
+    fileName := g.Name
+	fileName = strings.ReplaceAll(fileName, " ", "_")
+	fileName = strings.ReplaceAll(fileName, ",", ".")
+    fileName = strings.ReplaceAll(fileName, "ä", "ae")
+    fileName = strings.ReplaceAll(fileName, "ö", "oe")
+    fileName = strings.ReplaceAll(fileName, "ü", "ue")
+    fileName = strings.ReplaceAll(fileName, "Ä", "Ae")
+    fileName = strings.ReplaceAll(fileName, "Ö", "Oe")
+    fileName = strings.ReplaceAll(fileName, "Ü", "Ue")
+
+	re := regexp.MustCompile(`[^\w\-.]`)
+	fileName = re.ReplaceAllString(fileName, "")
+    fileName = strings.ReplaceAll(fileName, "__", "_")
+
+	return fileName
 }
 
 func LoadConfig(filePath string) (*Config, error) {
@@ -43,7 +63,7 @@ func LoadConfig(filePath string) (*Config, error) {
     return &config, nil
 }
 
-func (c *Config) validate() error {
+func (c Config) validate() error {
     if len(c.Instances) == 0 {
         return errors.New("property instances is not set")
     }

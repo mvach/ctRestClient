@@ -46,14 +46,13 @@ var _ = Describe("PersonsEndpoint", func() {
 
             Expect(err).NotTo(HaveOccurred())
 
-            var data []map[string]interface{}
-            err = json.Unmarshal(resp, &data)
+            var data map[string]interface{}
+            err = json.Unmarshal(resp[0], &data)
             Expect(err).NotTo(HaveOccurred())
 
-            Expect(data).To(HaveLen(1))
-            Expect(int(data[0]["id"].(float64))).To(Equal(5))
-            Expect(data[0]["firstName"].(string)).To(Equal("foo"))
-            Expect(data[0]["lastName"].(string)).To(Equal("bar"))
+            Expect(int(data["id"].(float64))).To(Equal(5))
+            Expect(data["firstName"].(string)).To(Equal("foo"))
+            Expect(data["lastName"].(string)).To(Equal("bar"))
         })
 
         It("returns an error if the request cannot be send", func() {

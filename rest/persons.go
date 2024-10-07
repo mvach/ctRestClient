@@ -12,7 +12,7 @@ import (
 
 //counterfeiter:generate . PersonsEndpoint
 type PersonsEndpoint interface {
-    GetPerson(personId int) (json.RawMessage, error)
+    GetPerson(personId int) ([]json.RawMessage, error)
 }
 
 type personsEndpoint struct {
@@ -25,7 +25,7 @@ func NewPersonsEndpoint(httpclient httpclient.HTTPClient) PersonsEndpoint {
     }
 }
 
-func (c personsEndpoint) GetPerson(personId int) (json.RawMessage, error) {
+func (c personsEndpoint) GetPerson(personId int) ([]json.RawMessage, error) {
 
     req, err := http.NewRequest("GET", "", nil)
     if err != nil {
@@ -36,7 +36,8 @@ func (c personsEndpoint) GetPerson(personId int) (json.RawMessage, error) {
     params.Add("ids[]", fmt.Sprintf("%d", personId))
     encodedQueryParam := params.Encode()
 
-    req.URL.Path = fmt.Sprintf("api/persons?%s", encodedQueryParam)
+    req.URL.Path = "/api/persons"
+    req.URL.RawQuery = encodedQueryParam
 
     resp, err := c.httpclient.Do(req)
     if err != nil {

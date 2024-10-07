@@ -8,24 +8,24 @@ import (
 )
 
 type FakePersonsEndpoint struct {
-	GetPersonStub        func(int) (json.RawMessage, error)
+	GetPersonStub        func(int) ([]json.RawMessage, error)
 	getPersonMutex       sync.RWMutex
 	getPersonArgsForCall []struct {
 		arg1 int
 	}
 	getPersonReturns struct {
-		result1 json.RawMessage
+		result1 []json.RawMessage
 		result2 error
 	}
 	getPersonReturnsOnCall map[int]struct {
-		result1 json.RawMessage
+		result1 []json.RawMessage
 		result2 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakePersonsEndpoint) GetPerson(arg1 int) (json.RawMessage, error) {
+func (fake *FakePersonsEndpoint) GetPerson(arg1 int) ([]json.RawMessage, error) {
 	fake.getPersonMutex.Lock()
 	ret, specificReturn := fake.getPersonReturnsOnCall[len(fake.getPersonArgsForCall)]
 	fake.getPersonArgsForCall = append(fake.getPersonArgsForCall, struct {
@@ -50,7 +50,7 @@ func (fake *FakePersonsEndpoint) GetPersonCallCount() int {
 	return len(fake.getPersonArgsForCall)
 }
 
-func (fake *FakePersonsEndpoint) GetPersonCalls(stub func(int) (json.RawMessage, error)) {
+func (fake *FakePersonsEndpoint) GetPersonCalls(stub func(int) ([]json.RawMessage, error)) {
 	fake.getPersonMutex.Lock()
 	defer fake.getPersonMutex.Unlock()
 	fake.GetPersonStub = stub
@@ -63,28 +63,28 @@ func (fake *FakePersonsEndpoint) GetPersonArgsForCall(i int) int {
 	return argsForCall.arg1
 }
 
-func (fake *FakePersonsEndpoint) GetPersonReturns(result1 json.RawMessage, result2 error) {
+func (fake *FakePersonsEndpoint) GetPersonReturns(result1 []json.RawMessage, result2 error) {
 	fake.getPersonMutex.Lock()
 	defer fake.getPersonMutex.Unlock()
 	fake.GetPersonStub = nil
 	fake.getPersonReturns = struct {
-		result1 json.RawMessage
+		result1 []json.RawMessage
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakePersonsEndpoint) GetPersonReturnsOnCall(i int, result1 json.RawMessage, result2 error) {
+func (fake *FakePersonsEndpoint) GetPersonReturnsOnCall(i int, result1 []json.RawMessage, result2 error) {
 	fake.getPersonMutex.Lock()
 	defer fake.getPersonMutex.Unlock()
 	fake.GetPersonStub = nil
 	if fake.getPersonReturnsOnCall == nil {
 		fake.getPersonReturnsOnCall = make(map[int]struct {
-			result1 json.RawMessage
+			result1 []json.RawMessage
 			result2 error
 		})
 	}
 	fake.getPersonReturnsOnCall[i] = struct {
-		result1 json.RawMessage
+		result1 []json.RawMessage
 		result2 error
 	}{result1, result2}
 }

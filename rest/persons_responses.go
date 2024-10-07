@@ -5,5 +5,5 @@ import (
 )
 
 type PersonResponseJson struct {
-    Data json.RawMessage `json:"data"`
+    Data []json.RawMessage `json:"data"`
 }
