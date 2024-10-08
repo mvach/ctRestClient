@@ -66,7 +66,7 @@ var _ = Describe("InstanceProcessor", func() {
             path, header, content := csvWriter.WriteArgsForCall(0)
             Expect(path).To(ContainSubstring("foo_group.csv"))
             Expect(header).To(Equal([]string{"id", "firstName", "lastName"}))
-            Expect(content).To(Equal([][]string{{"", "foo_firstname", "foo_lastname"}, {"", "bar_firstname", "bar_lastname"}}))
+            Expect(content).To(Equal([][]string{{"1", "foo_firstname", "foo_lastname"}, {"2", "bar_firstname", "bar_lastname"}}))
         })
 
         It("returns an error if person data export fails", func() {

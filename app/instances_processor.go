@@ -80,10 +80,13 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVWr
 
                 for i, field := range group.Fields {
                     if value, ok := data[field].(string); ok {
+                        // get string values
                         record[i] = value
+                    } else if value, ok := data[field].(float64); ok {
+                        // get int values
+                        record[i] = fmt.Sprintf("%d", int(value))
                     } else {
-                        // TODO: process non-string fields
-                        log.Printf("Field %s is not a string or not found", field)
+                        log.Printf("Field %s is not a string or int, or not found", field)
                         record[i] = ""
                     }
                 }
