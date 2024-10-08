@@ -6,6 +6,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 func main() {
@@ -40,5 +41,5 @@ func getExecutablePath() string {
     if err != nil {
         log.Fatalf("Failed to get executable path: %v", err)
     }
-    return exePath
+    return filepath.Dir(exePath)   
 }
