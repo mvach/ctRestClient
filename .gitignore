@@ -4,6 +4,8 @@
 # Binaries for programs and plugins
 *.exe
 *.exe~
+*-arm64
+*-amd64
 *.dll
 *.so
 *.dylib
