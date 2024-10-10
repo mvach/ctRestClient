@@ -1,13 +1,13 @@
 package config
 
 import (
-	"errors"
-	"fmt"
-	"os"
-	"regexp"
-	"strings"
+    "errors"
+    "fmt"
+    "os"
+    "regexp"
+    "strings"
 
-	"gopkg.in/yaml.v3"
+    "gopkg.in/yaml.v3"
 )
 
 type Config struct {
@@ -15,8 +15,9 @@ type Config struct {
 }
 
 type Instance struct {
-    HostName string  `yaml:"hostname"`
-    Groups  []Group `yaml:"groups"`
+    Hostname  string  `yaml:"hostname"`
+    TokenName string  `yaml:"token_name"`
+    Groups    []Group `yaml:"groups"`
 }
 
 type Group struct {
@@ -27,8 +28,8 @@ type Group struct {
 
 func (g Group) SanitizedGroupName() string {
     fileName := g.Name
-	fileName = strings.ReplaceAll(fileName, " ", "_")
-	fileName = strings.ReplaceAll(fileName, ",", ".")
+    fileName = strings.ReplaceAll(fileName, " ", "_")
+    fileName = strings.ReplaceAll(fileName, ",", ".")
     fileName = strings.ReplaceAll(fileName, "ä", "ae")
     fileName = strings.ReplaceAll(fileName, "ö", "oe")
     fileName = strings.ReplaceAll(fileName, "ü", "ue")
@@ -36,11 +37,11 @@ func (g Group) SanitizedGroupName() string {
     fileName = strings.ReplaceAll(fileName, "Ö", "Oe")
     fileName = strings.ReplaceAll(fileName, "Ü", "Ue")
 
-	re := regexp.MustCompile(`[^\w\-.]`)
-	fileName = re.ReplaceAllString(fileName, "")
+    re := regexp.MustCompile(`[^\w\-.]`)
+    fileName = re.ReplaceAllString(fileName, "")
     fileName = strings.ReplaceAll(fileName, "__", "_")
 
-	return fileName
+    return fileName
 }
 
 func LoadConfig(filePath string) (*Config, error) {
@@ -68,8 +69,11 @@ func (c Config) validate() error {
         return errors.New("property instances is not set")
     }
     for _, instance := range c.Instances {
-        if instance.HostName == "" {
+        if instance.Hostname == "" {
             return errors.New("property hostname is not set")
+        }
+        if instance.TokenName == "" {
+            return errors.New("property token_name is not set")
         }
 
         if len(instance.Groups) == 0 {

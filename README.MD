@@ -3,11 +3,12 @@
 The ctRestClient allows exporting dynamic groups of ChurchTools as CSV files. This is required if one wants to send a serial letter using tools like Microsoft Word or Adobe InDesign to the group members.
 
 ## Configure it
-The ctRestClient is configured via a YAML file. Here is an example configuration:
+The ctRestClient is mostly configured via a YAML file. Here is an example configuration:
 
 ```
 instances:
   - hostname: host1.yourchurch.de
+    token_name: TOKEN_HOST1
     groups:
     - name: school kids
       fields: [id, firstName, lastName, street, zip]
@@ -16,9 +17,22 @@ instances:
     - name: newlyweds
       fields: [id, firstName, lastName, street, zip, sexId]
   - hostname: host2.yourchurch.de
+    token_name: TOKEN_HOST2
     groups:
     - name: teenagers
       fields: [id, firstName, lastName, street, zip]
+```
+
+This configuration contains multiple `token_name` properties. The value of each `token_name` is simply the name of an environment variable that is containing the relevant token. Therefore, such variables (here `TOKEN_HOST1` and `TOKEN_HOST2`) must be set in the environment before running the client.
+
+```
+# Set environment variables on Windows
+set TOKEN_HOST1=6GN68NH4WM5OHRXDDEU1FHMMV...
+set TOKEN_HOST2=QQO5N324JOWCO3RPOUTSSKXPY...
+
+# Set environment variables on Mac
+export TOKEN_HOST1=6GN68NH4WM5OHRXDDEU1FHMMV...
+export TOKEN_HOST2=QQO5N324JOWCO3RPOUTSSKXPY...
 ```
 
 ## Run it
@@ -37,8 +51,6 @@ Options:
                 executable. This exports directory is then filled with the CSV files.
                 Using -o allows you to configure the path where the exports directory 
                 should be created.
-
-  -t            ctRestClient requires a token to access a ChurchTools instance.
 ```
 
 

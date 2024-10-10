@@ -6,7 +6,6 @@ import (
     "ctRestClient/rest"
     "encoding/json"
     "fmt"
-    "log"
     "os"
     "path/filepath"
     "time"
@@ -17,16 +16,20 @@ type InstancesProcessor interface {
 }
 
 type instancesProcessor struct {
-    config config.Config
-    token  string
+    config          config.Config
     outputDirectory string
+    logger		  Logger
 }
 
-func NewInstancesProcessor(config config.Config, token string, outputDirectory string) InstancesProcessor {
+func NewInstancesProcessor(
+    config config.Config,
+    outputDirectory string,
+    logger Logger,
+) InstancesProcessor {
     return instancesProcessor{
-        config: config,
-        token:  token,
+        config:          config,
         outputDirectory: outputDirectory,
+        logger:          logger,
     }
 }
 
@@ -35,15 +38,23 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVWr
     rootDir := filepath.Join(p.outputDirectory, "export", time.Now().Format("2006.01.02_15-04-05"))
 
     for _, instance := range p.config.Instances {
-        for _, group := range instance.Groups {
-            log.Printf("[INFO] processing '%s' group '%s'", instance.HostName, group.Name)
+        p.logger.Info(fmt.Sprintf("processing instance '%s'", instance.Hostname))
+        
+        token := os.Getenv(instance.TokenName)
+        if token == "" {
+            p.logger.Warn(fmt.Sprintf("  skipping export, a token with name '%s' is not set in the environment", instance.TokenName))
+            continue
+        }
 
-            err := os.MkdirAll(filepath.Join(rootDir, instance.HostName), 0755)
+        for _, group := range instance.Groups {
+            p.logger.Info(fmt.Sprintf("  processing group '%s'", group.Name))
+
+            err := os.MkdirAll(filepath.Join(rootDir, instance.Hostname), 0755)
             if err != nil {
                 return fmt.Errorf("failed to create group directory: %v", err)
             }
 
-            httpClient := httpclient.NewHTTPClient(instance.HostName, p.token)
+            httpClient := httpclient.NewHTTPClient(instance.Hostname, token)
             dynamicGroupsEndpoint := rest.NewDynamicGroupsEndpoint(httpClient)
             groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
             personEndpoint := rest.NewPersonsEndpoint(httpClient)
@@ -59,17 +70,16 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVWr
             }
 
             if len(persons) == 0 {
-                log.Printf("[INFO]   the group is empty")
+                p.logger.Info("    the group is empty")
                 continue
             } else {
-                log.Printf("[INFO]   the group has %d persons", len(persons))
+                p.logger.Info(fmt.Sprintf("    the group has %d persons", len(persons)))
             }
 
             csvHeader := group.Fields
             csvRecords := make([][]string, 0)
 
             for _, person := range persons {
-                // log.Printf("[INFO]   processing person: %s", person)
                 var data map[string]interface{}
                 err := json.Unmarshal([]byte(person), &data)
                 if err != nil {
@@ -86,7 +96,7 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVWr
                         // get int values
                         record[i] = fmt.Sprintf("%d", int(value))
                     } else {
-                        log.Printf("Field %s is not a string or int, or not found", field)
+                        p.logger.Warn(fmt.Sprintf("    Field %s is not a string or int, or not found", field))
                         record[i] = ""
                     }
                 }
@@ -95,7 +105,7 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVWr
 
             csvFilePath := filepath.Join(
                 rootDir,
-                instance.HostName,
+                instance.Hostname,
                 group.SanitizedGroupName()+".csv",
             )
 

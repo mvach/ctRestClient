@@ -1,21 +1,19 @@
 package main
 
 import (
-	"ctRestClient/app"
-	"ctRestClient/config"
-	"flag"
-	"log"
-	"os"
-	"path/filepath"
+    "ctRestClient/app"
+    "ctRestClient/config"
+    "flag"
+    "log"
+    "os"
+    "path/filepath"
 )
 
 func main() {
     var configPath string
-    var token string
     var outputDirectory string
     
     flag.StringVar(&configPath, "c", "config.yml", "the config file path")
-    flag.StringVar(&token, "t", "config.yml", "the token")
     flag.StringVar(&outputDirectory, "o", getExecutablePath(), "the output directory")
     flag.Parse()
     
@@ -27,7 +25,7 @@ func main() {
 
     
 
-    err = app.NewInstancesProcessor(*config, token, outputDirectory).Process(
+    err = app.NewInstancesProcessor(*config, outputDirectory, app.NewLogger()).Process(
         app.NewGroupExporter(),
         app.NewCSVWriter(),
     )

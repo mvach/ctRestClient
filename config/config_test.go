@@ -31,6 +31,7 @@ var _ = Describe("Config", func() {
 ---
 instances:
   - hostname: foo.com
+    token_name: foo
     groups:
     - name: foo_group_0
       fields:
@@ -40,6 +41,7 @@ instances:
       fields:
       - foo_field_3
   - hostname: bar.com
+    token_name: bar
     groups:
     - name: bar_group_0
       fields:
@@ -53,14 +55,16 @@ instances:
             Expect(err).ToNot(HaveOccurred())
             Expect(cfg.Instances).To(HaveLen(2))
 
-            Expect(cfg.Instances[0].HostName).To(Equal("foo.com"))
+            Expect(cfg.Instances[0].Hostname).To(Equal("foo.com"))
+            Expect(cfg.Instances[0].TokenName).To(Equal("foo"))
             Expect(cfg.Instances[0].Groups).To(HaveLen(2))
             Expect(cfg.Instances[0].Groups[0].Name).To(Equal("foo_group_0"))
             Expect(cfg.Instances[0].Groups[0].Fields).To(Equal([]string{"foo_field_1", "foo_field_2"}))
             Expect(cfg.Instances[0].Groups[1].Name).To(Equal("foo_group_1"))
             Expect(cfg.Instances[0].Groups[1].Fields).To(Equal([]string{"foo_field_3"}))
 
-            Expect(cfg.Instances[1].HostName).To(Equal("bar.com"))
+            Expect(cfg.Instances[1].Hostname).To(Equal("bar.com"))
+            Expect(cfg.Instances[1].TokenName).To(Equal("bar"))
             Expect(cfg.Instances[1].Groups).To(HaveLen(1))
             Expect(cfg.Instances[1].Groups[0].Name).To(Equal("bar_group_0"))
             Expect(cfg.Instances[1].Groups[0].Fields).To(Equal([]string{"bar_field_1"}))
@@ -79,7 +83,6 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(Equal("failed to validate the config file, property instances is not set"))
                 Expect(cfg).To(BeNil())
-
             })
 
             It("returns an error if mandatory instances field is nil", func() {
@@ -95,7 +98,6 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(Equal("failed to validate the config file, property instances is not set"))
                 Expect(cfg).To(BeNil())
-
             })
 
             It("returns an error if mandatory instances field has wrong type", func() {
@@ -111,7 +113,6 @@ instances: "not_array"
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(ContainSubstring("failed to load invalid config file"))
                 Expect(cfg).To(BeNil())
-
             })
 
             It("returns an error if mandatory instances field is empty array", func() {
@@ -127,7 +128,6 @@ instances: []
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(ContainSubstring("failed to validate the config file, property instances is not set"))
                 Expect(cfg).To(BeNil())
-
             })
         })
 
@@ -146,7 +146,6 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(Equal("failed to validate the config file, property hostname is not set"))
                 Expect(cfg).To(BeNil())
-
             })
 
             It("returns an error if mandatory hostname field is nil", func() {
@@ -163,7 +162,42 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(Equal("failed to validate the config file, property hostname is not set"))
                 Expect(cfg).To(BeNil())
+            })
+        })
 
+        var _ = Describe("token_name property errors", func() {
+            It("returns an error if mandatory token_name field is missing", func() {
+                yamlContent := `
+---
+instances:
+  - hostname: foo
+    foo: bar
+`
+                _, err := tempFile.Write([]byte(yamlContent))
+                Expect(err).ToNot(HaveOccurred())
+                tempFile.Close()
+
+                cfg, err := config.LoadConfig(tempFile.Name())
+                Expect(err).To(HaveOccurred())
+                Expect(err.Error()).To(Equal("failed to validate the config file, property token_name is not set"))
+                Expect(cfg).To(BeNil())
+            })
+
+            It("returns an error if mandatory token_name field is nil", func() {
+                yamlContent := `
+---
+instances:
+  - hostname: foo
+    token_name:
+`
+                _, err := tempFile.Write([]byte(yamlContent))
+                Expect(err).ToNot(HaveOccurred())
+                tempFile.Close()
+
+                cfg, err := config.LoadConfig(tempFile.Name())
+                Expect(err).To(HaveOccurred())
+                Expect(err.Error()).To(Equal("failed to validate the config file, property token_name is not set"))
+                Expect(cfg).To(BeNil())
             })
         })
 
@@ -173,6 +207,7 @@ instances:
 ---
 instances:
   - hostname: foo
+    token_name: foo
 `
                 _, err := tempFile.Write([]byte(yamlContent))
                 Expect(err).ToNot(HaveOccurred())
@@ -182,7 +217,6 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(Equal("failed to validate the config file, property groups is not set"))
                 Expect(cfg).To(BeNil())
-
             })
 
             It("returns an error if mandatory groups field is nil", func() {
@@ -190,6 +224,7 @@ instances:
 ---
 instances:
   - hostname: foo
+    token_name: foo
     groups:
 `
                 _, err := tempFile.Write([]byte(yamlContent))
@@ -200,7 +235,6 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(Equal("failed to validate the config file, property groups is not set"))
                 Expect(cfg).To(BeNil())
-
             })
 
             It("returns an error if mandatory groups field has wrong type", func() {
@@ -208,6 +242,7 @@ instances:
 ---
 instances:
   - hostname: foo
+    token_name: foo
     groups: "not_array"
 `
                 _, err := tempFile.Write([]byte(yamlContent))
@@ -218,7 +253,6 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(ContainSubstring("failed to load invalid config file"))
                 Expect(cfg).To(BeNil())
-
             })
 
             It("returns an error if mandatory groups field is empty array", func() {
@@ -226,6 +260,7 @@ instances:
 ---
 instances:
   - hostname: foo
+    token_name: foo
     groups: []
 `
                 _, err := tempFile.Write([]byte(yamlContent))
@@ -236,7 +271,6 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(ContainSubstring("failed to validate the config file, property groups is not set"))
                 Expect(cfg).To(BeNil())
-
             })
         })
 
@@ -246,6 +280,7 @@ instances:
 ---
 instances:
   - hostname: foo
+    token_name: foo
     groups: 
       - foo: bar
 `
@@ -257,7 +292,6 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(Equal("failed to validate the config file, property name is not set"))
                 Expect(cfg).To(BeNil())
-
             })
 
             It("returns an error if mandatory group name field is nil", func() {
@@ -265,6 +299,7 @@ instances:
 ---
 instances:
   - hostname: foo
+    token_name: foo
     groups: 
       - name:
 `
@@ -276,7 +311,6 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(Equal("failed to validate the config file, property name is not set"))
                 Expect(cfg).To(BeNil())
-
             })
         })
 
@@ -286,6 +320,7 @@ instances:
 ---
 instances:
   - hostname: foo
+    token_name: foo
     groups:
       - name: foo_group_0
 `
@@ -297,7 +332,6 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(Equal("failed to validate the config file, property fields is not set"))
                 Expect(cfg).To(BeNil())
-
             })
 
             It("returns an error if mandatory fields field is nil", func() {
@@ -305,6 +339,7 @@ instances:
 ---
 instances:
   - hostname: foo
+    token_name: foo
     groups:
       - name: foo_group_0
         fields:
@@ -317,7 +352,6 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(Equal("failed to validate the config file, property fields is not set"))
                 Expect(cfg).To(BeNil())
-
             })
 
             It("returns an error if mandatory fields field has wrong type", func() {
@@ -325,6 +359,7 @@ instances:
 ---
 instances:
   - hostname: foo
+    token_name: foo
     groups:
       - name: foo_group_0
         fields: "not_array"
@@ -337,7 +372,6 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(ContainSubstring("failed to load invalid config file"))
                 Expect(cfg).To(BeNil())
-
             })
 
             It("returns an error if mandatory fields field is empty array", func() {
@@ -345,6 +379,7 @@ instances:
 ---
 instances:
   - hostname: foo
+    token_name: foo
     groups:
       - name: foo_group_0
         fields: []
@@ -357,9 +392,7 @@ instances:
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(ContainSubstring("failed to validate the config file, property fields is not set"))
                 Expect(cfg).To(BeNil())
-
             })
         })
-
     })
 })
