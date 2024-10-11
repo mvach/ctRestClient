@@ -26,23 +26,19 @@ var _ = Describe("GroupExporter", func() {
         personsEndpoint = &restfakes.FakePersonsEndpoint{}
 
         groupExporter = app.NewGroupExporter()
-
-        dynamicGroupsEndpoint.GetDynamicGroupIdsReturns([]int{1, 2}, nil)
-        groupsEndpoint.GetGroupNameReturns(
-            []rest.GroupsResponse{
-                {ID: 1, Name: "foo_group"},
-                {ID: 1, Name: "bar_group"},
-            }, nil,
-        )
-        groupsEndpoint.GetGroupMembersReturns(
-            []rest.GroupsMembersResponse{
-                {PersonId: 1, GroupId: 1},
-                {PersonId: 2, GroupId: 1},
-            }, nil,
-        )
     })
 
     var _ = Describe("ExportPersonData", func() {
+        BeforeEach(func() {
+            groupsEndpoint.GetGroupMembersReturns(
+                []rest.GroupsMembersResponse{
+                    {PersonId: 1, GroupId: 1},
+                    {PersonId: 2, GroupId: 1},
+                }, nil,
+            )
+        })
+
+        
         It("returns persons", func() {
             person1 := `{	
                 "id": 1,
@@ -58,8 +54,7 @@ var _ = Describe("GroupExporter", func() {
             personsEndpoint.GetPersonReturnsOnCall(1, []json.RawMessage{json.RawMessage(person2)}, nil)
 
             personData, err := groupExporter.ExportPersonData(
-                "foo_group_name",
-                dynamicGroupsEndpoint,
+                1,
                 groupsEndpoint,
                 personsEndpoint,
             )
@@ -71,70 +66,11 @@ var _ = Describe("GroupExporter", func() {
             Expect(personData[1]).To(MatchJSON(person2))
         })
 
-        It("returns an error if dynamic groups cannot be resolved", func() {
-            dynamicGroupsEndpoint.GetDynamicGroupIdsReturns(nil, errors.New("boom"))
-
-            personData, err := groupExporter.ExportPersonData(
-                "foo_group_name",
-                dynamicGroupsEndpoint,
-                groupsEndpoint,
-                personsEndpoint,
-            )
-
-            Expect(err.Error()).To(Equal("failed to resolve groupnames to ids, failed to get dynamic groups, boom"))
-            Expect(personData).To(BeNil())
-        })
-
-        It("returns an error if dynamic groups are empty", func() {
-            dynamicGroupsEndpoint.GetDynamicGroupIdsReturns([]int{}, nil)
-
-            personData, err := groupExporter.ExportPersonData(
-                "foo_group_name",
-                dynamicGroupsEndpoint,
-                groupsEndpoint,
-                personsEndpoint,
-            )
-
-            Expect(err.Error()).To(Equal("failed to resolve groupnames to ids, no dynamic groups found"))
-            Expect(personData).To(BeNil())
-        })
-
-        It("returns an error if group names cannot be resolved", func() {
-            groupsEndpoint.GetGroupNameReturns(nil, errors.New("boom"))
-
-            personData, err := groupExporter.ExportPersonData(
-                "foo_group_name",
-                dynamicGroupsEndpoint,
-                groupsEndpoint,
-                personsEndpoint,
-            )
-
-            Expect(err.Error()).To(Equal("failed to resolve groupnames to ids, failed to retrieve group name, boom"))
-            Expect(personData).To(BeNil())
-        })
-
-        It("returns an error if group names are empty", func() {
-            groupsEndpoint.GetGroupNameReturns(
-                []rest.GroupsResponse{}, nil,
-            )
-
-            personData, err := groupExporter.ExportPersonData(
-                "foo_group_name",
-                dynamicGroupsEndpoint,
-                groupsEndpoint,
-                personsEndpoint,
-            )
-
-            Expect(err.Error()).To(Equal("failed to resolve groupnames to ids, no group name found"))
-            Expect(personData).To(BeNil())
-        })
-
         It("returns an error if group members cannot be resolved", func() {
             groupsEndpoint.GetGroupMembersReturns(nil, errors.New("boom"))
 
             personData, err := groupExporter.ExportPersonData(
-                "foo_group_name",
-                dynamicGroupsEndpoint,
+                1,
                 groupsEndpoint,
                 personsEndpoint,
             )
@@ -147,8 +83,7 @@ var _ = Describe("GroupExporter", func() {
             personsEndpoint.GetPersonReturnsOnCall(0, nil, errors.New("boom"))
 
             personData, err := groupExporter.ExportPersonData(
-                "foo_group_name",
-                dynamicGroupsEndpoint,
+                1,
                 groupsEndpoint,
                 personsEndpoint,
             )
@@ -156,5 +91,80 @@ var _ = Describe("GroupExporter", func() {
             Expect(err.Error()).To(Equal("failed to resolve person with id 1, boom"))
             Expect(personData).To(BeNil())
         })
+    })
+
+    var _ = Describe("GetGroupNames2IDMapping", func() {
+        BeforeEach(func() {
+            dynamicGroupsEndpoint.GetDynamicGroupIdsReturns([]int{1, 2}, nil)
+    
+            groupsEndpoint.GetGroupNameReturns(
+                []rest.GroupsResponse{
+                    {ID: 1, Name: "foo_group"},
+                    {ID: 2, Name: "bar_group"},
+                }, nil,
+            )
+        })
+
+        It("returns group id to name mapping", func() {
+            group2IDMap, err := groupExporter.GetGroupNames2IDMapping(
+                dynamicGroupsEndpoint,
+                groupsEndpoint,
+            )
+
+            Expect(err).NotTo(HaveOccurred())
+            Expect(group2IDMap["foo_group"]).To(Equal(1))
+            Expect(group2IDMap["bar_group"]).To(Equal(2))
+        })
+
+        It("returns an error if dynamic groups cannot be resolved", func() {
+            dynamicGroupsEndpoint.GetDynamicGroupIdsReturns(nil, errors.New("boom"))
+
+            personData, err := groupExporter.GetGroupNames2IDMapping(
+                dynamicGroupsEndpoint,
+                groupsEndpoint,
+            )
+
+            Expect(err.Error()).To(Equal("failed to get dynamic groups, boom"))
+            Expect(personData).To(BeNil())
+        })
+
+        It("returns an error if dynamic groups are empty", func() {
+            dynamicGroupsEndpoint.GetDynamicGroupIdsReturns([]int{}, nil)
+
+            personData, err := groupExporter.GetGroupNames2IDMapping(
+                dynamicGroupsEndpoint,
+                groupsEndpoint,
+            )
+
+            Expect(err.Error()).To(Equal("no dynamic groups found"))
+            Expect(personData).To(BeNil())
+        })
+
+        It("returns an error if group names cannot be resolved", func() {
+            groupsEndpoint.GetGroupNameReturns(nil, errors.New("boom"))
+
+            personData, err := groupExporter.GetGroupNames2IDMapping(
+                dynamicGroupsEndpoint,
+                groupsEndpoint,
+            )
+
+            Expect(err.Error()).To(Equal("failed to retrieve group name, boom"))
+            Expect(personData).To(BeNil())
+        })
+
+        It("returns an error if group names are empty", func() {
+            groupsEndpoint.GetGroupNameReturns(
+                []rest.GroupsResponse{}, nil,
+            )
+
+            personData, err := groupExporter.GetGroupNames2IDMapping(
+                dynamicGroupsEndpoint,
+                groupsEndpoint,
+            )
+
+            Expect(err.Error()).To(Equal("no group name found"))
+            Expect(personData).To(BeNil())
+        })
+
     })
 })

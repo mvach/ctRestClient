@@ -43,6 +43,10 @@ var _ = Describe("InstanceProcessor", func() {
             },
         }
 
+        groupExporter.GetGroupNames2IDMappingReturns(
+            map[string]int{"foo_group": 1, "bar_group": 2}, nil,
+        )
+
         instancesProcessor = app.NewInstancesProcessor(cfg, os.TempDir(), logger)
 
         person1 := `{	
@@ -78,6 +82,15 @@ var _ = Describe("InstanceProcessor", func() {
             Expect(content).To(Equal([][]string{{"1", "foo_firstname", "foo_lastname"}, {"2", "bar_firstname", "bar_lastname"}}))
         })
 
+        It("returns an error if group name2id mappinfg cannot be created", func() {
+            groupExporter.GetGroupNames2IDMappingReturns(nil, errors.New("boom"))
+
+            instancesProcessor = app.NewInstancesProcessor(cfg, os.TempDir(), logger)
+            err := instancesProcessor.Process(groupExporter, csvWriter)
+
+            Expect(err.Error()).To(Equal("failed to resolve groupnames to ids, boom"))
+        })
+
         It("logs a warning if a token is not in the environment", func() {
             cfg = config.Config{
                 Instances: []config.Instance{
@@ -99,6 +112,34 @@ var _ = Describe("InstanceProcessor", func() {
 
             message := logger.WarnArgsForCall(0)
             Expect(message).To(Equal("  skipping export, a token with name 'THE_UNKNOWN_TOKEN' is not set in the environment"))
+        })
+
+        It("logs an error if groupname cannot be found in the name2ID mapping", func() {
+            cfg = config.Config{
+                Instances: []config.Instance{
+                    {
+                        Hostname:  "foo",
+                        TokenName: "THE_TOKEN",
+                        Groups: []config.Group{
+                            {
+                                Name:   "missing_group",
+                                Fields: []string{"id", "firstName", "lastName"},
+                            },
+                        },
+                    },
+                },
+            }
+
+            emptyGroupResult := []json.RawMessage{}
+            groupExporter.ExportPersonDataReturns(emptyGroupResult, nil)
+            csvWriter.WriteReturns(nil)
+
+            instancesProcessor = app.NewInstancesProcessor(cfg, os.TempDir(), logger)
+            instancesProcessor.Process(groupExporter, csvWriter)
+
+            Expect(logger.InfoArgsForCall(0)).To(Equal("processing instance 'foo'"))
+            Expect(logger.InfoArgsForCall(1)).To(Equal("  processing group 'missing_group'"))
+            Expect(logger.ErrorArgsForCall(0)).To(Equal("    could not find group to id mapping"))
         })
 
         It("logs empty groups", func() {

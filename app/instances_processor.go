@@ -46,6 +46,16 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVWr
             continue
         }
 
+        httpClient := httpclient.NewHTTPClient(instance.Hostname, token)
+        dynamicGroupsEndpoint := rest.NewDynamicGroupsEndpoint(httpClient)
+        groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
+        personEndpoint := rest.NewPersonsEndpoint(httpClient)
+
+        groupName2IDMap, err := groupExporter.GetGroupNames2IDMapping(dynamicGroupsEndpoint, groupsEndpoint)
+        if err != nil {
+            return fmt.Errorf("failed to resolve groupnames to ids, %w", err)
+        }
+
         for _, group := range instance.Groups {
             p.logger.Info(fmt.Sprintf("  processing group '%s'", group.Name))
 
@@ -54,14 +64,14 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVWr
                 return fmt.Errorf("failed to create group directory: %v", err)
             }
 
-            httpClient := httpclient.NewHTTPClient(instance.Hostname, token)
-            dynamicGroupsEndpoint := rest.NewDynamicGroupsEndpoint(httpClient)
-            groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
-            personEndpoint := rest.NewPersonsEndpoint(httpClient)
-
+            groupID, ok := groupName2IDMap[group.Name]
+            if !ok {
+                p.logger.Error("    could not find group to id mapping")
+                continue
+            }
+  
             persons, err := groupExporter.ExportPersonData(
-                group.Name,
-                dynamicGroupsEndpoint,
+                groupID,
                 groupsEndpoint,
                 personEndpoint,
             )

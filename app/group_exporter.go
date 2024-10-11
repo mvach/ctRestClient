@@ -11,11 +11,15 @@ type GroupName2IDMap map[string]int
 //counterfeiter:generate . GroupExporter
 type GroupExporter interface {
     ExportPersonData(
-        groupname string,
-        dynamicGroupsEndpoint rest.DynamicGroupsEndpoint,
+        groupID int,
         groupsEndpoint rest.GroupsEndpoint,
         personsEndpoint rest.PersonsEndpoint,
     ) ([]json.RawMessage, error)
+
+    GetGroupNames2IDMapping(
+        dynamicGroupsEndpoint rest.DynamicGroupsEndpoint,
+        groupsEndpoint rest.GroupsEndpoint,
+    ) (GroupName2IDMap, error)
 }
 
 type groupExporter struct {
@@ -26,20 +30,13 @@ func NewGroupExporter() GroupExporter {
 }
 
 func (g groupExporter) ExportPersonData(
-    groupname string,
-    dynamicGroupsEndpoint rest.DynamicGroupsEndpoint,
+    groupID int,
     groupsEndpoint rest.GroupsEndpoint,
     personsEndpoint rest.PersonsEndpoint,
 ) ([]json.RawMessage, error) {
-
     var result []json.RawMessage
 
-    groupName2IDMap, err := g.resolveGroupNames2IDs(dynamicGroupsEndpoint, groupsEndpoint)
-    if err != nil {
-        return nil, fmt.Errorf("failed to resolve groupnames to ids, %w", err)
-    }
-
-    groupMembers, err := groupsEndpoint.GetGroupMembers(groupName2IDMap[groupname])
+    groupMembers, err := groupsEndpoint.GetGroupMembers(groupID)
     if err != nil {
         return nil, fmt.Errorf("failed to resolve group members, %w", err)
     }
@@ -56,7 +53,7 @@ func (g groupExporter) ExportPersonData(
     return result, nil
 }
 
-func (g groupExporter) resolveGroupNames2IDs(
+func (g groupExporter) GetGroupNames2IDMapping(
     dynamicGroupsEndpoint rest.DynamicGroupsEndpoint,
     groupsEndpoint rest.GroupsEndpoint,
 ) (GroupName2IDMap, error) {

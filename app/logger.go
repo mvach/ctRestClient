@@ -9,6 +9,8 @@ type Logger interface {
     Info(message string)
 
     Warn(message string)
+
+    Error(message string)
 }
 
 type logger struct {}
@@ -23,4 +25,8 @@ func (l logger) Info(message string) {
 
 func (l logger) Warn(message string) {
     log.Println("[WARN] "+ message)
+}
+
+func (l logger) Error(message string) {
+    log.Println("[ERROR] "+ message)
 }
