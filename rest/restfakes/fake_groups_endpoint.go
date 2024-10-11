@@ -20,16 +20,16 @@ type FakeGroupsEndpoint struct {
 		result1 []rest.GroupsMembersResponse
 		result2 error
 	}
-	GetGroupNameStub        func(int) ([]rest.GroupsResponse, error)
-	getGroupNameMutex       sync.RWMutex
-	getGroupNameArgsForCall []struct {
-		arg1 int
+	GetGroupNamesStub        func([]int) ([]rest.GroupsResponse, error)
+	getGroupNamesMutex       sync.RWMutex
+	getGroupNamesArgsForCall []struct {
+		arg1 []int
 	}
-	getGroupNameReturns struct {
+	getGroupNamesReturns struct {
 		result1 []rest.GroupsResponse
 		result2 error
 	}
-	getGroupNameReturnsOnCall map[int]struct {
+	getGroupNamesReturnsOnCall map[int]struct {
 		result1 []rest.GroupsResponse
 		result2 error
 	}
@@ -101,16 +101,21 @@ func (fake *FakeGroupsEndpoint) GetGroupMembersReturnsOnCall(i int, result1 []re
 	}{result1, result2}
 }
 
-func (fake *FakeGroupsEndpoint) GetGroupName(arg1 int) ([]rest.GroupsResponse, error) {
-	fake.getGroupNameMutex.Lock()
-	ret, specificReturn := fake.getGroupNameReturnsOnCall[len(fake.getGroupNameArgsForCall)]
-	fake.getGroupNameArgsForCall = append(fake.getGroupNameArgsForCall, struct {
-		arg1 int
-	}{arg1})
-	stub := fake.GetGroupNameStub
-	fakeReturns := fake.getGroupNameReturns
-	fake.recordInvocation("GetGroupName", []interface{}{arg1})
-	fake.getGroupNameMutex.Unlock()
+func (fake *FakeGroupsEndpoint) GetGroupNames(arg1 []int) ([]rest.GroupsResponse, error) {
+	var arg1Copy []int
+	if arg1 != nil {
+		arg1Copy = make([]int, len(arg1))
+		copy(arg1Copy, arg1)
+	}
+	fake.getGroupNamesMutex.Lock()
+	ret, specificReturn := fake.getGroupNamesReturnsOnCall[len(fake.getGroupNamesArgsForCall)]
+	fake.getGroupNamesArgsForCall = append(fake.getGroupNamesArgsForCall, struct {
+		arg1 []int
+	}{arg1Copy})
+	stub := fake.GetGroupNamesStub
+	fakeReturns := fake.getGroupNamesReturns
+	fake.recordInvocation("GetGroupNames", []interface{}{arg1Copy})
+	fake.getGroupNamesMutex.Unlock()
 	if stub != nil {
 		return stub(arg1)
 	}
@@ -120,46 +125,46 @@ func (fake *FakeGroupsEndpoint) GetGroupName(arg1 int) ([]rest.GroupsResponse, e
 	return fakeReturns.result1, fakeReturns.result2
 }
 
-func (fake *FakeGroupsEndpoint) GetGroupNameCallCount() int {
-	fake.getGroupNameMutex.RLock()
-	defer fake.getGroupNameMutex.RUnlock()
-	return len(fake.getGroupNameArgsForCall)
+func (fake *FakeGroupsEndpoint) GetGroupNamesCallCount() int {
+	fake.getGroupNamesMutex.RLock()
+	defer fake.getGroupNamesMutex.RUnlock()
+	return len(fake.getGroupNamesArgsForCall)
 }
 
-func (fake *FakeGroupsEndpoint) GetGroupNameCalls(stub func(int) ([]rest.GroupsResponse, error)) {
-	fake.getGroupNameMutex.Lock()
-	defer fake.getGroupNameMutex.Unlock()
-	fake.GetGroupNameStub = stub
+func (fake *FakeGroupsEndpoint) GetGroupNamesCalls(stub func([]int) ([]rest.GroupsResponse, error)) {
+	fake.getGroupNamesMutex.Lock()
+	defer fake.getGroupNamesMutex.Unlock()
+	fake.GetGroupNamesStub = stub
 }
 
-func (fake *FakeGroupsEndpoint) GetGroupNameArgsForCall(i int) int {
-	fake.getGroupNameMutex.RLock()
-	defer fake.getGroupNameMutex.RUnlock()
-	argsForCall := fake.getGroupNameArgsForCall[i]
+func (fake *FakeGroupsEndpoint) GetGroupNamesArgsForCall(i int) []int {
+	fake.getGroupNamesMutex.RLock()
+	defer fake.getGroupNamesMutex.RUnlock()
+	argsForCall := fake.getGroupNamesArgsForCall[i]
 	return argsForCall.arg1
 }
 
-func (fake *FakeGroupsEndpoint) GetGroupNameReturns(result1 []rest.GroupsResponse, result2 error) {
-	fake.getGroupNameMutex.Lock()
-	defer fake.getGroupNameMutex.Unlock()
-	fake.GetGroupNameStub = nil
-	fake.getGroupNameReturns = struct {
+func (fake *FakeGroupsEndpoint) GetGroupNamesReturns(result1 []rest.GroupsResponse, result2 error) {
+	fake.getGroupNamesMutex.Lock()
+	defer fake.getGroupNamesMutex.Unlock()
+	fake.GetGroupNamesStub = nil
+	fake.getGroupNamesReturns = struct {
 		result1 []rest.GroupsResponse
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeGroupsEndpoint) GetGroupNameReturnsOnCall(i int, result1 []rest.GroupsResponse, result2 error) {
-	fake.getGroupNameMutex.Lock()
-	defer fake.getGroupNameMutex.Unlock()
-	fake.GetGroupNameStub = nil
-	if fake.getGroupNameReturnsOnCall == nil {
-		fake.getGroupNameReturnsOnCall = make(map[int]struct {
+func (fake *FakeGroupsEndpoint) GetGroupNamesReturnsOnCall(i int, result1 []rest.GroupsResponse, result2 error) {
+	fake.getGroupNamesMutex.Lock()
+	defer fake.getGroupNamesMutex.Unlock()
+	fake.GetGroupNamesStub = nil
+	if fake.getGroupNamesReturnsOnCall == nil {
+		fake.getGroupNamesReturnsOnCall = make(map[int]struct {
 			result1 []rest.GroupsResponse
 			result2 error
 		})
 	}
-	fake.getGroupNameReturnsOnCall[i] = struct {
+	fake.getGroupNamesReturnsOnCall[i] = struct {
 		result1 []rest.GroupsResponse
 		result2 error
 	}{result1, result2}
@@ -170,8 +175,8 @@ func (fake *FakeGroupsEndpoint) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.getGroupMembersMutex.RLock()
 	defer fake.getGroupMembersMutex.RUnlock()
-	fake.getGroupNameMutex.RLock()
-	defer fake.getGroupNameMutex.RUnlock()
+	fake.getGroupNamesMutex.RLock()
+	defer fake.getGroupNamesMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

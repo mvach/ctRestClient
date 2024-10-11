@@ -59,17 +59,23 @@ func (g groupExporter) GetGroupNames2IDMapping(
 ) (GroupName2IDMap, error) {
     groupName2IDMap := make(GroupName2IDMap)
 
-    groupIds, err := dynamicGroupsEndpoint.GetDynamicGroupIds()
+    allGroupIDs, err := dynamicGroupsEndpoint.GetDynamicGroupIds()
     if err != nil {
         return nil, fmt.Errorf("failed to get dynamic groups, %w", err)
     }
 
-    if len(groupIds) == 0 {
+    if len(allGroupIDs) == 0 {
         return nil, fmt.Errorf("no dynamic groups found")
     }
 
-    for _, groupId := range groupIds {
-        groupsResponse, err := groupsEndpoint.GetGroupName(groupId)
+    chunkSize := 20
+    for i := 0; i < len(allGroupIDs); i += chunkSize {
+        end := i + chunkSize
+        if end > len(allGroupIDs) {
+            end = len(allGroupIDs) // Adjust the end index if it exceeds the length
+        }
+
+        groupsResponse, err := groupsEndpoint.GetGroupNames(allGroupIDs[i:end])
         if err != nil {
             return nil, fmt.Errorf("failed to retrieve group name, %w", err)
         }

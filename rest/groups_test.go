@@ -17,44 +17,56 @@ var _ = Describe("GroupsEndpoint", func() {
 
     var (
         httpClient *httpclientfakes.FakeHTTPClient
+        httpResponse *http.Response
     )
 
     BeforeEach(func() {
         httpClient = &httpclientfakes.FakeHTTPClient{}
+
+        httpResponse = &http.Response{
+            StatusCode: 200,
+            Body: io.NopCloser(bytes.NewBufferString(
+                `{
+                    "data": [
+                        {
+                            "id": 10,
+                            "guid": "1234",
+                            "name": "group1"
+                        }
+                    ],
+                    "meta": {
+                        "count": 1
+                    }
+                }`))}
     })
 
     var _ = Describe("GetGroupName", func() {
 
-        It("returns groupname", func() {
-            httpResponse := &http.Response{
-                StatusCode: 200,
-                Body: io.NopCloser(bytes.NewBufferString(
-                    `{
-                        "data": [
-                            {
-                                "id": 10,
-                                "guid": "1234",
-                                "name": "group1"
-                            }
-                        ],
-                        "meta": {
-                            "count": 1
-                        }
-                    }`))}
+        It("returns groupnames", func() {
             httpClient.DoReturns(httpResponse, nil)
 
             groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
-            resp, err := groupsEndpoint.GetGroupName(10)
+            resp, err := groupsEndpoint.GetGroupNames([]int{10})
 
             Expect(err).NotTo(HaveOccurred())
             Expect(resp[0].Name).To(Equal("group1"))
+        })
+
+        It("can add multiple ids to url", func() {
+            httpClient.DoReturns(httpResponse, nil)
+
+            groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
+            _, err := groupsEndpoint.GetGroupNames([]int{1,2,3,4})
+
+            Expect(err).NotTo(HaveOccurred())
+            Expect(httpClient.DoArgsForCall(0).URL.RawQuery).To(Equal("ids%5B%5D=1&ids%5B%5D=2&ids%5B%5D=3&ids%5B%5D=4"))
         })
 
         It("returns an error if the request cannot be send", func() {
             httpClient.DoReturns(nil, errors.New("request failed"))
 
             groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
-            _, err := groupsEndpoint.GetGroupName(10)
+            _, err := groupsEndpoint.GetGroupNames([]int{10})
 
             Expect(err).To(HaveOccurred())
             Expect(err.Error()).To(Equal("failed to send request, request failed"))
@@ -71,7 +83,7 @@ var _ = Describe("GroupsEndpoint", func() {
             httpClient.DoReturns(httpResponse, nil)
 
             groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
-            _, err := groupsEndpoint.GetGroupName(10)
+            _, err := groupsEndpoint.GetGroupNames([]int{10})
 
             Expect(err).To(HaveOccurred())
             Expect(err.Error()).To(Equal("received non-200 response code: 404"))
@@ -87,7 +99,7 @@ var _ = Describe("GroupsEndpoint", func() {
             httpClient.DoReturns(httpResponse, nil)
 
             groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
-            _, err := groupsEndpoint.GetGroupName(10)
+            _, err := groupsEndpoint.GetGroupNames([]int{10})
 
             Expect(err).To(HaveOccurred())
             Expect(err.Error()).To(ContainSubstring("response body is not containing expected json"))

@@ -97,7 +97,7 @@ var _ = Describe("GroupExporter", func() {
         BeforeEach(func() {
             dynamicGroupsEndpoint.GetDynamicGroupIdsReturns([]int{1, 2}, nil)
     
-            groupsEndpoint.GetGroupNameReturns(
+            groupsEndpoint.GetGroupNamesReturns(
                 []rest.GroupsResponse{
                     {ID: 1, Name: "foo_group"},
                     {ID: 2, Name: "bar_group"},
@@ -141,7 +141,7 @@ var _ = Describe("GroupExporter", func() {
         })
 
         It("returns an error if group names cannot be resolved", func() {
-            groupsEndpoint.GetGroupNameReturns(nil, errors.New("boom"))
+            groupsEndpoint.GetGroupNamesReturns(nil, errors.New("boom"))
 
             personData, err := groupExporter.GetGroupNames2IDMapping(
                 dynamicGroupsEndpoint,
@@ -153,7 +153,7 @@ var _ = Describe("GroupExporter", func() {
         })
 
         It("returns an error if group names are empty", func() {
-            groupsEndpoint.GetGroupNameReturns(
+            groupsEndpoint.GetGroupNamesReturns(
                 []rest.GroupsResponse{}, nil,
             )
 

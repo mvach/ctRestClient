@@ -12,9 +12,9 @@ import (
 
 //counterfeiter:generate . GroupsEndpoint
 type GroupsEndpoint interface {
-    GetGroupName(groupId int) ([]GroupsResponse, error)
+    GetGroupNames(groupIDs []int) ([]GroupsResponse, error)
 
-    GetGroupMembers(groupId int) ([]GroupsMembersResponse, error)
+    GetGroupMembers(groupID int) ([]GroupsMembersResponse, error)
 }
 
 type groupsEndpoint struct {
@@ -27,7 +27,7 @@ func NewGroupsEndpoint(httpclient httpclient.HTTPClient) GroupsEndpoint {
     }
 }
 
-func (c groupsEndpoint) GetGroupName(groupId int) ([]GroupsResponse, error) {
+func (c groupsEndpoint) GetGroupNames(groupIDs []int) ([]GroupsResponse, error) {
 
     req, err := http.NewRequest("GET", "", nil)
     if err != nil {
@@ -35,7 +35,9 @@ func (c groupsEndpoint) GetGroupName(groupId int) ([]GroupsResponse, error) {
     }
 
     params := url.Values{}
-    params.Add("ids[]", fmt.Sprintf("%d", groupId))
+    for _, groupID := range groupIDs {
+        params.Add("ids[]", fmt.Sprintf("%d", groupID))
+    }
     encodedQueryParam := params.Encode()
 
     req.URL.Path = "/api/groups"
@@ -64,7 +66,7 @@ func (c groupsEndpoint) GetGroupName(groupId int) ([]GroupsResponse, error) {
     return response.Data, nil
 }
 
-func (c groupsEndpoint) GetGroupMembers(groupId int) ([]GroupsMembersResponse, error) {
+func (c groupsEndpoint) GetGroupMembers(groupID int) ([]GroupsMembersResponse, error) {
 
     req, err := http.NewRequest("GET", "", nil)
     if err != nil {
@@ -72,7 +74,7 @@ func (c groupsEndpoint) GetGroupMembers(groupId int) ([]GroupsMembersResponse, e
     }
 
     params := url.Values{}
-    params.Add("ids[]", fmt.Sprintf("%d", groupId))
+    params.Add("ids[]", fmt.Sprintf("%d", groupID))
     params.Add("with_deleted", "false")
     encodedQueryParam := params.Encode()
 
