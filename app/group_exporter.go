@@ -68,7 +68,9 @@ func (g groupExporter) GetGroupNames2IDMapping(
         return nil, fmt.Errorf("no dynamic groups found")
     }
 
-    chunkSize := 20
+    //Chunksize must not exceed 10 otherwise the API will return
+    //a random subset of 10 groups
+    chunkSize := 10 
     for i := 0; i < len(allGroupIDs); i += chunkSize {
         end := i + chunkSize
         if end > len(allGroupIDs) {
