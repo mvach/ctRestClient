@@ -24,7 +24,15 @@ func (w csvWriter) Write(csvFilePath string, csvHeader []string, csvRecords [][]
 	}
 	defer file.Close()
 
+	// Write the UTF-8 BOM for Excel on Windows compatibility
+	_, err = file.Write([]byte{0xEF, 0xBB, 0xBF})
+	if err != nil {
+		return fmt.Errorf("failed to write UTF-8 BOM to csv file: %v", err)
+	}
+
 	writer := csv.NewWriter(file)
+	// Set the delimiter to semicolon
+	writer.Comma = ';'
 	defer writer.Flush()
 
 	if err := writer.Write(csvHeader); err != nil {

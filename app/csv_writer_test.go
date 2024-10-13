@@ -36,7 +36,8 @@ var _ = Describe("CSVWriter", func() {
 			content, err := os.ReadFile(tmpfile.Name())
 			Expect(err).ToNot(HaveOccurred())
 
-			expectedOutput := "FirstName,LastName,Email\nJohn,Doe,john.doe@example.com\nJane,Smith,jane.smith@example.com\n"
+			// \ufeff is the UTF-8 BOM
+			expectedOutput := "\ufeffFirstName;LastName;Email\nJohn;Doe;john.doe@example.com\nJane;Smith;jane.smith@example.com\n"
 			Expect(string(content)).To(Equal(expectedOutput))
 		})
 
