@@ -1,6 +1,6 @@
 # ctRestClient
 
-The ctRestClient allows exporting dynamic groups of ChurchTools as CSV files. This is required if one wants to send a serial letter using tools like Microsoft Word or Adobe InDesign to the group members.
+The ctRestClient allows exporting dynamic groups of [ChurchTools](https://church.tools/en/home/) as CSV files. This is required if one wants to send a serial letter using tools like Microsoft Word or Adobe InDesign to the group members.
 
 ## Configure it
 The ctRestClient is mostly configured via a YAML file. Here is an example configuration:
