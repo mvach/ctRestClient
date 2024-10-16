@@ -9,18 +9,18 @@ import (
 )
 
 type FakeGroupExporter struct {
-	ExportPersonDataStub        func(int, rest.GroupsEndpoint, rest.PersonsEndpoint) ([]json.RawMessage, error)
-	exportPersonDataMutex       sync.RWMutex
-	exportPersonDataArgsForCall []struct {
+	ExportGroupMembersStub        func(int, rest.GroupsEndpoint, rest.PersonsEndpoint) ([]json.RawMessage, error)
+	exportGroupMembersMutex       sync.RWMutex
+	exportGroupMembersArgsForCall []struct {
 		arg1 int
 		arg2 rest.GroupsEndpoint
 		arg3 rest.PersonsEndpoint
 	}
-	exportPersonDataReturns struct {
+	exportGroupMembersReturns struct {
 		result1 []json.RawMessage
 		result2 error
 	}
-	exportPersonDataReturnsOnCall map[int]struct {
+	exportGroupMembersReturnsOnCall map[int]struct {
 		result1 []json.RawMessage
 		result2 error
 	}
@@ -42,18 +42,18 @@ type FakeGroupExporter struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeGroupExporter) ExportPersonData(arg1 int, arg2 rest.GroupsEndpoint, arg3 rest.PersonsEndpoint) ([]json.RawMessage, error) {
-	fake.exportPersonDataMutex.Lock()
-	ret, specificReturn := fake.exportPersonDataReturnsOnCall[len(fake.exportPersonDataArgsForCall)]
-	fake.exportPersonDataArgsForCall = append(fake.exportPersonDataArgsForCall, struct {
+func (fake *FakeGroupExporter) ExportGroupMembers(arg1 int, arg2 rest.GroupsEndpoint, arg3 rest.PersonsEndpoint) ([]json.RawMessage, error) {
+	fake.exportGroupMembersMutex.Lock()
+	ret, specificReturn := fake.exportGroupMembersReturnsOnCall[len(fake.exportGroupMembersArgsForCall)]
+	fake.exportGroupMembersArgsForCall = append(fake.exportGroupMembersArgsForCall, struct {
 		arg1 int
 		arg2 rest.GroupsEndpoint
 		arg3 rest.PersonsEndpoint
 	}{arg1, arg2, arg3})
-	stub := fake.ExportPersonDataStub
-	fakeReturns := fake.exportPersonDataReturns
-	fake.recordInvocation("ExportPersonData", []interface{}{arg1, arg2, arg3})
-	fake.exportPersonDataMutex.Unlock()
+	stub := fake.ExportGroupMembersStub
+	fakeReturns := fake.exportGroupMembersReturns
+	fake.recordInvocation("ExportGroupMembers", []interface{}{arg1, arg2, arg3})
+	fake.exportGroupMembersMutex.Unlock()
 	if stub != nil {
 		return stub(arg1, arg2, arg3)
 	}
@@ -63,46 +63,46 @@ func (fake *FakeGroupExporter) ExportPersonData(arg1 int, arg2 rest.GroupsEndpoi
 	return fakeReturns.result1, fakeReturns.result2
 }
 
-func (fake *FakeGroupExporter) ExportPersonDataCallCount() int {
-	fake.exportPersonDataMutex.RLock()
-	defer fake.exportPersonDataMutex.RUnlock()
-	return len(fake.exportPersonDataArgsForCall)
+func (fake *FakeGroupExporter) ExportGroupMembersCallCount() int {
+	fake.exportGroupMembersMutex.RLock()
+	defer fake.exportGroupMembersMutex.RUnlock()
+	return len(fake.exportGroupMembersArgsForCall)
 }
 
-func (fake *FakeGroupExporter) ExportPersonDataCalls(stub func(int, rest.GroupsEndpoint, rest.PersonsEndpoint) ([]json.RawMessage, error)) {
-	fake.exportPersonDataMutex.Lock()
-	defer fake.exportPersonDataMutex.Unlock()
-	fake.ExportPersonDataStub = stub
+func (fake *FakeGroupExporter) ExportGroupMembersCalls(stub func(int, rest.GroupsEndpoint, rest.PersonsEndpoint) ([]json.RawMessage, error)) {
+	fake.exportGroupMembersMutex.Lock()
+	defer fake.exportGroupMembersMutex.Unlock()
+	fake.ExportGroupMembersStub = stub
 }
 
-func (fake *FakeGroupExporter) ExportPersonDataArgsForCall(i int) (int, rest.GroupsEndpoint, rest.PersonsEndpoint) {
-	fake.exportPersonDataMutex.RLock()
-	defer fake.exportPersonDataMutex.RUnlock()
-	argsForCall := fake.exportPersonDataArgsForCall[i]
+func (fake *FakeGroupExporter) ExportGroupMembersArgsForCall(i int) (int, rest.GroupsEndpoint, rest.PersonsEndpoint) {
+	fake.exportGroupMembersMutex.RLock()
+	defer fake.exportGroupMembersMutex.RUnlock()
+	argsForCall := fake.exportGroupMembersArgsForCall[i]
 	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
 }
 
-func (fake *FakeGroupExporter) ExportPersonDataReturns(result1 []json.RawMessage, result2 error) {
-	fake.exportPersonDataMutex.Lock()
-	defer fake.exportPersonDataMutex.Unlock()
-	fake.ExportPersonDataStub = nil
-	fake.exportPersonDataReturns = struct {
+func (fake *FakeGroupExporter) ExportGroupMembersReturns(result1 []json.RawMessage, result2 error) {
+	fake.exportGroupMembersMutex.Lock()
+	defer fake.exportGroupMembersMutex.Unlock()
+	fake.ExportGroupMembersStub = nil
+	fake.exportGroupMembersReturns = struct {
 		result1 []json.RawMessage
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeGroupExporter) ExportPersonDataReturnsOnCall(i int, result1 []json.RawMessage, result2 error) {
-	fake.exportPersonDataMutex.Lock()
-	defer fake.exportPersonDataMutex.Unlock()
-	fake.ExportPersonDataStub = nil
-	if fake.exportPersonDataReturnsOnCall == nil {
-		fake.exportPersonDataReturnsOnCall = make(map[int]struct {
+func (fake *FakeGroupExporter) ExportGroupMembersReturnsOnCall(i int, result1 []json.RawMessage, result2 error) {
+	fake.exportGroupMembersMutex.Lock()
+	defer fake.exportGroupMembersMutex.Unlock()
+	fake.ExportGroupMembersStub = nil
+	if fake.exportGroupMembersReturnsOnCall == nil {
+		fake.exportGroupMembersReturnsOnCall = make(map[int]struct {
 			result1 []json.RawMessage
 			result2 error
 		})
 	}
-	fake.exportPersonDataReturnsOnCall[i] = struct {
+	fake.exportGroupMembersReturnsOnCall[i] = struct {
 		result1 []json.RawMessage
 		result2 error
 	}{result1, result2}
@@ -176,8 +176,8 @@ func (fake *FakeGroupExporter) GetGroupNames2IDMappingReturnsOnCall(i int, resul
 func (fake *FakeGroupExporter) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.exportPersonDataMutex.RLock()
-	defer fake.exportPersonDataMutex.RUnlock()
+	fake.exportGroupMembersMutex.RLock()
+	defer fake.exportGroupMembersMutex.RUnlock()
 	fake.getGroupNames2IDMappingMutex.RLock()
 	defer fake.getGroupNames2IDMappingMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}

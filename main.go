@@ -27,7 +27,7 @@ func main() {
 
     err = app.NewInstancesProcessor(*config, outputDirectory, app.NewLogger()).Process(
         app.NewGroupExporter(),
-        app.NewCSVWriter(),
+        app.NewCSVFileWriter(),
     )
     if err != nil {
         log.Fatalf("Failed to process instances: %v", err)

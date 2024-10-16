@@ -16,7 +16,7 @@ var _ = Describe("InstanceProcessor", func() {
 
     var (
         groupExporter      *appfakes.FakeGroupExporter
-        csvWriter          *appfakes.FakeCSVWriter
+        csvWriter          *appfakes.FakeCSVFileWriter
         logger             *appfakes.FakeLogger
         cfg                config.Config
         instancesProcessor app.InstancesProcessor
@@ -25,7 +25,7 @@ var _ = Describe("InstanceProcessor", func() {
 
     BeforeEach(func() {
         groupExporter = &appfakes.FakeGroupExporter{}
-        csvWriter = &appfakes.FakeCSVWriter{}
+        csvWriter = &appfakes.FakeCSVFileWriter{}
         logger = &appfakes.FakeLogger{}
 
         cfg = config.Config{
@@ -71,7 +71,7 @@ var _ = Describe("InstanceProcessor", func() {
 
     var _ = Describe("Process", func() {
         It("writes a csv", func() {
-            groupExporter.ExportPersonDataReturns(result, nil)
+            groupExporter.ExportGroupMembersReturns(result, nil)
             csvWriter.WriteReturns(nil)
 
             instancesProcessor.Process(groupExporter, csvWriter)
@@ -131,7 +131,7 @@ var _ = Describe("InstanceProcessor", func() {
             }
 
             emptyGroupResult := []json.RawMessage{}
-            groupExporter.ExportPersonDataReturns(emptyGroupResult, nil)
+            groupExporter.ExportGroupMembersReturns(emptyGroupResult, nil)
             csvWriter.WriteReturns(nil)
 
             instancesProcessor = app.NewInstancesProcessor(cfg, os.TempDir(), logger)
@@ -144,7 +144,7 @@ var _ = Describe("InstanceProcessor", func() {
 
         It("logs empty groups", func() {
             emptyGroupResult := []json.RawMessage{}
-            groupExporter.ExportPersonDataReturns(emptyGroupResult, nil)
+            groupExporter.ExportGroupMembersReturns(emptyGroupResult, nil)
             csvWriter.WriteReturns(nil)
 
             instancesProcessor.Process(groupExporter, csvWriter)
@@ -155,7 +155,7 @@ var _ = Describe("InstanceProcessor", func() {
         })
 
         It("logs the group size", func() {
-            groupExporter.ExportPersonDataReturns(result, nil)
+            groupExporter.ExportGroupMembersReturns(result, nil)
             csvWriter.WriteReturns(nil)
 
             instancesProcessor.Process(groupExporter, csvWriter)
@@ -166,7 +166,7 @@ var _ = Describe("InstanceProcessor", func() {
         })
 
         It("returns an error if person data export fails", func() {
-            groupExporter.ExportPersonDataReturns(nil, errors.New("boom"))
+            groupExporter.ExportGroupMembersReturns(nil, errors.New("boom"))
 
             err := instancesProcessor.Process(groupExporter, csvWriter)
 
@@ -176,7 +176,7 @@ var _ = Describe("InstanceProcessor", func() {
         It("returns an error if json cannot be read", func() {
             result := []json.RawMessage{json.RawMessage(`[]`)}
 
-            groupExporter.ExportPersonDataReturns(result, nil)
+            groupExporter.ExportGroupMembersReturns(result, nil)
             csvWriter.WriteReturns(nil)
 
             err := instancesProcessor.Process(groupExporter, csvWriter)

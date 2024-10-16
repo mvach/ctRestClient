@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-type FakeCSVWriter struct {
+type FakeCSVFileWriter struct {
 	WriteStub        func(string, []string, [][]string) error
 	writeMutex       sync.RWMutex
 	writeArgsForCall []struct {
@@ -24,7 +24,7 @@ type FakeCSVWriter struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeCSVWriter) Write(arg1 string, arg2 []string, arg3 [][]string) error {
+func (fake *FakeCSVFileWriter) Write(arg1 string, arg2 []string, arg3 [][]string) error {
 	var arg2Copy []string
 	if arg2 != nil {
 		arg2Copy = make([]string, len(arg2))
@@ -55,26 +55,26 @@ func (fake *FakeCSVWriter) Write(arg1 string, arg2 []string, arg3 [][]string) er
 	return fakeReturns.result1
 }
 
-func (fake *FakeCSVWriter) WriteCallCount() int {
+func (fake *FakeCSVFileWriter) WriteCallCount() int {
 	fake.writeMutex.RLock()
 	defer fake.writeMutex.RUnlock()
 	return len(fake.writeArgsForCall)
 }
 
-func (fake *FakeCSVWriter) WriteCalls(stub func(string, []string, [][]string) error) {
+func (fake *FakeCSVFileWriter) WriteCalls(stub func(string, []string, [][]string) error) {
 	fake.writeMutex.Lock()
 	defer fake.writeMutex.Unlock()
 	fake.WriteStub = stub
 }
 
-func (fake *FakeCSVWriter) WriteArgsForCall(i int) (string, []string, [][]string) {
+func (fake *FakeCSVFileWriter) WriteArgsForCall(i int) (string, []string, [][]string) {
 	fake.writeMutex.RLock()
 	defer fake.writeMutex.RUnlock()
 	argsForCall := fake.writeArgsForCall[i]
 	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
 }
 
-func (fake *FakeCSVWriter) WriteReturns(result1 error) {
+func (fake *FakeCSVFileWriter) WriteReturns(result1 error) {
 	fake.writeMutex.Lock()
 	defer fake.writeMutex.Unlock()
 	fake.WriteStub = nil
@@ -83,7 +83,7 @@ func (fake *FakeCSVWriter) WriteReturns(result1 error) {
 	}{result1}
 }
 
-func (fake *FakeCSVWriter) WriteReturnsOnCall(i int, result1 error) {
+func (fake *FakeCSVFileWriter) WriteReturnsOnCall(i int, result1 error) {
 	fake.writeMutex.Lock()
 	defer fake.writeMutex.Unlock()
 	fake.WriteStub = nil
@@ -97,7 +97,7 @@ func (fake *FakeCSVWriter) WriteReturnsOnCall(i int, result1 error) {
 	}{result1}
 }
 
-func (fake *FakeCSVWriter) Invocations() map[string][][]interface{} {
+func (fake *FakeCSVFileWriter) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.writeMutex.RLock()
@@ -109,7 +109,7 @@ func (fake *FakeCSVWriter) Invocations() map[string][][]interface{} {
 	return copiedInvocations
 }
 
-func (fake *FakeCSVWriter) recordInvocation(key string, args []interface{}) {
+func (fake *FakeCSVFileWriter) recordInvocation(key string, args []interface{}) {
 	fake.invocationsMutex.Lock()
 	defer fake.invocationsMutex.Unlock()
 	if fake.invocations == nil {
@@ -121,4 +121,4 @@ func (fake *FakeCSVWriter) recordInvocation(key string, args []interface{}) {
 	fake.invocations[key] = append(fake.invocations[key], args)
 }
 
-var _ app.CSVWriter = new(FakeCSVWriter)
+var _ app.CSVFileWriter = new(FakeCSVFileWriter)

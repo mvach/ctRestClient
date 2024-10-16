@@ -6,14 +6,14 @@ import (
 	"os"
 )
 
-//counterfeiter:generate . CSVWriter
-type CSVWriter interface {
+//counterfeiter:generate . CSVFileWriter
+type CSVFileWriter interface {
 	Write(csvFilePath string, csvHeader []string, csvRecords [][]string) error
 }
 
 type csvWriter struct {}
 
-func NewCSVWriter() CSVWriter {
+func NewCSVFileWriter() CSVFileWriter {
 	return csvWriter{}
 }
 

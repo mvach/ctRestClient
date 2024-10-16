@@ -10,7 +10,7 @@ type GroupName2IDMap map[string]int
 
 //counterfeiter:generate . GroupExporter
 type GroupExporter interface {
-    ExportPersonData(
+    ExportGroupMembers(
         groupID int,
         groupsEndpoint rest.GroupsEndpoint,
         personsEndpoint rest.PersonsEndpoint,
@@ -29,7 +29,7 @@ func NewGroupExporter() GroupExporter {
     return groupExporter{}
 }
 
-func (g groupExporter) ExportPersonData(
+func (g groupExporter) ExportGroupMembers(
     groupID int,
     groupsEndpoint rest.GroupsEndpoint,
     personsEndpoint rest.PersonsEndpoint,

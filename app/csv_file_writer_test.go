@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("CSVWriter", func() {
+var _ = Describe("CSVFileWriter", func() {
 
 	var (
 		csvHeader  []string
@@ -30,7 +30,7 @@ var _ = Describe("CSVWriter", func() {
 
 			defer os.Remove(tmpfile.Name())
 
-			err = app.NewCSVWriter().Write(tmpfile.Name(), csvHeader, csvRecords)
+			err = app.NewCSVFileWriter().Write(tmpfile.Name(), csvHeader, csvRecords)
 			Expect(err).ToNot(HaveOccurred())
 
 			content, err := os.ReadFile(tmpfile.Name())
@@ -45,7 +45,7 @@ var _ = Describe("CSVWriter", func() {
 			notAFile, err := os.MkdirTemp("", "testdir")
 			Expect(err).ToNot(HaveOccurred())
 
-			err = app.NewCSVWriter().Write(notAFile, csvHeader, csvRecords)
+			err = app.NewCSVFileWriter().Write(notAFile, csvHeader, csvRecords)
 			Expect(err.Error()).To(ContainSubstring("failed to create csv file"))
 		})
 	})

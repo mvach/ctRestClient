@@ -1,18 +1,18 @@
 package app
 
 import (
-    "ctRestClient/config"
-    "ctRestClient/httpclient"
-    "ctRestClient/rest"
-    "encoding/json"
-    "fmt"
-    "os"
-    "path/filepath"
-    "time"
+	"ctRestClient/config"
+	"ctRestClient/httpclient"
+	"ctRestClient/rest"
+	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
+	"time"
 )
 
 type InstancesProcessor interface {
-    Process(groupExporter GroupExporter, csvWriter CSVWriter) error
+    Process(groupExporter GroupExporter, csvWriter CSVFileWriter) error
 }
 
 type instancesProcessor struct {
@@ -33,7 +33,7 @@ func NewInstancesProcessor(
     }
 }
 
-func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVWriter) error {
+func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVFileWriter) error {
     // define the root dir location via parameter that is by default beside the executable
     rootDir := filepath.Join(p.outputDirectory, "export", time.Now().Format("2006.01.02_15-04-05"))
 
@@ -70,7 +70,7 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVWr
                 continue
             }
   
-            persons, err := groupExporter.ExportPersonData(
+            persons, err := groupExporter.ExportGroupMembers(
                 groupID,
                 groupsEndpoint,
                 personEndpoint,
@@ -86,7 +86,6 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVWr
                 p.logger.Info(fmt.Sprintf("    the group has %d persons", len(persons)))
             }
 
-            csvHeader := group.Fields
             csvRecords := make([][]string, 0)
 
             for _, person := range persons {
@@ -118,6 +117,7 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVWr
                 instance.Hostname,
                 group.SanitizedGroupName()+".csv",
             )
+            csvHeader := group.Fields
 
             err = csvWriter.Write(csvFilePath, csvHeader, csvRecords)
             if err != nil {

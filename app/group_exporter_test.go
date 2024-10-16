@@ -53,7 +53,7 @@ var _ = Describe("GroupExporter", func() {
             personsEndpoint.GetPersonReturnsOnCall(0, []json.RawMessage{json.RawMessage(person1)}, nil)
             personsEndpoint.GetPersonReturnsOnCall(1, []json.RawMessage{json.RawMessage(person2)}, nil)
 
-            personData, err := groupExporter.ExportPersonData(
+            personData, err := groupExporter.ExportGroupMembers(
                 1,
                 groupsEndpoint,
                 personsEndpoint,
@@ -69,7 +69,7 @@ var _ = Describe("GroupExporter", func() {
         It("returns an error if group members cannot be resolved", func() {
             groupsEndpoint.GetGroupMembersReturns(nil, errors.New("boom"))
 
-            personData, err := groupExporter.ExportPersonData(
+            personData, err := groupExporter.ExportGroupMembers(
                 1,
                 groupsEndpoint,
                 personsEndpoint,
@@ -82,7 +82,7 @@ var _ = Describe("GroupExporter", func() {
         It("returns an error if person cannot be resolved", func() {
             personsEndpoint.GetPersonReturnsOnCall(0, nil, errors.New("boom"))
 
-            personData, err := groupExporter.ExportPersonData(
+            personData, err := groupExporter.ExportGroupMembers(
                 1,
                 groupsEndpoint,
                 personsEndpoint,
