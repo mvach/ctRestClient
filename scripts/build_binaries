@@ -18,17 +18,21 @@ rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 
 echo ""
-# Build for Windows (64-bit)
-echo "Building for Windows (64-bit)..."
+echo "Building for Windows (64 bit)..."
 GOOS=windows GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient.exe"
 
-# Build for macOS (Intel)
+echo ""
 echo "Building for macOS (Intel)..."
 GOOS=darwin GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient-amd64"
 
-# Build for macOS (M1/M2)
+echo ""
 echo "Building for macOS (M1/M2)..."
 GOOS=darwin GOARCH=arm64 go build -o "$OUTPUT_DIR/ctRestClient-arm64"
+
+echo ""
+echo "Building for Linux (64 bit)..."
+GOOS=linux GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient"
+
 echo ""
 echo "Builds completed."
 echo "Binaries are located in the $OUTPUT_DIR directory."

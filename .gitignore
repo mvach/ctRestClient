@@ -30,3 +30,6 @@ go.work.sum
 local/
 export/
 bin/
+
+# Build results in project root
+ctRestClient*

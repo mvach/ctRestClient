@@ -12,119 +12,119 @@ import (
 )
 
 type InstancesProcessor interface {
-    Process(groupExporter GroupExporter, csvWriter CSVFileWriter) error
+	Process(groupExporter GroupExporter, csvWriter CSVFileWriter, keepassCli KeepassCli) error
 }
 
 type instancesProcessor struct {
-    config          config.Config
-    outputDirectory string
-    logger		  Logger
+	config          config.Config
+	outputDirectory string
+	logger          Logger
 }
 
 func NewInstancesProcessor(
-    config config.Config,
-    outputDirectory string,
-    logger Logger,
+	config config.Config,
+	outputDirectory string,
+	logger Logger,
 ) InstancesProcessor {
-    return instancesProcessor{
-        config:          config,
-        outputDirectory: outputDirectory,
-        logger:          logger,
-    }
+	return instancesProcessor{
+		config:          config,
+		outputDirectory: outputDirectory,
+		logger:          logger,
+	}
 }
 
-func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVFileWriter) error {
-    // define the root dir location via parameter that is by default beside the executable
-    rootDir := filepath.Join(p.outputDirectory, "export", time.Now().Format("2006.01.02_15-04-05"))
+func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter CSVFileWriter, keepassCli KeepassCli) error {
+	// define the root dir location via parameter that is by default beside the executable
+	rootDir := filepath.Join(p.outputDirectory, "export", time.Now().Format("2006.01.02_15-04-05"))
 
-    for _, instance := range p.config.Instances {
-        p.logger.Info(fmt.Sprintf("processing instance '%s'", instance.Hostname))
-        
-        token := os.Getenv(instance.TokenName)
-        if token == "" {
-            p.logger.Warn(fmt.Sprintf("  skipping export, a token with name '%s' is not set in the environment", instance.TokenName))
-            continue
-        }
+	for _, instance := range p.config.Instances {
+		p.logger.Info(fmt.Sprintf("processing instance '%s'", instance.Hostname))
 
-        httpClient := httpclient.NewHTTPClient(instance.Hostname, token)
-        dynamicGroupsEndpoint := rest.NewDynamicGroupsEndpoint(httpClient)
-        groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
-        personEndpoint := rest.NewPersonsEndpoint(httpClient)
+		token, err := keepassCli.GetPassword(instance.TokenName)
+		if err != nil {
+			p.logger.Warn(fmt.Sprintf("  skipping export, failed to get token with name '%s' from Keepass. Err: %v", instance.TokenName, err))
+			continue
+		}
 
-        groupName2IDMap, err := groupExporter.GetGroupNames2IDMapping(dynamicGroupsEndpoint, groupsEndpoint)
-        if err != nil {
-            return fmt.Errorf("failed to resolve groupnames to ids, %w", err)
-        }
+		httpClient := httpclient.NewHTTPClient(instance.Hostname, token)
+		dynamicGroupsEndpoint := rest.NewDynamicGroupsEndpoint(httpClient)
+		groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
+		personEndpoint := rest.NewPersonsEndpoint(httpClient)
 
-        for _, group := range instance.Groups {
-            p.logger.Info(fmt.Sprintf("  processing group '%s'", group.Name))
+		groupName2IDMap, err := groupExporter.GetGroupNames2IDMapping(dynamicGroupsEndpoint, groupsEndpoint)
+		if err != nil {
+			return fmt.Errorf("failed to resolve groupnames to ids, %w", err)
+		}
 
-            err := os.MkdirAll(filepath.Join(rootDir, instance.Hostname), 0755)
-            if err != nil {
-                return fmt.Errorf("failed to create group directory: %v", err)
-            }
+		for _, group := range instance.Groups {
+			p.logger.Info(fmt.Sprintf("  processing group '%s'", group.Name))
 
-            groupID, ok := groupName2IDMap[group.Name]
-            if !ok {
-                p.logger.Error("    could not find group to id mapping")
-                continue
-            }
-  
-            persons, err := groupExporter.ExportGroupMembers(
-                groupID,
-                groupsEndpoint,
-                personEndpoint,
-            )
-            if err != nil {
-                return fmt.Errorf("failed to get person informations: %v", err)
-            }
+			err := os.MkdirAll(filepath.Join(rootDir, instance.Hostname), 0755)
+			if err != nil {
+				return fmt.Errorf("failed to create group directory: %v", err)
+			}
 
-            if len(persons) == 0 {
-                p.logger.Info("    the group is empty")
-                continue
-            } else {
-                p.logger.Info(fmt.Sprintf("    the group has %d persons", len(persons)))
-            }
+			groupID, ok := groupName2IDMap[group.Name]
+			if !ok {
+				p.logger.Error("    could not find group to id mapping")
+				continue
+			}
 
-            csvRecords := make([][]string, 0)
+			persons, err := groupExporter.ExportGroupMembers(
+				groupID,
+				groupsEndpoint,
+				personEndpoint,
+			)
+			if err != nil {
+				return fmt.Errorf("failed to get person informations: %v", err)
+			}
 
-            for _, person := range persons {
-                var data map[string]interface{}
-                err := json.Unmarshal([]byte(person), &data)
-                if err != nil {
-                    return fmt.Errorf("failed to read person information raw json: %v", err)
-                }
+			if len(persons) == 0 {
+				p.logger.Info("    the group is empty")
+				continue
+			} else {
+				p.logger.Info(fmt.Sprintf("    the group has %d persons", len(persons)))
+			}
 
-                record := make([]string, len(group.Fields))
+			csvRecords := make([][]string, 0)
 
-                for i, field := range group.Fields {
-                    if value, ok := data[field].(string); ok {
-                        // get string values
-                        record[i] = value
-                    } else if value, ok := data[field].(float64); ok {
-                        // get int values
-                        record[i] = fmt.Sprintf("%d", int(value))
-                    } else {
-                        p.logger.Warn(fmt.Sprintf("    Field %s is not a string or int, or not found", field))
-                        record[i] = ""
-                    }
-                }
-                csvRecords = append(csvRecords, record)
-            }
+			for _, person := range persons {
+				var data map[string]interface{}
+				err := json.Unmarshal([]byte(person), &data)
+				if err != nil {
+					return fmt.Errorf("failed to read person information raw json: %v", err)
+				}
 
-            csvFilePath := filepath.Join(
-                rootDir,
-                instance.Hostname,
-                group.SanitizedGroupName()+".csv",
-            )
-            csvHeader := group.Fields
+				record := make([]string, len(group.Fields))
 
-            err = csvWriter.Write(csvFilePath, csvHeader, csvRecords)
-            if err != nil {
-                return fmt.Errorf("failed to write csv file: %v", err)
-            }
-        }
-    }
+				for i, field := range group.Fields {
+					if value, ok := data[field].(string); ok {
+						// get string values
+						record[i] = value
+					} else if value, ok := data[field].(float64); ok {
+						// get int values
+						record[i] = fmt.Sprintf("%d", int(value))
+					} else {
+						p.logger.Warn(fmt.Sprintf("    Field %s is not a string or int, or not found", field))
+						record[i] = ""
+					}
+				}
+				csvRecords = append(csvRecords, record)
+			}
 
-    return nil
+			csvFilePath := filepath.Join(
+				rootDir,
+				instance.Hostname,
+				group.SanitizedGroupName()+".csv",
+			)
+			csvHeader := group.Fields
+
+			err = csvWriter.Write(csvFilePath, csvHeader, csvRecords)
+			if err != nil {
+				return fmt.Errorf("failed to write csv file: %v", err)
+			}
+		}
+	}
+
+	return nil
 }

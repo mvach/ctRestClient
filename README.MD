@@ -45,12 +45,16 @@ Usage:
 Options:
   -c            By default, ctRestClient tries to load the configuration from a 
                 config.yml file that is searched beside the executable.
-                Using -c allows you to configure the path of the configuration YAML.
+                Using -c allows to configure the path of the configuration YAML.
 
   -o            By default, ctRestClient creates an exports directory beside the
                 executable. This exports directory is then filled with the CSV files.
-                Using -o allows you to configure the path where the exports directory 
+                Using -o allows to configure the path where the exports directory 
                 should be created.
+
+  -k            By default, ctRestClient reads credentials from a Keepass passwords.kdbx file beside 
+                the executable.
+                Using -k allows to configure the path of the Keepass Database file.
 ```
 
 
@@ -64,13 +68,16 @@ Options:
 The ctRestClient can be easily built from source using:
 ```
 # Compile it for Windows
-GOOS=windows GOARCH=amd64 go build
+GOOS=windows GOARCH=amd64 go build -o ctRestClient.exe
 
 # Compile it for MacOS with Apple silicon
 GOOS=darwin GOARCH=arm64 go build -o ctRestClient-arm64
 
 # Compile it for MacOS with Intel silicon
 GOOS=darwin GOARCH=amd64 go build -o ctRestClient-amd64
+
+# Compile it for Linux
+GOOS=linux GOARCH=amd64 go build
 ```
 
 Tests can be execute via:
