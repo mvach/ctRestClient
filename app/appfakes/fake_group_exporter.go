@@ -9,10 +9,10 @@ import (
 )
 
 type FakeGroupExporter struct {
-	ExportGroupMembersStub        func(int, rest.GroupsEndpoint, rest.PersonsEndpoint) ([]json.RawMessage, error)
+	ExportGroupMembersStub        func(string, rest.GroupsEndpoint, rest.PersonsEndpoint) ([]json.RawMessage, error)
 	exportGroupMembersMutex       sync.RWMutex
 	exportGroupMembersArgsForCall []struct {
-		arg1 int
+		arg1 string
 		arg2 rest.GroupsEndpoint
 		arg3 rest.PersonsEndpoint
 	}
@@ -24,29 +24,15 @@ type FakeGroupExporter struct {
 		result1 []json.RawMessage
 		result2 error
 	}
-	GetGroupNames2IDMappingStub        func(rest.DynamicGroupsEndpoint, rest.GroupsEndpoint) (app.GroupName2IDMap, error)
-	getGroupNames2IDMappingMutex       sync.RWMutex
-	getGroupNames2IDMappingArgsForCall []struct {
-		arg1 rest.DynamicGroupsEndpoint
-		arg2 rest.GroupsEndpoint
-	}
-	getGroupNames2IDMappingReturns struct {
-		result1 app.GroupName2IDMap
-		result2 error
-	}
-	getGroupNames2IDMappingReturnsOnCall map[int]struct {
-		result1 app.GroupName2IDMap
-		result2 error
-	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeGroupExporter) ExportGroupMembers(arg1 int, arg2 rest.GroupsEndpoint, arg3 rest.PersonsEndpoint) ([]json.RawMessage, error) {
+func (fake *FakeGroupExporter) ExportGroupMembers(arg1 string, arg2 rest.GroupsEndpoint, arg3 rest.PersonsEndpoint) ([]json.RawMessage, error) {
 	fake.exportGroupMembersMutex.Lock()
 	ret, specificReturn := fake.exportGroupMembersReturnsOnCall[len(fake.exportGroupMembersArgsForCall)]
 	fake.exportGroupMembersArgsForCall = append(fake.exportGroupMembersArgsForCall, struct {
-		arg1 int
+		arg1 string
 		arg2 rest.GroupsEndpoint
 		arg3 rest.PersonsEndpoint
 	}{arg1, arg2, arg3})
@@ -69,13 +55,13 @@ func (fake *FakeGroupExporter) ExportGroupMembersCallCount() int {
 	return len(fake.exportGroupMembersArgsForCall)
 }
 
-func (fake *FakeGroupExporter) ExportGroupMembersCalls(stub func(int, rest.GroupsEndpoint, rest.PersonsEndpoint) ([]json.RawMessage, error)) {
+func (fake *FakeGroupExporter) ExportGroupMembersCalls(stub func(string, rest.GroupsEndpoint, rest.PersonsEndpoint) ([]json.RawMessage, error)) {
 	fake.exportGroupMembersMutex.Lock()
 	defer fake.exportGroupMembersMutex.Unlock()
 	fake.ExportGroupMembersStub = stub
 }
 
-func (fake *FakeGroupExporter) ExportGroupMembersArgsForCall(i int) (int, rest.GroupsEndpoint, rest.PersonsEndpoint) {
+func (fake *FakeGroupExporter) ExportGroupMembersArgsForCall(i int) (string, rest.GroupsEndpoint, rest.PersonsEndpoint) {
 	fake.exportGroupMembersMutex.RLock()
 	defer fake.exportGroupMembersMutex.RUnlock()
 	argsForCall := fake.exportGroupMembersArgsForCall[i]
@@ -108,78 +94,11 @@ func (fake *FakeGroupExporter) ExportGroupMembersReturnsOnCall(i int, result1 []
 	}{result1, result2}
 }
 
-func (fake *FakeGroupExporter) GetGroupNames2IDMapping(arg1 rest.DynamicGroupsEndpoint, arg2 rest.GroupsEndpoint) (app.GroupName2IDMap, error) {
-	fake.getGroupNames2IDMappingMutex.Lock()
-	ret, specificReturn := fake.getGroupNames2IDMappingReturnsOnCall[len(fake.getGroupNames2IDMappingArgsForCall)]
-	fake.getGroupNames2IDMappingArgsForCall = append(fake.getGroupNames2IDMappingArgsForCall, struct {
-		arg1 rest.DynamicGroupsEndpoint
-		arg2 rest.GroupsEndpoint
-	}{arg1, arg2})
-	stub := fake.GetGroupNames2IDMappingStub
-	fakeReturns := fake.getGroupNames2IDMappingReturns
-	fake.recordInvocation("GetGroupNames2IDMapping", []interface{}{arg1, arg2})
-	fake.getGroupNames2IDMappingMutex.Unlock()
-	if stub != nil {
-		return stub(arg1, arg2)
-	}
-	if specificReturn {
-		return ret.result1, ret.result2
-	}
-	return fakeReturns.result1, fakeReturns.result2
-}
-
-func (fake *FakeGroupExporter) GetGroupNames2IDMappingCallCount() int {
-	fake.getGroupNames2IDMappingMutex.RLock()
-	defer fake.getGroupNames2IDMappingMutex.RUnlock()
-	return len(fake.getGroupNames2IDMappingArgsForCall)
-}
-
-func (fake *FakeGroupExporter) GetGroupNames2IDMappingCalls(stub func(rest.DynamicGroupsEndpoint, rest.GroupsEndpoint) (app.GroupName2IDMap, error)) {
-	fake.getGroupNames2IDMappingMutex.Lock()
-	defer fake.getGroupNames2IDMappingMutex.Unlock()
-	fake.GetGroupNames2IDMappingStub = stub
-}
-
-func (fake *FakeGroupExporter) GetGroupNames2IDMappingArgsForCall(i int) (rest.DynamicGroupsEndpoint, rest.GroupsEndpoint) {
-	fake.getGroupNames2IDMappingMutex.RLock()
-	defer fake.getGroupNames2IDMappingMutex.RUnlock()
-	argsForCall := fake.getGroupNames2IDMappingArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2
-}
-
-func (fake *FakeGroupExporter) GetGroupNames2IDMappingReturns(result1 app.GroupName2IDMap, result2 error) {
-	fake.getGroupNames2IDMappingMutex.Lock()
-	defer fake.getGroupNames2IDMappingMutex.Unlock()
-	fake.GetGroupNames2IDMappingStub = nil
-	fake.getGroupNames2IDMappingReturns = struct {
-		result1 app.GroupName2IDMap
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeGroupExporter) GetGroupNames2IDMappingReturnsOnCall(i int, result1 app.GroupName2IDMap, result2 error) {
-	fake.getGroupNames2IDMappingMutex.Lock()
-	defer fake.getGroupNames2IDMappingMutex.Unlock()
-	fake.GetGroupNames2IDMappingStub = nil
-	if fake.getGroupNames2IDMappingReturnsOnCall == nil {
-		fake.getGroupNames2IDMappingReturnsOnCall = make(map[int]struct {
-			result1 app.GroupName2IDMap
-			result2 error
-		})
-	}
-	fake.getGroupNames2IDMappingReturnsOnCall[i] = struct {
-		result1 app.GroupName2IDMap
-		result2 error
-	}{result1, result2}
-}
-
 func (fake *FakeGroupExporter) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.exportGroupMembersMutex.RLock()
 	defer fake.exportGroupMembersMutex.RUnlock()
-	fake.getGroupNames2IDMappingMutex.RLock()
-	defer fake.getGroupNames2IDMappingMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

@@ -1,23 +1,25 @@
 package app_test
 
 import (
-    "ctRestClient/app"
-    "ctRestClient/app/appfakes"
-    "ctRestClient/config"
-    "encoding/json"
-    "errors"
-    "os"
+	"ctRestClient/app"
+	"ctRestClient/app/appfakes"
+	"ctRestClient/config"
+	"ctRestClient/csv/csvfakes"
+	"ctRestClient/logger/loggerfakes"
+	"encoding/json"
+	"errors"
+	"os"
 
-    . "github.com/onsi/ginkgo/v2"
-    . "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("InstanceProcessor", func() {
 
     var (
         groupExporter      *appfakes.FakeGroupExporter
-        csvWriter          *appfakes.FakeCSVFileWriter
-        logger             *appfakes.FakeLogger
+        csvWriter          *csvfakes.FakeCSVFileWriter
+        logger             *loggerfakes.FakeLogger
         keepassCli         *appfakes.FakeKeepassCli
         cfg                config.Config
         instancesProcessor app.InstancesProcessor
@@ -26,8 +28,8 @@ var _ = Describe("InstanceProcessor", func() {
 
     BeforeEach(func() {
         groupExporter = &appfakes.FakeGroupExporter{}
-        csvWriter = &appfakes.FakeCSVFileWriter{}
-        logger = &appfakes.FakeLogger{}
+        csvWriter = &csvfakes.FakeCSVFileWriter{}
+        logger = &loggerfakes.FakeLogger{}
         keepassCli = &appfakes.FakeKeepassCli{}
 
         cfg = config.Config{
@@ -44,10 +46,6 @@ var _ = Describe("InstanceProcessor", func() {
                 },
             },
         }
-
-        groupExporter.GetGroupNames2IDMappingReturns(
-            map[string]int{"foo_group": 1, "bar_group": 2}, nil,
-        )
 
         instancesProcessor = app.NewInstancesProcessor(cfg, os.TempDir(), logger)
 
@@ -80,15 +78,6 @@ var _ = Describe("InstanceProcessor", func() {
             Expect(content).To(Equal([][]string{{"1", "foo_firstname", "foo_lastname"}, {"2", "bar_firstname", "bar_lastname"}}))
         })
 
-        It("returns an error if group name2id mappinfg cannot be created", func() {
-            groupExporter.GetGroupNames2IDMappingReturns(nil, errors.New("boom"))
-
-            instancesProcessor = app.NewInstancesProcessor(cfg, os.TempDir(), logger)
-            err := instancesProcessor.Process(groupExporter, csvWriter, keepassCli)
-
-            Expect(err.Error()).To(Equal("failed to resolve groupnames to ids, boom"))
-        })
-
         It("logs a warning if a token is not in the environment", func() {
             cfg = config.Config{
                 Instances: []config.Instance{
@@ -112,34 +101,6 @@ var _ = Describe("InstanceProcessor", func() {
 
             message := logger.WarnArgsForCall(0)
             Expect(message).To(Equal("  skipping export, failed to get token with name 'THE_UNKNOWN_TOKEN' from Keepass. Err: booom"))
-        })
-
-        It("logs an error if groupname cannot be found in the name2ID mapping", func() {
-            cfg = config.Config{
-                Instances: []config.Instance{
-                    {
-                        Hostname:  "foo",
-                        TokenName: "THE_TOKEN",
-                        Groups: []config.Group{
-                            {
-                                Name:   "missing_group",
-                                Fields: []string{"id", "firstName", "lastName"},
-                            },
-                        },
-                    },
-                },
-            }
-
-            emptyGroupResult := []json.RawMessage{}
-            groupExporter.ExportGroupMembersReturns(emptyGroupResult, nil)
-            csvWriter.WriteReturns(nil)
-
-            instancesProcessor = app.NewInstancesProcessor(cfg, os.TempDir(), logger)
-            instancesProcessor.Process(groupExporter, csvWriter, keepassCli)
-
-            Expect(logger.InfoArgsForCall(0)).To(Equal("processing instance 'foo'"))
-            Expect(logger.InfoArgsForCall(1)).To(Equal("  processing group 'missing_group'"))
-            Expect(logger.ErrorArgsForCall(0)).To(Equal("    could not find group to id mapping"))
         })
 
         It("logs empty groups", func() {
@@ -168,20 +129,27 @@ var _ = Describe("InstanceProcessor", func() {
         It("returns an error if person data export fails", func() {
             groupExporter.ExportGroupMembersReturns(nil, errors.New("boom"))
 
-            err := instancesProcessor.Process(groupExporter, csvWriter, keepassCli)
+            instancesProcessor.Process(groupExporter, csvWriter, keepassCli)
 
-            Expect(err.Error()).To(Equal("failed to get person informations: boom"))
+            Expect(logger.InfoArgsForCall(0)).To(Equal("processing instance 'foo'"))
+            Expect(logger.InfoArgsForCall(1)).To(Equal("  processing group 'foo_group'"))
+            Expect(logger.ErrorArgsForCall(0)).To(Equal("    failed to get person information: boom"))
+
+            // Expect(err.Error()).To(Equal("failed to get person informations: boom"))
         })
 
-        It("returns an error if json cannot be read", func() {
+        It("logs an error if person data cannot be read", func() {
             result := []json.RawMessage{json.RawMessage(`[]`)}
 
             groupExporter.ExportGroupMembersReturns(result, nil)
             csvWriter.WriteReturns(nil)
 
             err := instancesProcessor.Process(groupExporter, csvWriter, keepassCli)
+            Expect(err).ToNot(HaveOccurred())
 
-            Expect(err.Error()).To(ContainSubstring("failed to read person information raw json"))
+            Expect(logger.InfoArgsForCall(0)).To(Equal("processing instance 'foo'"))
+            Expect(logger.InfoArgsForCall(1)).To(Equal("  processing group 'foo_group'"))
+            Expect(logger.ErrorArgsForCall(0)).To(ContainSubstring("    failed to extract persons:"))
         })
     })
 })

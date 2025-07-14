@@ -3,11 +3,14 @@ package main
 import (
 	"ctRestClient/app"
 	"ctRestClient/config"
+	"ctRestClient/csv"
+	"ctRestClient/logger"
 	"flag"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
+	"syscall"
 
 	"golang.org/x/term"
 )
@@ -32,10 +35,14 @@ func main() {
 		log.Fatalf("Failed to get password: %v", err)
 	}
 
-	appLogger := app.NewLogger()
-	err = app.NewInstancesProcessor(*config, outputDirectory, appLogger).Process(
+	appLogger := logger.NewLogger()
+	err = app.NewInstancesProcessor(
+		*config,
+		outputDirectory,
+		appLogger,
+	).Process(
 		app.NewGroupExporter(),
-		app.NewCSVFileWriter(),
+		csv.NewCSVFileWriter(),
 		app.NewKeepassCli(keepassDbFilePath, keepassDbPassword, appLogger),
 	)
 	if err != nil {
@@ -48,13 +55,17 @@ func getExecutablePath() string {
 	if err != nil {
 		log.Fatalf("Failed to get executable path: %v", err)
 	}
-	return filepath.Dir(exePath)
+
+	executabelDir := filepath.Dir(exePath)
+	return filepath.Join(executabelDir, "exports")
 }
 
 func getPasswordFromUser() (string, error) {
 	fmt.Print("Enter Keepass database password: ")
 
-	password, err := term.ReadPassword(0) // 0 is stdin file descriptor
+	// Use the appropriate file descriptor based on the platform
+	fd := int(syscall.Stdin)
+	password, err := term.ReadPassword(fd)
 	if err != nil {
 		return "", fmt.Errorf("failed to read password: %v", err)
 	}

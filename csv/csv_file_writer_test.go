@@ -1,7 +1,7 @@
-package app_test
+package csv_test
 
 import (
-	"ctRestClient/app"
+	"ctRestClient/csv"
 	"os"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -30,7 +30,7 @@ var _ = Describe("CSVFileWriter", func() {
 
 			defer os.Remove(tmpfile.Name())
 
-			err = app.NewCSVFileWriter().Write(tmpfile.Name(), csvHeader, csvRecords)
+			err = csv.NewCSVFileWriter().Write(tmpfile.Name(), csvHeader, csvRecords)
 			Expect(err).ToNot(HaveOccurred())
 
 			content, err := os.ReadFile(tmpfile.Name())
@@ -45,7 +45,7 @@ var _ = Describe("CSVFileWriter", func() {
 			notAFile, err := os.MkdirTemp("", "testdir")
 			Expect(err).ToNot(HaveOccurred())
 
-			err = app.NewCSVFileWriter().Write(notAFile, csvHeader, csvRecords)
+			err = csv.NewCSVFileWriter().Write(notAFile, csvHeader, csvRecords)
 			Expect(err.Error()).To(ContainSubstring("failed to create csv file"))
 		})
 	})

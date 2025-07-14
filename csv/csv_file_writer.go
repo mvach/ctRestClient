@@ -1,4 +1,4 @@
-package app
+package csv
 
 import (
 	"encoding/csv"

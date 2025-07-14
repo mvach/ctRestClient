@@ -1,4 +1,4 @@
-package rest_test
+package csv_test
 
 import (
     "testing"
@@ -7,7 +7,7 @@ import (
     . "github.com/onsi/gomega"
 )
 
-func TestConfig(t *testing.T) {
+func TestClient(t *testing.T) {
     RegisterFailHandler(Fail)
-    RunSpecs(t, "Rest Suite")
+    RunSpecs(t, "CSV Suite")
 }

@@ -2,6 +2,7 @@ package app
 
 import (
 	"bytes"
+	"ctRestClient/logger"
 	"fmt"
 	"os/exec"
 	"strings"
@@ -15,10 +16,10 @@ type KeepassCli interface {
 type keepassCli struct {
 	dbFilePath string
 	password   string
-	logger     Logger
+	logger     logger.Logger
 }
 
-func NewKeepassCli(dbFilePath string, password string, log Logger) KeepassCli {
+func NewKeepassCli(dbFilePath string, password string, log logger.Logger) KeepassCli {
 	return keepassCli{
 		dbFilePath: dbFilePath,
 		password:   password,
