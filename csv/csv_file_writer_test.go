@@ -4,6 +4,9 @@ import (
 	"ctRestClient/csv"
 	"os"
 
+	"golang.org/x/text/encoding/unicode"
+	"golang.org/x/text/transform"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -24,7 +27,7 @@ var _ = Describe("CSVFileWriter", func() {
 	})
 
 	var _ = Describe("Write", func() {
-		It("writes a csv file", func() {
+		It("writes a UTF-16 csv file", func() {
 			tmpfile, err := os.CreateTemp("", "test.csv")
 			Expect(err).ToNot(HaveOccurred())
 
@@ -36,9 +39,13 @@ var _ = Describe("CSVFileWriter", func() {
 			content, err := os.ReadFile(tmpfile.Name())
 			Expect(err).ToNot(HaveOccurred())
 
-			// \ufeff is the UTF-8 BOM
-			expectedOutput := "\ufeffFirstName;LastName;Email\nJohn;Doe;john.doe@example.com\nJane;Smith;jane.smith@example.com\n"
-			Expect(string(content)).To(Equal(expectedOutput))
+			encoder := unicode.UTF16(unicode.LittleEndian, unicode.UseBOM).NewEncoder()
+
+			// Transform the string to UTF-16
+			expectedUTF16Output, _, err := transform.String(encoder, "FirstName;LastName;Email\nJohn;Doe;john.doe@example.com\nJane;Smith;jane.smith@example.com\n")
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(string(content)).To(Equal(expectedUTF16Output))
 		})
 
 		It("returns an error if the csv file cannot be created", func() {

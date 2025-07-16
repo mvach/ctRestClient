@@ -4,6 +4,9 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+
+	"golang.org/x/text/encoding/unicode"
+    "golang.org/x/text/transform"
 )
 
 //counterfeiter:generate . CSVFileWriter
@@ -24,23 +27,18 @@ func (w csvWriter) Write(csvFilePath string, csvHeader []string, csvRecords [][]
 	}
 	defer file.Close()
 
-	// Write the UTF-8 BOM for Excel on Windows compatibility
-	_, err = file.Write([]byte{0xEF, 0xBB, 0xBF})
-	if err != nil {
-		return fmt.Errorf("failed to write UTF-8 BOM to csv file: %v", err)
-	}
-
-	writer := csv.NewWriter(file)
+	utf16Writer := transform.NewWriter(file, unicode.UTF16(unicode.LittleEndian, unicode.UseBOM).NewEncoder())
+	csvWriter := csv.NewWriter(utf16Writer)
 	// Set the delimiter to semicolon
-	writer.Comma = ';'
-	defer writer.Flush()
+	csvWriter.Comma = ';'
+	defer csvWriter.Flush()
 
-	if err := writer.Write(csvHeader); err != nil {
+	if err := csvWriter.Write(csvHeader); err != nil {
 		return fmt.Errorf("failed to write csv header: %v", err)
 	}
 
 	for _, record := range csvRecords {
-		if err := writer.Write(record); err != nil {
+		if err := csvWriter.Write(record); err != nil {
 			return fmt.Errorf("failed to write csv records: %v", err)
 		}
 	}
