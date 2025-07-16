@@ -54,12 +54,6 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter csv.C
 		for _, group := range instance.Groups {
 			p.logger.Info(fmt.Sprintf("  processing group '%s'", group.Name))
 
-			err := os.MkdirAll(filepath.Join(rootDir, instance.Hostname), 0755)
-			if err != nil {
-				p.logger.Error(fmt.Sprintf("    failed to create directory: %v", err))
-				continue
-			}
-
 			persons, err := groupExporter.ExportGroupMembers(
 				group.Name,
 				groupsEndpoint,
@@ -80,6 +74,12 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter csv.C
 			personData, err := csv.NewPersonData(persons, group.Fields, p.logger)
 			if err != nil {
 				p.logger.Error(fmt.Sprintf("    failed to extract persons: %v", err))
+				continue
+			}
+
+			err = os.MkdirAll(filepath.Join(rootDir, instance.Hostname), 0755)
+			if err != nil {
+				p.logger.Error(fmt.Sprintf("    failed to create directory: %v", err))
 				continue
 			}
 
