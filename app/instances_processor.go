@@ -9,35 +9,28 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"time"
 )
 
 type InstancesProcessor interface {
-	Process(groupExporter GroupExporter, csvWriter csv.CSVFileWriter, keepassCli KeepassCli) error
+	Process(groupExporter GroupExporter, csvWriter csv.CSVFileWriter, rootDir string, keepassCli KeepassCli) error
 }
 
 type instancesProcessor struct {
 	config          config.Config
-	outputDirectory string
 	logger          logger.Logger
 }
 
 func NewInstancesProcessor(
 	config config.Config,
-	outputDirectory string,
 	logger logger.Logger,
 ) InstancesProcessor {
 	return instancesProcessor{
 		config:          config,
-		outputDirectory: outputDirectory,
 		logger:          logger,
 	}
 }
 
-func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter csv.CSVFileWriter, keepassCli KeepassCli) error {
-	// define the root dir location via parameter that is by default beside the executable
-	rootDir := filepath.Join(p.outputDirectory, time.Now().Format("2006.01.02_15-04-05"))
-
+func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter csv.CSVFileWriter, rootDir string, keepassCli KeepassCli) error {
 	for _, instance := range p.config.Instances {
 		p.logger.Info(fmt.Sprintf("processing instance '%s'", instance.Hostname))
 

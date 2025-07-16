@@ -47,7 +47,7 @@ var _ = Describe("InstanceProcessor", func() {
             },
         }
 
-        instancesProcessor = app.NewInstancesProcessor(cfg, os.TempDir(), logger)
+        instancesProcessor = app.NewInstancesProcessor(cfg, logger)
 
         person1 := `{	
             "id": 1,
@@ -70,7 +70,7 @@ var _ = Describe("InstanceProcessor", func() {
             groupExporter.ExportGroupMembersReturns(result, nil)
             csvWriter.WriteReturns(nil)
 
-            instancesProcessor.Process(groupExporter, csvWriter, keepassCli)
+            instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(), keepassCli)
 
             path, header, content := csvWriter.WriteArgsForCall(0)
             Expect(path).To(ContainSubstring("foo_group.csv"))
@@ -96,8 +96,8 @@ var _ = Describe("InstanceProcessor", func() {
 
             keepassCli.GetPasswordReturns("", errors.New("booom"))
 
-            instancesProcessor = app.NewInstancesProcessor(cfg, os.TempDir(), logger)
-            instancesProcessor.Process(groupExporter, csvWriter, keepassCli)
+            instancesProcessor = app.NewInstancesProcessor(cfg, logger)
+            instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(),  keepassCli)
 
             message := logger.WarnArgsForCall(0)
             Expect(message).To(Equal("  skipping export, failed to get token with name 'THE_UNKNOWN_TOKEN' from Keepass. Err: booom"))
@@ -108,7 +108,7 @@ var _ = Describe("InstanceProcessor", func() {
             groupExporter.ExportGroupMembersReturns(emptyGroupResult, nil)
             csvWriter.WriteReturns(nil)
 
-            instancesProcessor.Process(groupExporter, csvWriter, keepassCli)
+            instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(),  keepassCli)
 
             Expect(logger.InfoArgsForCall(0)).To(Equal("processing instance 'foo'"))
             Expect(logger.InfoArgsForCall(1)).To(Equal("  processing group 'foo_group'"))
@@ -119,7 +119,7 @@ var _ = Describe("InstanceProcessor", func() {
             groupExporter.ExportGroupMembersReturns(result, nil)
             csvWriter.WriteReturns(nil)
 
-            instancesProcessor.Process(groupExporter, csvWriter, keepassCli)
+            instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(), keepassCli)
 
             Expect(logger.InfoArgsForCall(0)).To(Equal("processing instance 'foo'"))
             Expect(logger.InfoArgsForCall(1)).To(Equal("  processing group 'foo_group'"))
@@ -129,7 +129,7 @@ var _ = Describe("InstanceProcessor", func() {
         It("returns an error if person data export fails", func() {
             groupExporter.ExportGroupMembersReturns(nil, errors.New("boom"))
 
-            instancesProcessor.Process(groupExporter, csvWriter, keepassCli)
+            instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(), keepassCli)
 
             Expect(logger.InfoArgsForCall(0)).To(Equal("processing instance 'foo'"))
             Expect(logger.InfoArgsForCall(1)).To(Equal("  processing group 'foo_group'"))
@@ -144,7 +144,7 @@ var _ = Describe("InstanceProcessor", func() {
             groupExporter.ExportGroupMembersReturns(result, nil)
             csvWriter.WriteReturns(nil)
 
-            err := instancesProcessor.Process(groupExporter, csvWriter, keepassCli)
+            err := instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(), keepassCli)
             Expect(err).ToNot(HaveOccurred())
 
             Expect(logger.InfoArgsForCall(0)).To(Equal("processing instance 'foo'"))
