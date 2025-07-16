@@ -51,11 +51,54 @@ var _ = Describe("PersonData", func() {
             Expect(err.Error()).To(ContainSubstring("failed to read person information raw json"))
         })
 
-		It("returns logs warnings if fields cannot be found", func() {
+		It("sets unknown fields to empty string", func() {
+            data, err := csv.NewPersonData(persons, []string{"id", "unknown", "lastName"}, logger)
+			Expect(err).NotTo(HaveOccurred())
+
+            Expect(logger.WarnArgsForCall(0)).To(Equal("    Field 'unknown' does not exist"))
+
+			Expect(data.Header()).To(Equal([]string{"id", "unknown", "lastName"}))
+			Expect(data.Records()).To(HaveLen(2))
+			Expect(data.Records()[0]).To(Equal([]string{"1","", "foo_lastname"}))
+			Expect(data.Records()[1]).To(Equal([]string{"2","", "bar_lastname"}))
+        })
+
+
+		It("sets null values to empty string", func() {
+            person := `{
+				"id": 1,
+				"date": null
+        	}`
+        	persons = []json.RawMessage{json.RawMessage(person)}
+			data, err := csv.NewPersonData(persons, []string{"id", "date"}, logger)
+			Expect(err).NotTo(HaveOccurred())
+
+            Expect(data.Header()).To(Equal([]string{"id", "date"}))
+			Expect(data.Records()).To(HaveLen(1))
+			Expect(data.Records()[0]).To(Equal([]string{"1",""}))
+        })
+
+		It("sets unknown data types to empty string", func() {
+            person := `{
+				"id": 1,
+				"isSet": true
+        	}`
+        	persons = []json.RawMessage{json.RawMessage(person)}
+			data, err := csv.NewPersonData(persons, []string{"id", "isSet"}, logger)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(logger.WarnArgsForCall(0)).To(Equal("    Field 'isSet' is not a string or int"))
+
+            Expect(data.Header()).To(Equal([]string{"id", "isSet"}))
+			Expect(data.Records()).To(HaveLen(1))
+			Expect(data.Records()[0]).To(Equal([]string{"1",""}))
+        })
+
+		It("sets unknown fields to empty string", func() {
             _, err := csv.NewPersonData(persons, []string{"id", "unknown"}, logger)
 			Expect(err).NotTo(HaveOccurred())
 
-            Expect(logger.WarnArgsForCall(0)).To(Equal("    Field 'unknown' is not a string or int, or not found"))
+            Expect(logger.WarnArgsForCall(0)).To(Equal("    Field 'unknown' does not exist"))
         })
 	})
 })

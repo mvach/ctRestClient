@@ -24,16 +24,25 @@ func NewPersonData(persons []json.RawMessage, fields []string, logger logger.Log
 		record := make([]string, len(fields))
 
 		for i, field := range fields {
-			if value, ok := data[field].(string); ok {
+			value, exists := data[field]
+
+			if !exists {
+				logger.Warn(fmt.Sprintf("    Field '%s' does not exist", field))
+				record[i] = ""
+			} else if value == nil {
+				// get null values
+				record[i] = ""
+			} else if strValue, ok := value.(string); ok {
 				// get string values
-				record[i] = value
-			} else if value, ok := data[field].(float64); ok {
+				record[i] = strValue
+			} else if floatValue, ok := value.(float64); ok {
 				// get int values
-				record[i] = fmt.Sprintf("%d", int(value))
+				record[i] = fmt.Sprintf("%d", int(floatValue))
 			} else {
-				logger.Warn(fmt.Sprintf("    Field '%s' is not a string or int, or not found", field))
+				logger.Warn(fmt.Sprintf("    Field '%s' is not a string or int", field))
 				record[i] = ""
 			}
+
 		}
 		csvRecords = append(csvRecords, record)
 	}
