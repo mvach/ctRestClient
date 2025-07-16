@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"syscall"
+	"time"
 
 	"golang.org/x/term"
 )
@@ -35,14 +36,23 @@ func main() {
 		log.Fatalf("Failed to get password: %v", err)
 	}
 
-	appLogger := logger.NewLogger()
+	
+	rootDir := filepath.Join(outputDirectory, time.Now().Format("2006.01.02_15-04-05"))
+	err = os.MkdirAll(rootDir, 0755)
+	if err != nil {
+		log.Fatalf("    failed to create directory: %v", err)
+	}
+
+	logFile := filepath.Join(rootDir, "ctRestClient.log")
+
+	appLogger := logger.NewLogger(logFile)
 	err = app.NewInstancesProcessor(
 		*config,
-		outputDirectory,
 		appLogger,
 	).Process(
 		app.NewGroupExporter(),
 		csv.NewCSVFileWriter(),
+		rootDir,
 		app.NewKeepassCli(keepassDbFilePath, keepassDbPassword, appLogger),
 	)
 	if err != nil {
