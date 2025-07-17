@@ -1,9 +1,9 @@
 # ctRestClient
 
-The ctRestClient allows exporting dynamic groups of [ChurchTools](https://church.tools/en/home/) as CSV files. This is required if one wants to send a serial letter using tools like Microsoft Word or Adobe InDesign to the group members.
+`ctRestClient` allows exporting dynamic groups from [ChurchTools](https://church.tools/en/home/) as CSV files. This is useful when you want to send serial letters to group members using tools like Microsoft Word or Adobe InDesign.
 
-## Configure it
-The ctRestClient is mostly configured via a YAML file. Here is an example configuration:
+## Configuration
+`ctRestClient` is primarily configured via a YAML file. Below is an example configuration:
 
 ```
 instances:
@@ -23,19 +23,12 @@ instances:
       fields: [id, firstName, lastName, street, zip]
 ```
 
-This configuration contains multiple `token_name` properties. The value of each `token_name` is simply the name of an environment variable that is containing the relevant token. Therefore, such variables (here `TOKEN_HOST1` and `TOKEN_HOST2`) must be set in the environment before running the client.
+This configuration includes multiple `token_name` entries. The corresponding tokens must be stored in a KeePass database. The tokens are retrieved using the provided names (e.g.,`TOKEN_HOST1`, `TOKEN_HOST2`)
 
-```
-# Set environment variables on Windows
-set TOKEN_HOST1=6GN68NH4WM5OHRXDDEU1FHMMV...
-set TOKEN_HOST2=QQO5N324JOWCO3RPOUTSSKXPY...
+## Execution
 
-# Set environment variables on Mac
-export TOKEN_HOST1=6GN68NH4WM5OHRXDDEU1FHMMV...
-export TOKEN_HOST2=QQO5N324JOWCO3RPOUTSSKXPY...
-```
+`ctRestClient` uses **KeePassXC** as user token store. Therefore, `keepassxc-cli` must be available in your system's `PATH`. Without it, the token store cannot be accessed.
 
-## Run it
 ```
 Usage:
   ctRestClient.exe -c <path to config.yml> -t <access token> 
@@ -43,41 +36,20 @@ Usage:
   NOTE: on MacOs the executable would be ctRestClient-arm64 or ctRestClient-amd64
 
 Options:
-  -c            By default, ctRestClient tries to load the configuration from a 
-                config.yml file that is searched beside the executable.
-                Using -c allows to configure the path of the configuration YAML.
+  -c      Specify the path to the configuration YAML file.
+          By default, ctRestClient looks for config.yml in the same directory as the executable.
 
-  -o            By default, ctRestClient creates an exports directory beside the
-                executable. This exports directory is then filled with the CSV files.
-                Using -o allows to configure the path where the exports directory 
-                should be created.
+  -o      Specify the output path for the CSV exports directory.
+          By default, the exports directory is created next to the executable.
 
-  -k            By default, ctRestClient reads credentials from a Keepass passwords.kdbx file beside 
-                the executable.
-                Using -k allows to configure the path of the Keepass Database file.
+  -k      Specify the path to the KeePass database file.
+          By default, it looks for passwords.kdbx in the same directory as the executable.
 ```
 
-
-
-
-
-
-
-
-## Develop it
-The ctRestClient can be easily built from source using:
+## Development
+You can easily build `ctRestClient` from source:
 ```
-# Compile it for Windows
-GOOS=windows GOARCH=amd64 go build -o ctRestClient.exe
-
-# Compile it for MacOS with Apple silicon
-GOOS=darwin GOARCH=arm64 go build -o ctRestClient-arm64
-
-# Compile it for MacOS with Intel silicon
-GOOS=darwin GOARCH=amd64 go build -o ctRestClient-amd64
-
-# Compile it for Linux
-GOOS=linux GOARCH=amd64 go build
+./scripts/build_binaries
 ```
 
 Tests can be execute via:
