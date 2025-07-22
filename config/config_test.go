@@ -9,6 +9,10 @@ import (
     "ctRestClient/config"
 )
 
+func ptr(s string) *string {
+    return &s
+}
+
 var _ = Describe("Config", func() {
     var (
         tempFile *os.File
@@ -39,7 +43,7 @@ instances:
       - foo_field_2
     - name: foo_group_1
       fields:
-      - foo_field_3
+      - {fieldname: foo_field_3, columnname: foo_column_3}
   - hostname: bar.com
     token_name: bar
     groups:
@@ -59,15 +63,15 @@ instances:
             Expect(cfg.Instances[0].TokenName).To(Equal("foo"))
             Expect(cfg.Instances[0].Groups).To(HaveLen(2))
             Expect(cfg.Instances[0].Groups[0].Name).To(Equal("foo_group_0"))
-            Expect(cfg.Instances[0].Groups[0].Fields).To(Equal([]string{"foo_field_1", "foo_field_2"}))
+            Expect(cfg.Instances[0].Groups[0].Fields).To(Equal([]config.Field{{RawString:ptr("foo_field_1")}, {RawString:ptr("foo_field_2")}}))
             Expect(cfg.Instances[0].Groups[1].Name).To(Equal("foo_group_1"))
-            Expect(cfg.Instances[0].Groups[1].Fields).To(Equal([]string{"foo_field_3"}))
+            Expect(cfg.Instances[0].Groups[1].Fields).To(Equal([]config.Field{{RawObject: &config.FieldInformation{FieldName: "foo_field_3", ColumnName: "foo_column_3"}}})) 
 
             Expect(cfg.Instances[1].Hostname).To(Equal("bar.com"))
             Expect(cfg.Instances[1].TokenName).To(Equal("bar"))
             Expect(cfg.Instances[1].Groups).To(HaveLen(1))
             Expect(cfg.Instances[1].Groups[0].Name).To(Equal("bar_group_0"))
-            Expect(cfg.Instances[1].Groups[0].Fields).To(Equal([]string{"bar_field_1"}))
+            Expect(cfg.Instances[1].Groups[0].Fields).To(Equal([]config.Field{{RawString:ptr("bar_field_1")}}))
         })
 
         var _ = Describe("instances property errors", func() {
@@ -391,6 +395,26 @@ instances:
                 cfg, err := config.LoadConfig(tempFile.Name())
                 Expect(err).To(HaveOccurred())
                 Expect(err.Error()).To(ContainSubstring("failed to validate the config file, property fields is not set"))
+                Expect(cfg).To(BeNil())
+            })
+
+            It("returns an error if fields array contains invalid object", func() {
+                yamlContent := `
+---
+instances:
+  - hostname: foo
+    token_name: foo
+    groups:
+      - name: foo_group_0
+        fields: [{}]
+`
+                _, err := tempFile.Write([]byte(yamlContent))
+                Expect(err).ToNot(HaveOccurred())
+                tempFile.Close()
+
+                cfg, err := config.LoadConfig(tempFile.Name())
+                Expect(err).To(HaveOccurred())
+                Expect(err.Error()).To(ContainSubstring("failed to load invalid config file, both 'fieldname' and 'columnname' must be set"))
                 Expect(cfg).To(BeNil())
             })
         })

@@ -9,15 +9,16 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type InstancesProcessor interface {
-	Process(groupExporter GroupExporter, csvWriter csv.CSVFileWriter, rootDir string, keepassCli KeepassCli) error
+	Process(groupExporter GroupExporter, csvWriter csv.CSVFileWriter, rootDir string, personDataProvider csv.FileDataProvider, keepassCli KeepassCli) error
 }
 
 type instancesProcessor struct {
-	config          config.Config
-	logger          logger.Logger
+	config config.Config
+	logger logger.Logger
 }
 
 func NewInstancesProcessor(
@@ -25,14 +26,15 @@ func NewInstancesProcessor(
 	logger logger.Logger,
 ) InstancesProcessor {
 	return instancesProcessor{
-		config:          config,
-		logger:          logger,
+		config: config,
+		logger: logger,
 	}
 }
 
-func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter csv.CSVFileWriter, rootDir string, keepassCli KeepassCli) error {
+func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter csv.CSVFileWriter, rootDir string, personDataProvider csv.FileDataProvider, keepassCli KeepassCli) error {
 	for _, instance := range p.config.Instances {
-		p.logger.Info(fmt.Sprintf("processing instance '%s'", instance.Hostname))
+
+		p.logTitle(instance)
 
 		token, err := keepassCli.GetPassword(instance.TokenName)
 		if err != nil {
@@ -45,6 +47,7 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter csv.C
 		personEndpoint := rest.NewPersonsEndpoint(httpClient)
 
 		for _, group := range instance.Groups {
+			p.logger.Info("")
 			p.logger.Info(fmt.Sprintf("  processing group '%s'", group.Name))
 
 			persons, err := groupExporter.ExportGroupMembers(
@@ -58,21 +61,21 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter csv.C
 			}
 
 			if len(persons) == 0 {
-				p.logger.Info("    the group is empty")
+				p.logger.Info("      the group is empty")
 				continue
 			} else {
-				p.logger.Info(fmt.Sprintf("    the group has %d persons", len(persons)))
+				p.logger.Info(fmt.Sprintf("      the group has %d persons", len(persons)))
 			}
 
-			personData, err := csv.NewPersonData(persons, group.Fields, p.logger)
+			personData, err := csv.NewPersonData(persons, group.Fields, personDataProvider, p.logger)
 			if err != nil {
-				p.logger.Error(fmt.Sprintf("    failed to extract persons: %v", err))
+				p.logger.Error(fmt.Sprintf("      failed to extract persons: %v", err))
 				continue
 			}
 
 			err = os.MkdirAll(filepath.Join(rootDir, instance.Hostname), 0755)
 			if err != nil {
-				p.logger.Error(fmt.Sprintf("    failed to create directory: %v", err))
+				p.logger.Error(fmt.Sprintf("     failed to create directory: %v", err))
 				continue
 			}
 
@@ -91,4 +94,16 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter csv.C
 	}
 
 	return nil
+}
+
+func (p instancesProcessor) logTitle(instance config.Instance) {
+	boxLength := 70
+	title := fmt.Sprintf("Processing instance '%s'", instance.Hostname)
+	titleLength := len(title)
+	border := strings.Repeat("-", boxLength)
+
+	p.logger.Info("")
+	p.logger.Info(fmt.Sprintf("+%s+", border))
+	p.logger.Info(fmt.Sprintf("| %s "+strings.Repeat(" ", boxLength-titleLength-2)+"|", title))
+	p.logger.Info(fmt.Sprintf("+%s+", border))
 }

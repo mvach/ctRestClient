@@ -18,11 +18,13 @@ import (
 
 func main() {
 	var configFilePath string
-	var outputDirectory string
+	var dataDir string
+	var outputDir string
 	var keepassDbFilePath string
 
 	flag.StringVar(&configFilePath, "c", "config.yml", "the config file path")
-	flag.StringVar(&outputDirectory, "o", getExecutablePath(), "the output directory")
+	flag.StringVar(&dataDir, "d", getDataDir(), "the data directory")
+	flag.StringVar(&outputDir, "o", getOutputDir(), "the output directory")
 	flag.StringVar(&keepassDbFilePath, "k", "passwords.kdbx", "the Keepass DB file path")
 	flag.Parse()
 
@@ -36,8 +38,7 @@ func main() {
 		log.Fatalf("Failed to get password: %v", err)
 	}
 
-	
-	rootDir := filepath.Join(outputDirectory, time.Now().Format("2006.01.02_15-04-05"))
+	rootDir := filepath.Join(outputDir, time.Now().Format("2006.01.02_15-04-05"))
 	err = os.MkdirAll(rootDir, 0755)
 	if err != nil {
 		log.Fatalf("    failed to create directory: %v", err)
@@ -53,6 +54,7 @@ func main() {
 		app.NewGroupExporter(),
 		csv.NewCSVFileWriter(),
 		rootDir,
+		csv.NewFileDataProvider(filepath.Join(dataDir, "persons")),
 		app.NewKeepassCli(keepassDbFilePath, keepassDbPassword, appLogger),
 	)
 	if err != nil {
@@ -60,14 +62,24 @@ func main() {
 	}
 }
 
-func getExecutablePath() string {
+func getOutputDir() string {
+	executabelDir := getExecutableDir()
+	return filepath.Join(executabelDir, "..", "exports")
+}
+
+func getDataDir() string {
+	executabelDir := getExecutableDir()
+	return filepath.Join(executabelDir, "..", "data")
+}
+
+func getExecutableDir() string {
 	exePath, err := os.Executable()
 	if err != nil {
 		log.Fatalf("Failed to get executable path: %v", err)
 	}
 
 	executabelDir := filepath.Dir(exePath)
-	return filepath.Join(executabelDir, "exports")
+	return executabelDir
 }
 
 func getPasswordFromUser() (string, error) {
