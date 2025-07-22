@@ -1,6 +1,7 @@
 package csv
 
 import (
+	"ctRestClient/config"
 	"ctRestClient/logger"
 	"encoding/json"
 	"fmt"
@@ -11,12 +12,12 @@ type personData struct {
 	records [][]string
 }
 
-func NewPersonData(persons []json.RawMessage, fields []string, logger logger.Logger) (CsvData, error) {
+func NewPersonData(persons []json.RawMessage, fields []config.Field, personDataProvider FileDataProvider, logger logger.Logger) (CsvData, error) {
 	csvRecords := make([][]string, 0)
 
 	for _, person := range persons {
-		var data map[string]interface{}
-		err := json.Unmarshal([]byte(person), &data)
+		var jsonData map[string]json.RawMessage
+		err := json.Unmarshal([]byte(person), &jsonData)
 		if err != nil {
 			return nil, fmt.Errorf("failed to read person information raw json: %v", err)
 		}
@@ -24,33 +25,74 @@ func NewPersonData(persons []json.RawMessage, fields []string, logger logger.Log
 		record := make([]string, len(fields))
 
 		for i, field := range fields {
-			value, exists := data[field]
+			fieldName := field.GetFieldName()
+			rawValue, exists := jsonData[fieldName]
+
+			value := ""
 
 			if !exists {
-				logger.Warn(fmt.Sprintf("    Field '%s' does not exist", field))
+				logger.Warn(fmt.Sprintf("    Field '%s' does not exist", fieldName))
 				record[i] = ""
-			} else if value == nil {
-				// get null values
+			} else if rawValue == nil {
 				record[i] = ""
-			} else if strValue, ok := value.(string); ok {
-				// get string values
-				record[i] = strValue
-			} else if floatValue, ok := value.(float64); ok {
-				// get int values
-				record[i] = fmt.Sprintf("%d", int(floatValue))
 			} else {
-				logger.Warn(fmt.Sprintf("    Field '%s' is not a string or int", field))
-				record[i] = ""
+				if !field.IsMappedData() {
+					value = convertToString(rawValue)
+				} else {
+					value, err = personDataProvider.GetData(fieldName, rawValue)
+					if err != nil {
+						logger.Error(fmt.Sprintf("     failed to get data for field '%s': %v", fieldName, err))
+						value = ""
+					}
+				}
 			}
+			record[i] = value
 
 		}
 		csvRecords = append(csvRecords, record)
 	}
 
+	// Extract field names for the header
+	csvHeader := make([]string, len(fields))
+	for i, field := range fields {
+		csvHeader[i] = field.GetColumnName()
+	}
+
 	return &personData{
-		header:  fields,
+		header:  csvHeader,
 		records: csvRecords,
 	}, nil
+}
+
+// Helper function to convert JSON values to strings
+func convertToString(value json.RawMessage) string {
+	// Parse the raw message to get the actual value
+	var parsedValue interface{}
+	if err := json.Unmarshal(value, &parsedValue); err != nil {
+		// If parsing fails, return the raw string
+		return string(value)
+	}
+
+	switch v := parsedValue.(type) {
+	case string:
+		// For strings, return the value without quotes
+		return v
+	case float64:
+		// For numbers, use the original format from raw message
+		return string(value)
+	case int:
+		return string(value)
+	case bool:
+		return string(value)
+	case nil:
+		return ""
+	default:
+		// For other types, marshal to get string representation
+		if jsonBytes, err := json.Marshal(v); err == nil {
+			return string(jsonBytes)
+		}
+		return fmt.Sprintf("%v", v)
+	}
 }
 
 func (p *personData) Records() [][]string {

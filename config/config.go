@@ -23,8 +23,19 @@ type Instance struct {
 type Group struct {
     Name    string   `yaml:"name"`
     MergeBy string   `yaml:"merge_by,omitempty"`
-    Fields  []string `yaml:"fields"`
+    Fields  []Field `yaml:"fields"`
 }
+
+type Field struct {
+    RawString *string
+    RawObject *FieldInformation
+}
+
+type FieldInformation struct {
+    FieldName  string `yaml:"fieldname"`
+    ColumnName string `yaml:"columnname"`
+}
+
 
 func (g Group) SanitizedGroupName() string {
     fileName := g.Name
@@ -89,4 +100,53 @@ func (c Config) validate() error {
         }
     }
     return nil
+}
+
+func (f *Field) UnmarshalYAML(unmarshal func(interface{}) error) error {
+    // Try unmarshaling as a simple string
+    var s string
+    if err := unmarshal(&s); err == nil {
+        f.RawString = &s
+        return nil
+    }
+
+    // Try unmarshaling as a structured object
+    var obj FieldInformation
+    if err := unmarshal(&obj); err == nil {
+        // Validate required fields
+        if obj.FieldName == "" || obj.ColumnName == "" {
+            return fmt.Errorf("both 'fieldname' and 'columnname' must be set")
+        }
+        f.RawObject = &obj
+        return nil
+    }
+
+    return fmt.Errorf("field must be a string or an object with 'fieldname' and 'columnname'")
+}
+
+func (f *Field) GetFieldName() string {
+    if f.RawObject != nil {
+        return f.RawObject.FieldName
+    }
+    if f.RawString != nil {
+        return *f.RawString
+    }
+    return ""
+}
+
+func (f *Field) GetColumnName() string {
+    if f.RawObject != nil {
+        return f.RawObject.ColumnName
+    }
+    if f.RawString != nil {
+        return *f.RawString
+    }
+    return ""
+}
+
+func (f *Field) IsMappedData() bool {
+    if f.RawString == nil && f.RawObject != nil {
+        return true
+    }
+    return false
 }
