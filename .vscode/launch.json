@@ -34,6 +34,12 @@
             "request": "launch",
             "mode": "test",
             "program": "${workspaceFolder}/csv",
+        }, {
+            "name": "Launch Integration Package",
+            "type": "go",
+            "request": "launch",
+            "mode": "test",
+            "program": "${workspaceFolder}/integration",
         },
     ]
 }

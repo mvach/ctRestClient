@@ -63,8 +63,8 @@ func main() {
 }
 
 func getOutputDir() string {
-	executabelDir := getExecutableDir()
-	return filepath.Join(executabelDir, "..", "exports")
+	executableDir := getExecutableDir()
+	return filepath.Join(executableDir, "..", "exports")
 }
 
 func getDataDir() string {
