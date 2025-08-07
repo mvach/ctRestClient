@@ -298,42 +298,6 @@ id;firstName;lastName;street;zip;city
 124;Maria;Musterfrau;Beispielweg 2;54321;Beispielort
 ```
 
-## Fehlerbehandlung
-
-### Häufige Probleme
-
-#### 1. KeePassXC nicht gefunden
-**Fehlermeldung**: `keepassxc-cli command not found`
-
-**Lösung**:
-- Stellen Sie sicher, dass KeePassXC installiert ist
-- Prüfen Sie, ob KeePassXC im System-PATH verfügbar ist
-- Bei Bedarf PATH-Variable anpassen
-
-#### 2. Token nicht gefunden
-**Fehlermeldung**: `Token not found in KeePass database`
-
-**Lösung**:
-- Prüfen Sie den `token_name` in der Konfiguration
-- Stellen Sie sicher, dass der Eintrag in der KeePass-Datenbank existiert
-- Überprüfen Sie die Groß-/Kleinschreibung
-
-#### 3. Gruppe nicht gefunden
-**Fehlermeldung**: `Group 'Gruppenname' not found`
-
-**Lösung**:
-- Überprüfen Sie den exakten Gruppennamen in ChurchTools
-- Stellen Sie sicher, dass Sie Berechtigung für die Gruppe haben
-- Prüfen Sie, ob die Gruppe als "dynamische Gruppe" konfiguriert ist
-
-#### 4. API-Verbindungsprobleme
-**Fehlermeldung**: `Connection refused` oder `Unauthorized`
-
-**Lösung**:
-- Prüfen Sie die Netzwerkverbindung
-- Überprüfen Sie den Hostnamen in der Konfiguration
-- Stellen Sie sicher, dass der API-Token noch gültig ist
-
 ## Logging
 
 Detaillierte Informationen über die Ausführung finden Sie in der `ctRestClient.log`-Datei im Ausgabeverzeichnis. Diese enthält:
