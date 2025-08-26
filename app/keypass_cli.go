@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"ctRestClient/logger"
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -19,12 +20,22 @@ type keepassCli struct {
 	logger     logger.Logger
 }
 
-func NewKeepassCli(dbFilePath string, password string, log logger.Logger) KeepassCli {
+func NewKeepassCli(dbFilePath string, password string, log logger.Logger) (KeepassCli, error) {
+	info, err := os.Stat(dbFilePath)
+	if os.IsNotExist(err) {
+		return nil, fmt.Errorf("the Keepass DB file '%s' could not be found", dbFilePath)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("error checking Keepass DB file '%s': %v", dbFilePath, err)
+	}
+	if !info.Mode().IsRegular() {
+		return nil, fmt.Errorf("the Keepass DB file '%s' exists but is not a regular file", dbFilePath)
+	}
 	return keepassCli{
 		dbFilePath: dbFilePath,
 		password:   password,
 		logger:     log,
-	}
+	}, nil
 }
 
 func (s keepassCli) GetPassword(passwordName string) (string, error) {

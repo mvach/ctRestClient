@@ -10,6 +10,10 @@ import (
 
 // RunApplicationWrapper wraps the main application logic for integration testing
 func RunApplicationWrapper(config *config.Config, rootDir string, dataDir string, keepassDbFilePath string, keepassDbPassword string, appLogger logger.Logger) error {
+	keepassCli, err := app.NewKeepassCli(keepassDbFilePath, keepassDbPassword, appLogger)
+	if err != nil {
+		return err
+	}
 	return app.NewInstancesProcessor(
 		*config,
 		appLogger,
@@ -18,6 +22,6 @@ func RunApplicationWrapper(config *config.Config, rootDir string, dataDir string
 		csv.NewCSVFileWriter(),
 		rootDir,
 		csv.NewFileDataProvider(filepath.Join(dataDir, "persons")),
-		app.NewKeepassCli(keepassDbFilePath, keepassDbPassword, appLogger),
+		keepassCli,
 	)
 }

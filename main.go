@@ -47,6 +47,11 @@ func main() {
 	logFile := filepath.Join(rootDir, "ctRestClient.log")
 
 	appLogger := logger.NewLogger(logFile)
+	keepassCli, err := app.NewKeepassCli(keepassDbFilePath, keepassDbPassword, appLogger)
+	if err != nil {
+		log.Fatalf("Failed to initialize Keepass CLI: %v", err)
+	}
+
 	err = app.NewInstancesProcessor(
 		*config,
 		appLogger,
@@ -55,7 +60,7 @@ func main() {
 		csv.NewCSVFileWriter(),
 		rootDir,
 		csv.NewFileDataProvider(filepath.Join(dataDir, "persons")),
-		app.NewKeepassCli(keepassDbFilePath, keepassDbPassword, appLogger),
+		keepassCli,
 	)
 	if err != nil {
 		log.Fatalf("Failed to process instances: %v", err)
