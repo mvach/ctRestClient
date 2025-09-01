@@ -1,0 +1,37 @@
+name: Publish Docs
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Repo
+        uses: actions/checkout@v4
+
+      - name: Copy Docs
+        run: |
+          mkdir output
+          cp -r docs/* output/ || true
+
+      - name: Create index.html linking to docs
+        run: |
+          echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Docs Index</title></head><body><h1>Documentation</h1><ul>' > output/index.html
+          for file in output/*; do
+            fname=$(basename "$file")
+            if [ "$fname" != "index.html" ]; then
+              echo "<li><a href=\"$fname\">$fname</a></li>" >> output/index.html
+            fi
+          done
+          echo '</ul></body></html>' >> output/index.html
+
+      - name: Push to Target Repo
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.CTRESTCLIENT_PUBLISH }}
+          external_repository: mvach/ctRestClient
+          publish_branch: main
+          publish_dir: ./output
