@@ -26,6 +26,9 @@ go.work.sum
 # env file
 .env
 
+# local mkdocs.yml copy in the root directory
+/mkdocs.yml
+
 .timetracker
 local/
 export/
