@@ -40,12 +40,12 @@ Download the appropriate version for your operating system:
 
 | Platform | Architecture | Download Link |
 |----------|--------------|---------------|
-| 🐧 Linux | x86_64 | [ctRestClient_latest_linux_x86_64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/latest/ctRestClient_latest_linux_x86_64.tar.gz) |
-| 🍎 macOS | Intel (x86_64) | [ctRestClient_latest_darwin_x86_64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/latest/ctRestClient_latest_darwin_x86_64.tar.gz) |
-| 🍎 macOS | Apple Silicon (ARM64) | [ctRestClient_latest_darwin_arm64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/latest/ctRestClient_latest_darwin_arm64.tar.gz) |
-| 🪟 Windows | x86_64 | [ctRestClient_latest_windows_x86_64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/latest/ctRestClient_latest_windows_x86_64.tar.gz) |
+| 🐧 Linux | x86_64 | [ctRestClient_${version_no_v}_linux_x86_64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/${version}/ctRestClient_${version_no_v}_linux_x86_64.tar.gz) |
+| 🍎 macOS | Intel (x86_64) | [ctRestClient_${version_no_v}_darwin_x86_64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/${version}/ctRestClient_${version_no_v}_darwin_x86_64.tar.gz) |
+| 🍎 macOS | Apple Silicon (ARM64) | [ctRestClient_${version_no_v}_darwin_arm64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/${version}/ctRestClient_${version_no_v}_darwin_arm64.tar.gz) |
+| 🪟 Windows | x86_64 | [ctRestClient_${version_no_v}_windows_x86_64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/${version}/ctRestClient_${version_no_v}_windows_x86_64.tar.gz) |
 
-[📋 View all release assets](https://github.com/mvach/ctRestClient/releases/tag/latest)
+[📋 View all release assets](https://github.com/mvach/ctRestClient/releases/tag/${version})
 
 ### 2. Set Up KeePass Database
 

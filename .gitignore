@@ -33,6 +33,7 @@ go.work.sum
 local/
 export/
 bin/
+dist/
 test/
 
 # Build results in project root

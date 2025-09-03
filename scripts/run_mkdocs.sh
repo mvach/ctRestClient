@@ -19,7 +19,7 @@ fi
 
 # Create mkdocs.yml in the root directory
 echo "Starting MkDocs server..."
-bash .github/scripts/create-mkdocs-config.sh
+bash .github/scripts/create-versioned-mkdocs-config.sh "latest"
 
 # Run MkDocs
 echo "Access documentation at http://127.0.0.1:8000/"
