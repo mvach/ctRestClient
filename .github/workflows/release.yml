@@ -122,13 +122,27 @@ jobs:
         id: version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
       
+      - name: List available artifacts
+        run: |
+          echo "Available artifacts in dist/:"
+          find dist/ -type f -ls
+      
       - name: Create release with scanned artifacts
         run: |
-          # Create the release with only the tar.gz files
+          # Collect standard release artifacts (archives and checksums)
+          ARTIFACTS=$(find dist/ \( -name "*.tar.gz" -o -name "checksums.txt" \) -type f | tr '\n' ' ')
+          
+          echo "Artifacts to upload: $ARTIFACTS"
+          
+          if [ -z "$ARTIFACTS" ]; then
+            echo "❌ No artifacts found to upload!"
+            exit 1
+          fi
+          
           gh release create ${{ steps.version.outputs.VERSION }} \
             --title "Release ${{ steps.version.outputs.VERSION }}" \
             --generate-notes \
-            $(find dist/ -name "*.tar.gz" | tr '\n' ' ')
+            $ARTIFACTS
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
