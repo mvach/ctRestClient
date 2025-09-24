@@ -9,50 +9,72 @@ on:
       - 'v*'
 
 jobs:
-  build:
+  build-and-upload:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           fetch-tags: true
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: '1.23'
-    
-      - name: Install keepassxc-cli
-        run: sudo apt-get update && sudo apt-get install -y keepassxc
 
-      - name: Build
-        run: go build
+      - name: Install system dependencies (keepassxc + clamav)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends keepassxc clamav
 
-      - name: Test
+      - name: Run unit tests
         run: go test ./...
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.23'
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
+      - name: Install GoReleaser (no execution yet)
+        uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
-          version: latest
-          args: release --clean
+          version: '~> v2'
+          install-only: true
+
+      - name: GoReleaser build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
-  publish-versioned-docs:
-    needs: release
+        run: goreleaser release --clean --skip=publish --skip=announce
+
+      - name: Virus scan
+        run: |
+          scannerVersion=$(clamscan --version)
+          echo "Using scanner version: $scannerVersion"
+
+          echo "Scanning built binary with ClamAV..."
+          clamscan --recursive --infected --verbose dist/ || SCAN_STATUS=$?
+          if [ "${SCAN_STATUS:-0}" -eq 1 ]; then
+            echo "❌ Virus detected in build artifacts. Aborting publish." >&2
+            exit 1
+          elif [ "${SCAN_STATUS:-0}" -gt 1 ]; then
+            echo "❌ ClamAV scan error (exit code $SCAN_STATUS). Aborting publish." >&2
+            exit $SCAN_STATUS
+          fi
+          echo "✅ No viruses found. Proceeding to publish."
+
+      - name: Create GitHub Release & upload artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body_path: dist/CHANGELOG.md
+          files: |
+            dist/ctRestClient_*.tar.gz
+            dist/checksums.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-docs:
+    needs: build-and-upload
     runs-on: ubuntu-latest
     permissions:
       contents: write

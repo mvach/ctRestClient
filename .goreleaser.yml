@@ -1,3 +1,4 @@
+version: 2
 project_name: ctRestClient
 builds:
   - id: linux-amd64
@@ -38,7 +39,7 @@ builds:
       - -s -w
 archives:
   - id: platform-specific
-    format: tar.gz
+    formats: [tar.gz]
     name_template: >-
       {{ .ProjectName }}_
       {{- .Version }}_
@@ -50,8 +51,6 @@ archives:
       - LICENSE*
 checksum:
   name_template: 'checksums.txt'
-snapshot:
-  name_template: "{{ incpatch .Version }}-next"
 changelog:
   sort: asc
   use: github
@@ -76,6 +75,7 @@ changelog:
       - '^refactor:'
       - Merge pull request
       - Merge branch
+
 release:
   github:
     owner: mvach
