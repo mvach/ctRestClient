@@ -14,17 +14,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        fetch-tags: true
 
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
         go-version: '1.23'
     
-    - name: Install keepassxc-cli
-      run: sudo apt-get update && sudo apt-get install -y keepassxc
+    - name: Install system dependencies (keepassxc + clamav)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends keepassxc clamav
 
-    - name: Build
-      run: go build
-
-    - name: Test
+    - name: Run unit tests
       run: go test ./...
+
+    - name: Run build
+      run: scripts/build_binaries
+
+    - name: Virus scan
+      run: |
+        scannerVersion=$(clamscan --version)
+        echo "Using scanner version: $scannerVersion"
+
+        echo "Scanning built binary with ClamAV..."
+        clamscan --recursive --infected --verbose dist/ || SCAN_STATUS=$?
+        if [ "${SCAN_STATUS:-0}" -eq 1 ]; then
+          echo "❌ Virus detected in built binary. Build failed." >&2
+          exit 1
+        elif [ "${SCAN_STATUS:-0}" -gt 1 ]; then
+          echo "❌ ClamAV scan error (exit code $SCAN_STATUS). Build failed." >&2
+          exit $SCAN_STATUS
+        fi
+        echo "✅ No viruses found in built binary."
