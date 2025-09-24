@@ -42,17 +42,98 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.23'
-      - name: Run GoReleaser
+      - name: Build with GoReleaser (no publish)
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
           version: latest
-          args: release --clean
+          args: build --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
-  publish-versioned-docs:
+      
+      - name: Upload artifacts for scanning
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: dist/
+          retention-days: 1
+
+  virus-scan:
     needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: release-artifacts
+          path: dist/
+      
+      - name: Install ClamAV
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clamav clamav-daemon
+          sudo systemctl stop clamav-freshclam
+          sudo freshclam
+          sudo systemctl start clamav-daemon
+          # Wait for daemon to start
+          sleep 10
+      
+      - name: Scan release artifacts
+        run: |
+          echo "Scanning release artifacts for viruses..."
+          
+          clamscan --recursive --verbose --infected --bell dist/
+          scan_result=$?
+          
+          if [ $scan_result -eq 0 ]; then
+            echo "✅ All artifacts are clean - no viruses detected"
+          elif [ $scan_result -eq 1 ]; then
+            echo "❌ Virus detected in artifacts!"
+            exit 1
+          else
+            echo "⚠️ Scanner error occurred"
+            exit 1
+          fi
+      
+      - name: Upload clean artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scanned-artifacts
+          path: dist/
+          retention-days: 1
+
+  publish-release:
+    needs: virus-scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      
+      - name: Download scanned artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: scanned-artifacts
+          path: dist/
+      
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+      - name: Create release with scanned artifacts
+        run: |
+          # Create the release with only the tar.gz files
+          gh release create ${{ steps.version.outputs.VERSION }} \
+            --title "Release ${{ steps.version.outputs.VERSION }}" \
+            --generate-notes \
+            $(find dist/ -name "*.tar.gz" | tr '\n' ' ')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-versioned-docs:
+    needs: publish-release
     runs-on: ubuntu-latest
     permissions:
       contents: write
