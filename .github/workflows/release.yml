@@ -9,145 +9,75 @@ on:
       - 'v*'
 
 jobs:
-  build:
+  build-and-upload:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           fetch-tags: true
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: '1.23'
-    
-      - name: Install keepassxc-cli
-        run: sudo apt-get update && sudo apt-get install -y keepassxc
 
-      - name: Build
-        run: go build
-
-      - name: Test
-        run: go test ./...
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.23'
-      - name: Build with GoReleaser (no publish)
-        uses: goreleaser/goreleaser-action@v5
-        with:
-          distribution: goreleaser
-          version: latest
-          args: build --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Upload artifacts for scanning
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-artifacts
-          path: dist/
-          retention-days: 1
-
-  virus-scan:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download release artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: release-artifacts
-          path: dist/
-      
-      - name: Install ClamAV
+      - name: Install system dependencies (keepassxc + clamav)
         run: |
           sudo apt-get update
-          sudo apt-get install -y clamav clamav-daemon
-          sudo systemctl stop clamav-freshclam
-          sudo freshclam
-          sudo systemctl start clamav-daemon
-          # Wait for daemon to start
-          sleep 10
-      
-      - name: Scan release artifacts
-        run: |
-          echo "Scanning release artifacts for viruses..."
-          
-          clamscan --recursive --verbose --infected --bell dist/
-          scan_result=$?
-          
-          if [ $scan_result -eq 0 ]; then
-            echo "✅ All artifacts are clean - no viruses detected"
-          elif [ $scan_result -eq 1 ]; then
-            echo "❌ Virus detected in artifacts!"
-            exit 1
-          else
-            echo "⚠️ Scanner error occurred"
-            exit 1
-          fi
-      
-      - name: Upload clean artifacts
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: scanned-artifacts
-          path: dist/
-          retention-days: 1
+          sudo apt-get install -y --no-install-recommends keepassxc clamav clamav-freshclam
+          # Stop the auto-updater to avoid lock contention with manual freshclam
+          sudo systemctl stop clamav-freshclam || true
+          # Attempt DB update; use --stdout to bypass /var/log locking issues
+          sudo freshclam --stdout --verbose || echo "Non-fatal: freshclam update failed or rate-limited; proceeding with packaged DB"
+          echo "ClamAV version:"; clamscan --version || true
 
-  publish-release:
-    needs: virus-scan
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+      - name: Run unit tests
+        run: go test ./...
+
+      - name: Install GoReleaser (no execution yet)
+        uses: goreleaser/goreleaser-action@v6
         with:
-          fetch-depth: 0
-          fetch-tags: true
-      
-      - name: Download scanned artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: scanned-artifacts
-          path: dist/
-      
-      - name: Extract version from tag
-        id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-      
-      - name: List available artifacts
+          distribution: goreleaser
+          version: '~> v2'
+          install-only: true
+
+      - name: GoReleaser release (build only, skip publish & announce)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: goreleaser release --clean --skip=publish --skip=announce
+
+      - name: Virus scan dist artifacts
         run: |
-          echo "Available artifacts in dist/:"
-          find dist/ -type f -ls
-      
-      - name: Create release with scanned artifacts
-        run: |
-          # Collect standard release artifacts (archives and checksums)
-          ARTIFACTS=$(find dist/ \( -name "*.tar.gz" -o -name "checksums.txt" \) -type f | tr '\n' ' ')
-          
-          echo "Artifacts to upload: $ARTIFACTS"
-          
-          if [ -z "$ARTIFACTS" ]; then
-            echo "❌ No artifacts found to upload!"
+          echo "Scanning dist/ with ClamAV..."
+          # clamscan returns 1 if a virus is found, 0 if none found.
+          clamscan --recursive --infected --verbose dist/ || SCAN_STATUS=$?
+          if [ "${SCAN_STATUS:-0}" -eq 1 ]; then
+            echo "❌ Virus detected in build artifacts. Aborting publish." >&2
             exit 1
+          elif [ "${SCAN_STATUS:-0}" -gt 1 ]; then
+            echo "❌ ClamAV scan error (exit code $SCAN_STATUS). Aborting publish." >&2
+            exit $SCAN_STATUS
           fi
-          
-          gh release create ${{ steps.version.outputs.VERSION }} \
-            --title "Release ${{ steps.version.outputs.VERSION }}" \
-            --generate-notes \
-            $ARTIFACTS
+          echo "✅ No viruses found. Proceeding to publish."
+
+      - name: Create GitHub Release & upload artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body_path: dist/CHANGELOG.md
+          files: |
+            dist/ctRestClient_*.tar.gz
+            dist/checksums.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish-versioned-docs:
-    needs: publish-release
+  publish-docs:
+    needs: build-and-upload
     runs-on: ubuntu-latest
     permissions:
       contents: write
