@@ -9,7 +9,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/user"
 	"path/filepath"
+	"runtime"
+	"strings"
 	"syscall"
 	"time"
 
@@ -47,6 +50,8 @@ func main() {
 	logFile := filepath.Join(rootDir, "ctRestClient.log")
 
 	appLogger := logger.NewLogger(logFile)
+	logGeneralInfo(appLogger, getCurrentUserName(), getCurrentOSName(), getDate())
+
 	keepassCli, err := app.NewKeepassCli(keepassDbFilePath, keepassDbPassword, appLogger)
 	if err != nil {
 		log.Fatalf("Failed to initialize Keepass CLI: %v", err)
@@ -99,4 +104,50 @@ func getPasswordFromUser() (string, error) {
 	fmt.Println()
 
 	return string(password), nil
+}
+
+func getCurrentUserName() string {
+	currentUser, err := user.Current()
+	if err != nil {
+		return "unknown"
+	}
+	return currentUser.Username
+}
+
+func getCurrentOSName() string {
+	switch runtime.GOOS {
+	case "darwin":
+		return "macOS"
+	case "linux":
+		return "Linux"
+	case "windows":
+		return "Windows"
+	default:
+		return fmt.Sprintf("Unknown (%s)", runtime.GOOS)
+	}
+}
+
+func getDate() string {
+	return time.Now().Format("2006-01-02 15:04:05")
+}
+
+func logGeneralInfo(logger logger.Logger, user string, os string, date string) {
+	boxLength := 70
+	userInfo := fmt.Sprintf("User: '%s'", user)
+	userInfoLength := len(userInfo)
+
+	osInfo := fmt.Sprintf("OS:   '%s'", os)
+	osInfoLength := len(osInfo)
+
+	dateInfo := fmt.Sprintf("Date: '%s'", date)
+	dateInfoLength := len(dateInfo)
+
+	border := strings.Repeat("-", boxLength)
+
+	logger.Info("")
+	logger.Info(fmt.Sprintf("+%s+", border))
+	logger.Info(fmt.Sprintf("| %s "+strings.Repeat(" ", boxLength-userInfoLength-2)+"|", userInfo))
+	logger.Info(fmt.Sprintf("| %s "+strings.Repeat(" ", boxLength-osInfoLength-2)+"|", osInfo))
+	logger.Info(fmt.Sprintf("| %s "+strings.Repeat(" ", boxLength-dateInfoLength-2)+"|", dateInfo))
+	logger.Info(fmt.Sprintf("+%s+", border))
 }
