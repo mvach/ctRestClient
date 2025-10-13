@@ -116,7 +116,7 @@ var _ = Describe("GroupsEndpoint", func() {
 			_, err := groupsEndpoint.GetGroup("group1")
 
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("no group found with name: group1"))
+			Expect(err.Error()).To(ContainSubstring("'group1' is either not existing or you are not allowed to see the group"))
 		})
 
         It("returns an error if the response body is containing multiple groups", func() {

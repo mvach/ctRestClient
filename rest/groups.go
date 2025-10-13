@@ -101,7 +101,7 @@ func (c groupsEndpoint) GetGroup(groupName string) (GroupsResponse, error) {
 
 	groups := response.Data
 	if len(groups) == 0 {
-		return GroupsResponse{}, fmt.Errorf("no group found with name: %s", groupName)
+		return GroupsResponse{}, fmt.Errorf("'%s' is either not existing or you are not allowed to see the group", groupName)
 	}
 
 	if len(groups) > 1 {
