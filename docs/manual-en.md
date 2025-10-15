@@ -36,16 +36,9 @@
 
 ### 1. Download Executable
 
-Download the appropriate version for your operating system:
+Download the software from [GitHub](https://github.com/mvach/ctRestClientReleaseTest/releases/latest).
 
-| Platform | Architecture | Download Link |
-|----------|--------------|---------------|
-| 🐧 Linux | x86_64 | [ctRestClient_latest_linux_x86_64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/latest/ctRestClient_latest_linux_x86_64.tar.gz) |
-| 🍎 macOS | Intel (x86_64) | [ctRestClient_latest_darwin_x86_64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/latest/ctRestClient_latest_darwin_x86_64.tar.gz) |
-| 🍎 macOS | Apple Silicon (ARM64) | [ctRestClient_latest_darwin_arm64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/latest/ctRestClient_latest_darwin_arm64.tar.gz) |
-| 🪟 Windows | x86_64 | [ctRestClient_latest_windows_x86_64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/latest/ctRestClient_latest_windows_x86_64.tar.gz) |
-
-[📋 View all release assets](https://github.com/mvach/ctRestClient/releases/tag/latest)
+The archive to download is named ( ctRestClient_<version\>.tar.gz ). This archive contains the executable binaries for Windows, Linux, and macOS.
 
 ### 2. Set Up KeePass Database
 

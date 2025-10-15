@@ -36,16 +36,10 @@
 
 ### 1. Executable herunterladen
 
-Laden Sie die entsprechende Version für Ihr Betriebssystem herunter:
+Laden Sie die Software von [GitHub](https://github.com/mvach/ctRestClientReleaseTest/releases/latest) herunter.
 
-| Plattform | Architektur | Download Link |
-|-----------|-------------|---------------|
-| 🐧 Linux | x86_64 | [ctRestClient_latest_linux_x86_64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/latest/ctRestClient_latest_linux_x86_64.tar.gz) |
-| 🍎 macOS | Intel (x86_64) | [ctRestClient_latest_darwin_x86_64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/latest/ctRestClient_latest_darwin_x86_64.tar.gz) |
-| 🍎 macOS | Apple Silicon (ARM64) | [ctRestClient_latest_darwin_arm64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/latest/ctRestClient_latest_darwin_arm64.tar.gz) |
-| 🪟 Windows | x86_64 | [ctRestClient_latest_windows_x86_64.tar.gz](https://github.com/mvach/ctRestClient/releases/download/latest/ctRestClient_latest_windows_x86_64.tar.gz) |
+Das herunterzuladende Archiv trägt den Namen ctRestClient_<version\>.tar.gz. In diesem Archiv befinden sich die ausführbaren Binaries für Windows, Linux, und MacOs.
 
-[📋 Alle Releases anzeigen](https://github.com/mvach/ctRestClient/releases/tag/latest)
 
 ### 2. KeePass-Datenbank einrichten
 
