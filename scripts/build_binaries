@@ -17,22 +17,49 @@ rm -rf "$OUTPUT_DIR"
 # Create the output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
 
+# Create an empty checksums.txt file
+touch "$OUTPUT_DIR/checksums.txt"
+
 echo ""
-echo "Building for Windows (64 bit)..."
+echo "Creating binaries for multiple platforms..."
+echo "  Building for Windows (64 bit)..."
 GOOS=windows GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient-windows-amd64.exe"
+sha256sum "$OUTPUT_DIR/ctRestClient-windows-amd64.exe" >> "$OUTPUT_DIR/checksums.txt"
 
-echo ""
-echo "Building for macOS (Intel)..."
+echo "  Building for macOS (Intel)..."
 GOOS=darwin GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient-darwin-amd64"
+sha256sum "$OUTPUT_DIR/ctRestClient-darwin-amd64" >> "$OUTPUT_DIR/checksums.txt"
 
-echo ""
-echo "Building for macOS (M1/M2)..."
+echo "  Building for macOS (M1/M2)..."
 GOOS=darwin GOARCH=arm64 go build -o "$OUTPUT_DIR/ctRestClient-darwin-arm64"
+sha256sum "$OUTPUT_DIR/ctRestClient-darwin-arm64" >> "$OUTPUT_DIR/checksums.txt"
 
-echo ""
-echo "Building for Linux (64 bit)..."
+echo "  Building for Linux (64 bit)..."
 GOOS=linux GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient-linux-amd64"
+sha256sum "$OUTPUT_DIR/ctRestClient-linux-amd64" >> "$OUTPUT_DIR/checksums.txt"
+
+echo "Binaries are located in the $OUTPUT_DIR directory."
 
 echo ""
-echo "Builds completed."
-echo "Binaries are located in the $OUTPUT_DIR directory."
+echo "Creating release archive..."
+echo "  Copying LICENSE file..."
+cp LICENSE "$OUTPUT_DIR/"
+
+# Get version from git
+VERSION="$(git describe --tags --always)"
+echo "  Using version: $VERSION"
+echo "  Creating VERSION file..."
+echo "$VERSION" > "$OUTPUT_DIR/VERSION"
+echo "  Compressing archive..."
+ARCHIVE_NAME="ctRestClient_${VERSION}.tar.gz"
+tar -czf "$OUTPUT_DIR/$ARCHIVE_NAME" \
+    -C "$OUTPUT_DIR" \
+    "ctRestClient-windows-amd64.exe" \
+    "ctRestClient-darwin-amd64" \
+    "ctRestClient-darwin-arm64" \
+    "ctRestClient-linux-amd64" \
+    "LICENSE" \
+    "VERSION" \
+    "checksums.txt"
+echo "Archive is located at $OUTPUT_DIR/$ARCHIVE_NAME"
+echo ""

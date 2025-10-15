@@ -33,17 +33,8 @@ jobs:
       - name: Run unit tests
         run: go test ./...
 
-      - name: Install GoReleaser (no execution yet)
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          distribution: goreleaser
-          version: '~> v2'
-          install-only: true
-
-      - name: GoReleaser build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: goreleaser release --clean --skip=publish --skip=announce
+      - name: Run build
+        run: scripts/build_binaries
 
       - name: Virus scan
         run: |
@@ -53,13 +44,13 @@ jobs:
           echo "Scanning built binary with ClamAV..."
           clamscan --recursive --infected --verbose dist/ || SCAN_STATUS=$?
           if [ "${SCAN_STATUS:-0}" -eq 1 ]; then
-            echo "❌ Virus detected in build artifacts. Aborting publish." >&2
+            echo "❌ Virus detected in build artifacts. Build failed." >&2
             exit 1
           elif [ "${SCAN_STATUS:-0}" -gt 1 ]; then
-            echo "❌ ClamAV scan error (exit code $SCAN_STATUS). Aborting publish." >&2
+            echo "❌ ClamAV scan error (exit code $SCAN_STATUS). Build failed." >&2
             exit $SCAN_STATUS
           fi
-          echo "✅ No viruses found. Proceeding to publish."
+          echo "✅ No viruses found."
 
       - name: Create GitHub Release & upload artifacts
         uses: softprops/action-gh-release@v2

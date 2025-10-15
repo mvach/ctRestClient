@@ -6,13 +6,15 @@
 
 set -e
 
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <version>"
-    echo "Example: $0 v1.0.0"
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <version> <origin>"
+    echo "Example: $0 v1.0.0 origin"
     exit 1
 fi
 
-VERSION=$1
+ORIGIN=$1
+VERSION=$2
+
 
 # Validate version format (should start with v)
 if [[ ! $VERSION =~ ^v ]]; then
@@ -32,8 +34,8 @@ fi
 echo "Creating tag $VERSION..."
 git tag "$VERSION"
 
-echo "Pushing tag to origin..."
-git push origin "$VERSION"
+echo "Pushing tag to $ORIGIN..."
+git push "$ORIGIN" "$VERSION"
 
 echo "Release $VERSION created successfully!"
 echo "GitHub Actions will now build and publish the release automatically."

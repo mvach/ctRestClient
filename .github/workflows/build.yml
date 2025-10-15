@@ -48,4 +48,4 @@ jobs:
           echo "❌ ClamAV scan error (exit code $SCAN_STATUS). Build failed." >&2
           exit $SCAN_STATUS
         fi
-        echo "✅ No viruses found in built binary."
+        echo "✅ No viruses found."
