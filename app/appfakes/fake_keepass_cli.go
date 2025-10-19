@@ -20,6 +20,19 @@ type FakeKeepassCli struct {
 		result1 string
 		result2 error
 	}
+	IsPasswordValidStub        func(string) (bool, error)
+	isPasswordValidMutex       sync.RWMutex
+	isPasswordValidArgsForCall []struct {
+		arg1 string
+	}
+	isPasswordValidReturns struct {
+		result1 bool
+		result2 error
+	}
+	isPasswordValidReturnsOnCall map[int]struct {
+		result1 bool
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -88,11 +101,77 @@ func (fake *FakeKeepassCli) GetPasswordReturnsOnCall(i int, result1 string, resu
 	}{result1, result2}
 }
 
+func (fake *FakeKeepassCli) IsPasswordValid(arg1 string) (bool, error) {
+	fake.isPasswordValidMutex.Lock()
+	ret, specificReturn := fake.isPasswordValidReturnsOnCall[len(fake.isPasswordValidArgsForCall)]
+	fake.isPasswordValidArgsForCall = append(fake.isPasswordValidArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	stub := fake.IsPasswordValidStub
+	fakeReturns := fake.isPasswordValidReturns
+	fake.recordInvocation("IsPasswordValid", []interface{}{arg1})
+	fake.isPasswordValidMutex.Unlock()
+	if stub != nil {
+		return stub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeKeepassCli) IsPasswordValidCallCount() int {
+	fake.isPasswordValidMutex.RLock()
+	defer fake.isPasswordValidMutex.RUnlock()
+	return len(fake.isPasswordValidArgsForCall)
+}
+
+func (fake *FakeKeepassCli) IsPasswordValidCalls(stub func(string) (bool, error)) {
+	fake.isPasswordValidMutex.Lock()
+	defer fake.isPasswordValidMutex.Unlock()
+	fake.IsPasswordValidStub = stub
+}
+
+func (fake *FakeKeepassCli) IsPasswordValidArgsForCall(i int) string {
+	fake.isPasswordValidMutex.RLock()
+	defer fake.isPasswordValidMutex.RUnlock()
+	argsForCall := fake.isPasswordValidArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeKeepassCli) IsPasswordValidReturns(result1 bool, result2 error) {
+	fake.isPasswordValidMutex.Lock()
+	defer fake.isPasswordValidMutex.Unlock()
+	fake.IsPasswordValidStub = nil
+	fake.isPasswordValidReturns = struct {
+		result1 bool
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeKeepassCli) IsPasswordValidReturnsOnCall(i int, result1 bool, result2 error) {
+	fake.isPasswordValidMutex.Lock()
+	defer fake.isPasswordValidMutex.Unlock()
+	fake.IsPasswordValidStub = nil
+	if fake.isPasswordValidReturnsOnCall == nil {
+		fake.isPasswordValidReturnsOnCall = make(map[int]struct {
+			result1 bool
+			result2 error
+		})
+	}
+	fake.isPasswordValidReturnsOnCall[i] = struct {
+		result1 bool
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeKeepassCli) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.getPasswordMutex.RLock()
 	defer fake.getPasswordMutex.RUnlock()
+	fake.isPasswordValidMutex.RLock()
+	defer fake.isPasswordValidMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

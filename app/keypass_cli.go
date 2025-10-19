@@ -12,6 +12,7 @@ import (
 //counterfeiter:generate . KeepassCli
 type KeepassCli interface {
 	GetPassword(passwordName string) (string, error)
+	IsPasswordValid(passwordName string) (bool, error)
 }
 
 type keepassCli struct {
@@ -39,7 +40,6 @@ func NewKeepassCli(dbFilePath string, password string, log logger.Logger) (Keepa
 }
 
 func (s keepassCli) GetPassword(passwordName string) (string, error) {
-	// Use the same command format that works on your command line
 	cmd := exec.Command("keepassxc-cli", "show", "-q", "-a", "Password", s.dbFilePath, passwordName)
 	cmd.Stdin = bytes.NewBufferString(s.password + "\n")
 
@@ -51,8 +51,30 @@ func (s keepassCli) GetPassword(passwordName string) (string, error) {
 		return "", fmt.Errorf("command error: %v, stderr: %s, stdout: %s", err, stderr.String(), out.String())
 	}
 
-	// Trim whitespace from the output
 	result := strings.TrimSpace(out.String())
 
 	return result, nil
+}
+
+func (s keepassCli) IsPasswordValid(passwordName string) (bool, error) {
+	cmd := exec.Command("keepassxc-cli", "ls", "-q", s.dbFilePath)
+	cmd.Stdin = bytes.NewBufferString(s.password + "\n")
+
+	var out, stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+
+	err := cmd.Run()
+	if err == nil {
+		// exit code 0
+		return true, nil
+	}
+
+	// If command executed but returned non-zero exit code, keepassxc-cli will
+	// return an *exec.ExitError. Treat that as "password invalid" (false, nil).
+	if _, ok := err.(*exec.ExitError); ok {
+		return false, nil
+	}
+
+	return false, fmt.Errorf("command error: %v, stderr: %s, stdout: %s", err, stderr.String(), out.String())
 }

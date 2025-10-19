@@ -57,6 +57,15 @@ func main() {
 		log.Fatalf("Failed to initialize Keepass CLI: %v", err)
 	}
 
+	validPassword, err := keepassCli.IsPasswordValid(keepassDbPassword)
+	if err != nil {
+		log.Fatalf("Failed check keepass password: %v", err)
+	}
+
+	if !validPassword {
+		log.Fatalf("The keepass password is invalid")
+	}
+
 	err = app.NewInstancesProcessor(
 		*config,
 		appLogger,
