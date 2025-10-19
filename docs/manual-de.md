@@ -36,7 +36,7 @@
 
 ### 1. Executable herunterladen
 
-Laden Sie die Software von [GitHub](https://github.com/mvach/ctRestClientReleaseTest/releases/latest) herunter.
+Laden Sie die Software von [GitHub](https://github.com/mvach/ctRestClient/releases/latest) herunter.
 
 Das herunterzuladende Archiv trägt den Namen ctRestClient_<version\>.tar.gz. In diesem Archiv befinden sich die ausführbaren Binaries für Windows, Linux, und MacOs.
 
