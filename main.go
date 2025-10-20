@@ -31,18 +31,8 @@ func main() {
 	flag.StringVar(&keepassDbFilePath, "k", "passwords.kdbx", "the Keepass DB file path")
 	flag.Parse()
 
-	config, err := config.LoadConfig(configFilePath)
-	if err != nil {
-		log.Fatalf("Failed to load config from path %s: %v", configFilePath, err)
-	}
-
-	keepassDbPassword, err := getPasswordFromUser()
-	if err != nil {
-		log.Fatalf("Failed to get password: %v", err)
-	}
-
 	rootDir := filepath.Join(outputDir, time.Now().Format("2006.01.02_15-04-05"))
-	err = os.MkdirAll(rootDir, 0755)
+	err := os.MkdirAll(rootDir, 0755)
 	if err != nil {
 		log.Fatalf("    failed to create directory: %v", err)
 	}
@@ -52,18 +42,28 @@ func main() {
 	appLogger := logger.NewLogger(logFile)
 	logGeneralInfo(appLogger, getCurrentUserName(), getCurrentOSName(), getDate())
 
+	config, err := config.LoadConfig(configFilePath)
+	if err != nil {
+		appLogger.Fatal(fmt.Sprintf("Failed to load config from path %s: %v", configFilePath, err))
+	}
+
+	keepassDbPassword, err := getPasswordFromUser()
+	if err != nil {
+		appLogger.Fatal(fmt.Sprintf("Failed to get password: %v", err))
+	}
+
 	keepassCli, err := app.NewKeepassCli(keepassDbFilePath, keepassDbPassword, appLogger)
 	if err != nil {
-		log.Fatalf("Failed to initialize Keepass CLI: %v", err)
+		appLogger.Fatal(fmt.Sprintf("Failed to initialize Keepass CLI: %v", err))
 	}
 
 	validPassword, err := keepassCli.IsPasswordValid(keepassDbPassword)
 	if err != nil {
-		log.Fatalf("Failed check keepass password: %v", err)
+		appLogger.Fatal(fmt.Sprintf("Failed check keepass password: %v", err))
 	}
 
 	if !validPassword {
-		log.Fatalf("The keepass password is invalid")
+		appLogger.Fatal("The keepass password is invalid")
 	}
 
 	err = app.NewInstancesProcessor(
@@ -77,7 +77,7 @@ func main() {
 		keepassCli,
 	)
 	if err != nil {
-		log.Fatalf("Failed to process instances: %v", err)
+		appLogger.Fatal(fmt.Sprintf("Failed to process instances: %v", err))
 	}
 }
 
@@ -159,4 +159,5 @@ func logGeneralInfo(logger logger.Logger, user string, os string, date string) {
 	logger.Info(fmt.Sprintf("| %s "+strings.Repeat(" ", boxLength-osInfoLength-2)+"|", osInfo))
 	logger.Info(fmt.Sprintf("| %s "+strings.Repeat(" ", boxLength-dateInfoLength-2)+"|", dateInfo))
 	logger.Info(fmt.Sprintf("+%s+", border))
+	logger.Info("")
 }

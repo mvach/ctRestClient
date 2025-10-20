@@ -11,6 +11,7 @@ type Logger interface {
 	Info(message string)
 	Warn(message string)
 	Error(message string)
+	Fatal(message string)
 	Close() error
 }
 
@@ -53,6 +54,11 @@ func (l *logger) Warn(message string) {
 
 func (l *logger) Error(message string) {
 	l.logger.Println("[ERROR] " + message)
+}
+
+func (l *logger) Fatal(message string) {
+	l.logger.Println("[FATAL] " + message)
+	os.Exit(1)
 }
 
 func (l *logger) Close() error {
