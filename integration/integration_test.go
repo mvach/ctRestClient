@@ -206,7 +206,8 @@ func createChurchToolsHandler() http.Handler {
 				"token": "mock-jwt-token",
 			},
 		}
-		json.NewEncoder(w).Encode(response)
+		err := json.NewEncoder(w).Encode(response)
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	// Handle groups endpoint - return groups list
@@ -247,7 +248,8 @@ func createChurchToolsHandler() http.Handler {
 		response := map[string]interface{}{
 			"data": responseData,
 		}
-		json.NewEncoder(w).Encode(response)
+		err := json.NewEncoder(w).Encode(response)
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	// Handle group members endpoint
@@ -274,13 +276,15 @@ func createChurchToolsHandler() http.Handler {
 					},
 				},
 			}
-			json.NewEncoder(w).Encode(response)
+			err := json.NewEncoder(w).Encode(response)
+			Expect(err).NotTo(HaveOccurred())
 		} else {
 			// Return empty for other groups
 			response := map[string]interface{}{
 				"data": []map[string]interface{}{},
 			}
-			json.NewEncoder(w).Encode(response)
+			err := json.NewEncoder(w).Encode(response)
+			Expect(err).NotTo(HaveOccurred())
 		}
 	})
 
@@ -318,7 +322,8 @@ func createChurchToolsHandler() http.Handler {
 		response := map[string]interface{}{
 			"data": persons,
 		}
-		json.NewEncoder(w).Encode(response)
+		err := json.NewEncoder(w).Encode(response)
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	// Handle any other API calls with a generic response
@@ -328,7 +333,8 @@ func createChurchToolsHandler() http.Handler {
 		response := map[string]interface{}{
 			"data": []interface{}{},
 		}
-		json.NewEncoder(w).Encode(response)
+		err := json.NewEncoder(w).Encode(response)
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	return mux

@@ -79,29 +79,33 @@ func (dp *fileDataProvider) GetData(ctFieldName string, ctFieldValue json.RawMes
 	return "", fmt.Errorf("the value %s is not in '%s'", typedValue.Value, dataFilePath)
 }
 
-func (dp *fileDataProvider) createYamlKeyFromJSON(value json.RawMessage) typedValue {
+func (dp *fileDataProvider) createYamlKeyFromJSON(ctFieldValue json.RawMessage) typedValue {
 	// Parse to determine type
 	var parsedValue interface{}
-	json.Unmarshal(value, &parsedValue)
+	err := json.Unmarshal(ctFieldValue, &parsedValue)
+	if err != nil {
+		// Treat not parsable values as strings
+		return typedValue{Tag: "!!str", Value: string(ctFieldValue)}
+	}
 
 	switch parsedValue.(type) {
 	case string:
 		// Remove quotes from the raw message
-		trimmed := strings.Trim(string(value), "\"")
+		trimmed := strings.Trim(string(ctFieldValue), "\"")
 		return typedValue{Tag: "!!str", Value: trimmed}
 	case float64:
 		// Use the original raw message to preserve format
-		originalValue := string(value)
+		originalValue := string(ctFieldValue)
 		if strings.Contains(originalValue, ".") {
 			return typedValue{Tag: "!!float", Value: originalValue}
 		} else {
 			return typedValue{Tag: "!!int", Value: originalValue}
 		}
 	case int:
-		return typedValue{Tag: "!!int", Value: string(value)}
+		return typedValue{Tag: "!!int", Value: string(ctFieldValue)}
 	case bool:
-		return typedValue{Tag: "!!bool", Value: string(value)}
+		return typedValue{Tag: "!!bool", Value: string(ctFieldValue)}
 	default:
-		return typedValue{Tag: "!!str", Value: string(value)}
+		return typedValue{Tag: "!!str", Value: string(ctFieldValue)}
 	}
 }
