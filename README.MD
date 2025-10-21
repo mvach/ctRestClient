@@ -1,3 +1,5 @@
+[![Build](https://github.com/mvach/ctRestClient/actions/workflows/build.yml/badge.svg?event=push)](https://github.com/mvach/ctRestClient/actions/workflows/build.yml)
+
 # ctRestClient
 
 A command-line tool for exporting ChurchTools groups to CSV files, designed for creating mail merge documents with tools like Microsoft Word or Adobe InDesign.
