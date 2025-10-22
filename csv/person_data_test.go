@@ -44,7 +44,7 @@ var _ = Describe("PersonData", func() {
 
 	var _ = Describe("NewPersonData", func() {
 		It("returns persons", func() {
-			data, err := csv.NewPersonData(persons, []config.Field{{RawString: ptr("id")}, {RawString: ptr("firstName")}, {RawString: ptr("lastName")}, {RawString: ptr("height")}}, personDataProvider, logger)
+			data, err := csv.NewPersonData(persons, []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("firstName")}, {FieldName: ptr("lastName")}, {FieldName: ptr("height")}}, personDataProvider, logger)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(data.Header()).To(Equal([]string{"id", "firstName", "lastName", "height"}))
@@ -56,13 +56,13 @@ var _ = Describe("PersonData", func() {
 		It("returns an error if json cannot be read", func() {
 			persons := []json.RawMessage{json.RawMessage(`[]`)}
 
-			data, err := csv.NewPersonData(persons, []config.Field{{RawString: ptr("id")}, {RawString: ptr("firstName")}, {RawString: ptr("lastName")}}, personDataProvider, logger)
+			data, err := csv.NewPersonData(persons, []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("firstName")}, {FieldName: ptr("lastName")}}, personDataProvider, logger)
 			Expect(data).To(BeNil())
 			Expect(err.Error()).To(ContainSubstring("failed to read person information raw json"))
 		})
 
 		It("sets unknown fields to empty string", func() {
-			data, err := csv.NewPersonData(persons, []config.Field{{RawString: ptr("id")}, {RawString: ptr("unknown")}, {RawString: ptr("lastName")}}, personDataProvider, logger)
+			data, err := csv.NewPersonData(persons, []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("unknown")}, {FieldName: ptr("lastName")}}, personDataProvider, logger)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(logger.WarnArgsForCall(0)).To(Equal("    Field 'unknown' does not exist"))
@@ -79,7 +79,7 @@ var _ = Describe("PersonData", func() {
 				"date": null
         	}`
 			persons = []json.RawMessage{json.RawMessage(person)}
-			fields := []config.Field{{RawString: ptr("id")}, {RawString: ptr("date")}}
+			fields := []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("date")}}
 			data, err := csv.NewPersonData(persons, fields, personDataProvider, logger)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -94,9 +94,9 @@ var _ = Describe("PersonData", func() {
 				"height": 2.7500
 			}`
 			persons = []json.RawMessage{json.RawMessage(person)}
-			fields := []config.Field{{RawString: ptr("id")}, {RawString: ptr("height")}}
+			fields := []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("height")}}
 			data, err := csv.NewPersonData(persons, fields, personDataProvider, logger)
-			
+
 			Expect(err).NotTo(HaveOccurred())
 			Expect(data.Header()).To(Equal([]string{"id", "height"}))
 			Expect(data.Records()).To(HaveLen(1))
@@ -109,7 +109,7 @@ var _ = Describe("PersonData", func() {
 				"isSet": true
         	}`
 			persons = []json.RawMessage{json.RawMessage(person)}
-			fields := []config.Field{{RawString: ptr("id")}, {RawString: ptr("isSet")}}
+			fields := []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("isSet")}}
 			data, err := csv.NewPersonData(persons, fields, personDataProvider, logger)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -119,7 +119,7 @@ var _ = Describe("PersonData", func() {
 		})
 
 		It("sets unknown fields to empty string", func() {
-			fields := []config.Field{{RawString: ptr("id")}, {RawString: ptr("unknown")}}
+			fields := []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("unknown")}}
 			_, err := csv.NewPersonData(persons, fields, personDataProvider, logger)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -135,7 +135,7 @@ var _ = Describe("PersonData", func() {
 
 			personDataProvider.GetDataReturnsOnCall(0, "mapped_value", nil)
 
-			fields := []config.Field{{RawString: ptr("id")}, {RawObject: &config.FieldInformation{FieldName: "key", ColumnName: "mappedColumn"}}}
+			fields := []config.Field{{FieldName: ptr("id")}, {Object: &config.FieldInformation{FieldName: "key", ColumnName: "mappedColumn"}}}
 			data, err := csv.NewPersonData(persons, fields, personDataProvider, logger)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -160,7 +160,7 @@ var _ = Describe("PersonData", func() {
 
 			personDataProvider.GetDataReturnsOnCall(0, "", errors.New("not found"))
 
-			fields := []config.Field{{RawString: ptr("id")}, {RawObject: &config.FieldInformation{FieldName: "key", ColumnName: "mappedColumn"}}}
+			fields := []config.Field{{FieldName: ptr("id")}, {Object: &config.FieldInformation{FieldName: "key", ColumnName: "mappedColumn"}}}
 			data, err := csv.NewPersonData(persons, fields, personDataProvider, logger)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -185,7 +185,7 @@ var _ = Describe("PersonData", func() {
 
 			personDataProvider.GetDataReturnsOnCall(0, "mapped_value", nil)
 
-			fields := []config.Field{{RawString: ptr("id")}, {RawObject: &config.FieldInformation{FieldName: "key", ColumnName: "mappedColumn"}}}
+			fields := []config.Field{{FieldName: ptr("id")}, {Object: &config.FieldInformation{FieldName: "key", ColumnName: "mappedColumn"}}}
 			data, err := csv.NewPersonData(persons, fields, personDataProvider, logger)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -210,7 +210,7 @@ var _ = Describe("PersonData", func() {
 
 			personDataProvider.GetDataReturnsOnCall(0, "", errors.New("not found"))
 
-			fields := []config.Field{{RawString: ptr("id")}, {RawObject: &config.FieldInformation{FieldName: "key", ColumnName: "mappedColumn"}}}
+			fields := []config.Field{{FieldName: ptr("id")}, {Object: &config.FieldInformation{FieldName: "key", ColumnName: "mappedColumn"}}}
 			data, err := csv.NewPersonData(persons, fields, personDataProvider, logger)
 			Expect(err).NotTo(HaveOccurred())
 

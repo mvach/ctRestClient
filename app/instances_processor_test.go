@@ -15,7 +15,7 @@ import (
 )
 
 func ptr(s string) *string {
-    return &s
+	return &s
 }
 
 var _ = Describe("InstanceProcessor", func() {
@@ -46,7 +46,7 @@ var _ = Describe("InstanceProcessor", func() {
 					Groups: []config.Group{
 						{
 							Name:   "foo_group",
-							Fields: []config.Field{{RawString: ptr("id")}, {RawString: ptr("firstName")}, {RawString: ptr("lastName")}},
+							Fields: []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("firstName")}, {FieldName: ptr("lastName")}},
 						},
 					},
 				},
@@ -94,7 +94,7 @@ var _ = Describe("InstanceProcessor", func() {
 						Groups: []config.Group{
 							{
 								Name:   "foo_group",
-								Fields: []config.Field{{RawString: ptr("id")}, {RawString: ptr("firstName")}, {RawString: ptr("lastName")}},
+								Fields: []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("firstName")}, {FieldName: ptr("lastName")}},
 							},
 						},
 					},
