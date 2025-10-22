@@ -34,10 +34,10 @@ jobs:
         sudo apt-get install -y --no-install-recommends keepassxc clamav
 
     - name: Run unit tests
-      run: go test ./...
+      run: make test
 
     - name: Run build
-      run: scripts/build_binaries
+      run: make build
 
     - name: Virus scan
       run: |

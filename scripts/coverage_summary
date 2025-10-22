@@ -1,0 +1,29 @@
+#!/bin/bash
+
+echo "=== ctRestClient Coverage Report ==="
+echo
+
+# Get list of packages excluding fakes directories
+PACKAGES=$(go list ./... | grep -v fakes)
+
+# Generate coverage
+go test -coverprofile=coverage.out $PACKAGES > /dev/null 2>&1
+
+# Overall coverage
+echo "📊 Overall Coverage:"
+go tool cover -func=coverage.out | grep "total:" | awk '{print "   Total: " $3}'
+echo
+
+# Package-level coverage (excluding fakes and generated files)
+echo "📦 Package Coverage:"
+echo "   Package                 Coverage"
+echo "   --------------------------------"
+
+# Extract package coverage from test output
+go test -cover $PACKAGES 2>&1 | grep -E "coverage:" | grep "ok" | while read line; do
+    package=$(echo $line | awk '{print $2}' | sed 's/ctRestClient\///' | sed 's/ctRestClient$/main/')
+    coverage=$(echo $line | awk '{print $5}')
+    if [ "$coverage" != "of" ]; then
+        printf "   %-25s %s\n" "$package" "$coverage"
+    fi
+done
