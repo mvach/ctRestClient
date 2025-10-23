@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"regexp"
-	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -20,39 +18,9 @@ type Instance struct {
 	Groups    []Group `yaml:"groups"`
 }
 
-type Group struct {
-	Name   string  `yaml:"name"`
-	Fields []Field `yaml:"fields"`
-}
-
-// A Field can be either a simple string or a structured object
-// with field and column names.
-type Field struct {
-	FieldName *string
-	Object    *FieldInformation
-}
-
 type FieldInformation struct {
 	FieldName  string `yaml:"fieldname"`
 	ColumnName string `yaml:"columnname"`
-}
-
-func (g Group) SanitizedGroupName() string {
-	fileName := g.Name
-	fileName = strings.ReplaceAll(fileName, " ", "_")
-	fileName = strings.ReplaceAll(fileName, ",", ".")
-	fileName = strings.ReplaceAll(fileName, "ä", "ae")
-	fileName = strings.ReplaceAll(fileName, "ö", "oe")
-	fileName = strings.ReplaceAll(fileName, "ü", "ue")
-	fileName = strings.ReplaceAll(fileName, "Ä", "Ae")
-	fileName = strings.ReplaceAll(fileName, "Ö", "Oe")
-	fileName = strings.ReplaceAll(fileName, "Ü", "Ue")
-
-	re := regexp.MustCompile(`[^\w\-.]`)
-	fileName = re.ReplaceAllString(fileName, "")
-	fileName = strings.ReplaceAll(fileName, "__", "_")
-
-	return fileName
 }
 
 func LoadConfig(filePath string) (*Config, error) {
@@ -100,53 +68,4 @@ func (c Config) validate() error {
 		}
 	}
 	return nil
-}
-
-func (f *Field) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	// Try unmarshaling as a simple string
-	var s string
-	if err := unmarshal(&s); err == nil {
-		f.FieldName = &s
-		return nil
-	}
-
-	// Try unmarshaling as a structured object
-	var obj FieldInformation
-	if err := unmarshal(&obj); err == nil {
-		// Validate required fields
-		if obj.FieldName == "" || obj.ColumnName == "" {
-			return fmt.Errorf("both 'fieldname' and 'columnname' must be set")
-		}
-		f.Object = &obj
-		return nil
-	}
-
-	return fmt.Errorf("field must be a string or an object with 'fieldname' and 'columnname'")
-}
-
-func (f *Field) GetFieldName() string {
-	if f.Object != nil {
-		return f.Object.FieldName
-	}
-	if f.FieldName != nil {
-		return *f.FieldName
-	}
-	return ""
-}
-
-func (f *Field) GetColumnName() string {
-	if f.Object != nil {
-		return f.Object.ColumnName
-	}
-	if f.FieldName != nil {
-		return *f.FieldName
-	}
-	return ""
-}
-
-func (f *Field) IsMappedData() bool {
-	if f.FieldName == nil && f.Object != nil {
-		return true
-	}
-	return false
 }
