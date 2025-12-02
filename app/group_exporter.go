@@ -13,6 +13,7 @@ type GroupExporter interface {
 	ExportGroupMembers(
 		groupName string,
 		groupsEndpoint rest.GroupsEndpoint,
+		dynamicGroupsEndpoint rest.DynamicGroupsEndpoint,
 		personsEndpoint rest.PersonsEndpoint,
 	) ([]json.RawMessage, error)
 }
@@ -27,6 +28,7 @@ func NewGroupExporter() GroupExporter {
 func (g groupExporter) ExportGroupMembers(
 	groupName string,
 	groupsEndpoint rest.GroupsEndpoint,
+	dynamicGroupsEndpoint rest.DynamicGroupsEndpoint,
 	personsEndpoint rest.PersonsEndpoint,
 ) ([]json.RawMessage, error) {
 	var result []json.RawMessage
@@ -34,6 +36,15 @@ func (g groupExporter) ExportGroupMembers(
 	ctGroup, err := groupsEndpoint.GetGroup(groupName)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get group by name: %v", err)
+	}
+
+	dynamicGroup, err := dynamicGroupsEndpoint.GetGroupStatus(ctGroup.ID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get dynamic group status, %w", err)
+	}
+
+	if *dynamicGroup.Status != "active" {
+		return nil, &GroupNotActiveError{GroupName: groupName}
 	}
 
 	groupMembers, err := groupsEndpoint.GetGroupMembers(ctGroup.ID)

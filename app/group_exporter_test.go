@@ -14,13 +14,15 @@ import (
 var _ = Describe("GroupExporter", func() {
 
 	var (
-		groupsEndpoint  *restfakes.FakeGroupsEndpoint
-		personsEndpoint *restfakes.FakePersonsEndpoint
-		groupExporter   app.GroupExporter
+		groupsEndpoint        *restfakes.FakeGroupsEndpoint
+		dynamicGroupsEndpoint *restfakes.FakeDynamicGroupsEndpoint
+		personsEndpoint       *restfakes.FakePersonsEndpoint
+		groupExporter         app.GroupExporter
 	)
 
 	BeforeEach(func() {
 		groupsEndpoint = &restfakes.FakeGroupsEndpoint{}
+		dynamicGroupsEndpoint = &restfakes.FakeDynamicGroupsEndpoint{}
 		personsEndpoint = &restfakes.FakePersonsEndpoint{}
 
 		groupExporter = app.NewGroupExporter()
@@ -40,6 +42,10 @@ var _ = Describe("GroupExporter", func() {
 		})
 
 		It("returns persons", func() {
+			dynamicGroupsEndpoint.GetGroupStatusReturns(
+				rest.DynamicGroupsStatusResponse{Status: ptr("active")}, nil,
+			)
+
 			person1 := `{	
                 "id": 1,
                 "firstName": "foo_firstname",
@@ -56,6 +62,7 @@ var _ = Describe("GroupExporter", func() {
 			personData, err := groupExporter.ExportGroupMembers(
 				"group1",
 				groupsEndpoint,
+				dynamicGroupsEndpoint,
 				personsEndpoint,
 			)
 
@@ -66,12 +73,49 @@ var _ = Describe("GroupExporter", func() {
 			Expect(personData[1]).To(MatchJSON(person2))
 		})
 
+		It("returns an error if fetching the dynamic group status fails", func() {
+			dynamicGroupsEndpoint.GetGroupStatusReturns(
+				rest.DynamicGroupsStatusResponse{}, errors.New("boom"),
+			)
+
+			personData, err := groupExporter.ExportGroupMembers(
+				"group1",
+				groupsEndpoint,
+				dynamicGroupsEndpoint,
+				personsEndpoint,
+			)
+
+			Expect(err.Error()).To(Equal("failed to get dynamic group status, boom"))
+			Expect(personData).To(BeNil())
+		})
+
+		It("returns an error if the dynamic group status is not active", func() {
+			dynamicGroupsEndpoint.GetGroupStatusReturns(
+				rest.DynamicGroupsStatusResponse{Status: ptr("not-active")}, nil,
+			)
+
+			personData, err := groupExporter.ExportGroupMembers(
+				"group1",
+				groupsEndpoint,
+				dynamicGroupsEndpoint,
+				personsEndpoint,
+			)
+
+			Expect(err.Error()).To(Equal("dynamic group 'group1' is not active"))
+			Expect(personData).To(BeNil())
+		})
+
 		It("returns an error if group members cannot be resolved", func() {
+			dynamicGroupsEndpoint.GetGroupStatusReturns(
+				rest.DynamicGroupsStatusResponse{Status: ptr("active")}, nil,
+			)
+
 			groupsEndpoint.GetGroupMembersReturns(nil, errors.New("boom"))
 
 			personData, err := groupExporter.ExportGroupMembers(
 				"group1",
 				groupsEndpoint,
+				dynamicGroupsEndpoint,
 				personsEndpoint,
 			)
 
@@ -80,11 +124,16 @@ var _ = Describe("GroupExporter", func() {
 		})
 
 		It("returns an error if person cannot be resolved", func() {
+			dynamicGroupsEndpoint.GetGroupStatusReturns(
+				rest.DynamicGroupsStatusResponse{Status: ptr("active")}, nil,
+			)
+
 			personsEndpoint.GetPersonReturnsOnCall(0, nil, errors.New("boom"))
 
 			personData, err := groupExporter.ExportGroupMembers(
 				"group1",
 				groupsEndpoint,
+				dynamicGroupsEndpoint,
 				personsEndpoint,
 			)
 

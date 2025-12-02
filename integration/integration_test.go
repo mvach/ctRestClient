@@ -288,6 +288,17 @@ func createChurchToolsHandler() http.Handler {
 		}
 	})
 
+	// Handle dynamic group status endpoint for youth_group (id=1)
+	mux.HandleFunc("/api/dynamicgroups/1/status", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		response := map[string]interface{}{
+			"dynamicGroupStatus": "active",
+		}
+		err := json.NewEncoder(w).Encode(response)
+		Expect(err).NotTo(HaveOccurred())
+	})
+
 	// Handle persons endpoint - return person details
 	mux.HandleFunc("/api/persons", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

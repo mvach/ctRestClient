@@ -11,3 +11,8 @@ func TestClient(t *testing.T) {
     RegisterFailHandler(Fail)
     RunSpecs(t, "App Suite")
 }
+
+
+func ptr(s string) *string {
+	return &s
+}

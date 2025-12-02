@@ -44,6 +44,7 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter csv.C
 
 		httpClient := httpclient.NewHTTPClient(instance.Hostname, token)
 		groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
+		dynamicGroupsEndpoint := rest.NewDynamicGroupsEndpoint(httpClient)
 		personEndpoint := rest.NewPersonsEndpoint(httpClient)
 
 		for _, group := range instance.Groups {
@@ -53,11 +54,17 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter csv.C
 			persons, err := groupExporter.ExportGroupMembers(
 				group.Name,
 				groupsEndpoint,
+				dynamicGroupsEndpoint,
 				personEndpoint,
 			)
 			if err != nil {
-				p.logger.Error(fmt.Sprintf("    failed to get person information: %v", err))
-				continue
+				if _, ok := err.(*GroupNotActiveError); ok {
+					p.logger.Warn("      skipping csv creation since the group is not active")
+					continue
+				} else {
+					p.logger.Error(fmt.Sprintf("      failed to get person information: %v", err))
+					continue
+				}
 			}
 
 			if len(persons) == 0 {

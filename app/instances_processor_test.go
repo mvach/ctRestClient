@@ -14,10 +14,6 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func ptr(s string) *string {
-	return &s
-}
-
 var _ = Describe("InstanceProcessor", func() {
 
 	var (
@@ -136,6 +132,17 @@ var _ = Describe("InstanceProcessor", func() {
 			Expect(logger.InfoArgsForCall(6)).To(Equal("      the group has 2 persons"))
 		})
 
+		It("logs a warning for not active groups", func() {
+			groupExporter.ExportGroupMembersReturns(nil, &app.GroupNotActiveError{GroupName: "foo_group"})
+
+			err := instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(), personDataProvider, keepassCli)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(logger.InfoArgsForCall(2)).To(ContainSubstring("Processing instance 'foo'"))
+			Expect(logger.InfoArgsForCall(5)).To(Equal("  processing group 'foo_group'"))
+			Expect(logger.WarnArgsForCall(0)).To(Equal("      skipping csv creation since the group is not active"))
+		})
+
 		It("returns an error if person data export fails", func() {
 			groupExporter.ExportGroupMembersReturns(nil, errors.New("boom"))
 
@@ -143,8 +150,8 @@ var _ = Describe("InstanceProcessor", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(logger.InfoArgsForCall(2)).To(ContainSubstring("Processing instance 'foo'"))
-			Expect(logger.InfoArgsForCall(5)).To(Equal("  processing group 'foo_group'"))
-			Expect(logger.ErrorArgsForCall(0)).To(Equal("    failed to get person information: boom"))
+			Expect(logger.InfoArgsForCall(5)).To( Equal("  processing group 'foo_group'"))
+			Expect(logger.ErrorArgsForCall(0)).To(Equal("      failed to get person information: boom"))
 		})
 
 		It("logs an error if person data cannot be read", func() {
