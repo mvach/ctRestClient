@@ -21,7 +21,7 @@
    - **Windows**: `keepassxc-cli.exe` is usually located under `Program Files/KeePassXC`
    - **macOS**: `keepassxc-cli` is usually located under `/Applications/KeePassXC.app/Contents/MacOS`
    - **Linux**: `keepassxc-cli` is usually located under `/usr/bin` or `/usr/local/bin`
-   
+
    **Important**: Without `keepassxc-cli` in PATH, ctRestClient cannot access the token database!
 
 2. **ChurchTools Access**: 
@@ -36,7 +36,7 @@
 
 ### 1. Download Executable
 
-Download the software from [GitHub](https://github.com/mvach/ctRestClient/releases/latest).
+Download the software from [GitHub](https://github.com/mvach/ctRestClient/releases/tag/${version}).
 
 The archive to download is named ( ctRestClient_<version\>.tar.gz ). This archive contains the executable binaries for Windows, Linux, and macOS.
 

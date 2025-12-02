@@ -44,7 +44,7 @@ nav:
 extra:
   version:
     provider: mike
-    default: latest
+    version: $VERSION
 EOF
 
 # Process template files (*.md.tmp) to create versioned documentation
