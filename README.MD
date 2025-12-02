@@ -12,20 +12,22 @@ A command-line tool for exporting ChurchTools groups to CSV files, designed for 
 - Configurable data fields and value transformations
 - Cross-platform support (Windows, macOS, Linux)
 
-## Quick Start
+## Documentation
 
-For detailed user instructions, see:
-- [docs/manual-en.md](docs/manual-en.md) (English user manual)
-- [docs/manual-de.md](docs/manual-de.md) (German user manual)
+https://mvach.github.io/ctRestClient
 
-### Basic Usage
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Basic Usage
 
 ```bash
 # Download the appropriate binary for your platform
 ./ctRestClient-linux-amd64 -c config.yml -k tokens.kdbx
 ```
 
-### Configuration Example
+## Configuration Example
 
 ```yaml
 instances:
@@ -106,12 +108,3 @@ go build -o bin/ctRestClient ./main.go
 # - ctRestClient-darwin-arm64
 # - ctRestClient-linux-amd64
 ```
-
-## Documentation
-
-- [docs/manual-en.md](docs/manual-en.md) - Complete English user manual
-- [docs/manual-de.md](docs/manual-de.md) - Complete German user manual
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
