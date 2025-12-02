@@ -15,7 +15,7 @@ coverage-summary:
 	./scripts/coverage_summary
 
 lint:
-	~/go/bin/golangci-lint run
+	golangci-lint run
 
 build:
 	./scripts/build_binaries
