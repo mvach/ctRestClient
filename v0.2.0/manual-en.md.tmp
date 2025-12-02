@@ -1,0 +1,334 @@
+# ctRestClient - User Manual
+
+## Overview
+
+`ctRestClient` is a command-line tool that enables the export of groups from [ChurchTools](https://church.tools/en/home/) as CSV files. This is particularly useful for creating mail merge documents with tools like Microsoft Word or Adobe InDesign.
+
+## Key Features
+
+- **Export ChurchTools Groups**: Exports member data from dynamic groups
+- **CSV Format**: Output in standardized CSV files
+- **Secure Token Management**: Uses KeePass databases for API tokens
+- **Multi-Instance Support**: Simultaneous export from multiple ChurchTools instances
+- **Configurable Data Fields**: Flexible selection of fields to export
+- **Cross-Platform**: Available for Windows, macOS, and Linux
+
+## Prerequisites
+
+### Software Requirements
+
+1. **KeePassXC**: KeePassXC must be installed and the command-line tool `keepassxc-cli` must be available in the system PATH
+   - **Windows**: `keepassxc-cli.exe` is usually located under `Program Files/KeePassXC`
+   - **macOS**: `keepassxc-cli` is usually located under `/Applications/KeePassXC.app/Contents/MacOS`
+   - **Linux**: `keepassxc-cli` is usually located under `/usr/bin` or `/usr/local/bin`
+
+   **Important**: Without `keepassxc-cli` in PATH, ctRestClient cannot access the token database!
+
+2. **ChurchTools Access**: 
+   - Valid API token for each ChurchTools instance
+   - Permission to read the relevant groups
+
+### Hardware Requirements
+
+- Minimal: Any system with sufficient memory for the data to be exported
+
+## Installation
+
+### 1. Download Executable
+
+Download the software from [GitHub](https://github.com/mvach/ctRestClient/releases/tag/${version}).
+
+The archive to download is named ( ctRestClient_<version\>.tar.gz ). This archive contains the executable binaries for Windows, Linux, and macOS.
+
+### 2. Set Up KeePass Database
+
+Create a KeePass database (`.kdbx` file) and store your ChurchTools API tokens:
+
+1. Open KeePassXC
+2. Create a new database
+3. For each ChurchTools instance, create an entry:
+   - **Title**: A unique name (e.g., `myChurch`)
+   - **Password**: Your ChurchTools API token
+4. Save the database as `churchtools-tokens.kdbx` (recommended name)
+
+### 3. Folder Structure
+
+Create the following folder structure:
+```
+my-project/
+├── ctRestClient-[platform]        # The executable
+├── config.yml                     # Configuration file
+├── churchtools-tokens.kdbx        # KeePass database
+├── data/                          # Optional data for value transformations
+└── exports/                       # Output directory (created automatically)
+```
+
+## Configuration
+
+### Basic Configuration
+
+Configuration is done via a YAML file. Here's an example (`config.yml`):
+
+```yaml
+instances:
+  - hostname: myChurch.com
+    token_name: myChurch
+    groups:
+    - name: Confirmation Class
+      fields: [id, firstName, lastName, sexId, street, zip, city]
+    - name: Parents of Confirmation Class
+      fields: [id, firstName, lastName, sexId, email]
+```
+
+### Configuration Parameters
+
+#### Instances (`instances`)
+- **hostname**: The domain of your ChurchTools instance (without https://)
+- **token_name**: Name of the token entry in the KeePass database
+- **groups**: List of groups to export
+
+#### Groups (`groups`)
+- **name**: Exact name of the group in ChurchTools
+- **fields**: List of data fields to export
+
+### Advanced Field Configuration
+
+#### Value Transformation with Custom Column Names
+
+`ctRestClient` supports automatic transformation of ChurchTools values into more user-friendly outputs. At the same time, you can also customize the column names in the CSV output.
+
+**How it works:**
+- Values are read from YAML files in the `data/` directory
+- The path follows the schema: `data/<module>/<fieldname>.yml`
+- For the field `sexId` in the `persons` module: `data/persons/sexId.yml`
+- Column names can be customized with `columnname`
+
+**Example for transforming sexId values:**
+
+Create the file `data/persons/sexId.yml`:
+```yaml
+1: male
+2: female
+3: diverse
+```
+
+**Configuration:**
+```yaml
+fields: 
+  - id
+  - firstName
+  - lastName
+  - {fieldname: sexId, columnname: "gender"}
+  - birthday
+```
+
+### Example Configurations
+
+#### Birthday Lists
+
+```yaml
+instances:
+  - hostname: myChurch.com
+    token_name: myChurch
+    groups:
+    - name: Confirmation Class
+      fields: [id, firstName, lastName, sexId, street, zip, city]
+    - name: Parents of Confirmation Class
+      fields: [id, firstName, lastName, sexId, email]
+```
+
+#### Multi-Instance Setup
+
+```yaml
+instances:
+  - hostname: cumulus.myChurch.com
+    token_name: cumulus
+    groups:
+    - name: Children's Service
+      fields: [id, firstName, lastName]
+  - hostname: stratus.myChurch.com
+    token_name: stratus
+    groups:
+    - name: Youth Group
+      fields: [id, firstName, lastName, email]
+```
+
+## Usage
+
+### Command Line Parameters
+
+```bash
+ctRestClient [OPTIONS]
+```
+
+#### Available Options:
+
+- **`-c <path>`**: Path to the configuration file
+  - Default: `config.yml` in the executable directory
+- **`-k <path>`**: Path to the KeePass database
+  - Default: `passwords.kdbx` in the executable directory
+- **`-o <path>`**: Output directory for CSV files
+  - Default: `exports/` in the executable directory
+- **`-d <path>`**: Path to the data directory for value transformations
+  - Default: `data/` in the executable directory
+
+### Basic Execution
+
+#### Windows
+```cmd
+ctRestClient-windows-amd64.exe
+```
+
+#### macOS
+```bash
+./ctRestClient-darwin-arm64  # For Apple Silicon
+./ctRestClient-darwin-amd64  # For Intel Macs
+```
+
+#### Linux
+```bash
+./ctRestClient-linux-amd64
+```
+
+### Execution with Custom Paths
+
+```bash
+# With specific configuration
+./ctRestClient-linux-amd64 -c /path/to/my/config.yml
+
+# With specific KeePass database
+./ctRestClient-linux-amd64 -k /path/to/tokens.kdbx
+
+# With specific output directory
+./ctRestClient-linux-amd64 -o /path/to/exports/
+
+# With specific data directory
+./ctRestClient-linux-amd64 -d /path/to/data/
+
+# Combination of all parameters
+./ctRestClient-linux-amd64 -c config.yml -k tokens.kdbx -o exports/ -d data/
+```
+
+### Automation with Scripts
+
+#### Bash Script for Linux/macOS (`export.sh`)
+
+```bash
+#!/usr/bin/env bash
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Detect platform
+OS=$(uname -s)
+ARCH=$(uname -m)
+
+case "$OS" in
+    "Darwin")
+        export PATH=$PATH:/Applications/KeePassXC.app/Contents/MacOS
+        case "$ARCH" in
+            "arm64")
+                EXECUTABLE="$SCRIPT_DIR/ctRestClient-darwin-arm64"
+                ;;
+            "x86_64")
+                EXECUTABLE="$SCRIPT_DIR/ctRestClient-darwin-amd64"
+                ;;
+        esac
+        ;;
+    "Linux")
+        export PATH=$PATH:/usr/bin:/usr/local/bin
+        EXECUTABLE="$SCRIPT_DIR/ctRestClient-linux-amd64"
+        ;;
+esac
+
+# Execution
+chmod +x "$EXECUTABLE"
+"$EXECUTABLE" -k "$HOME/churchtools-tokens.kdbx" -c "$SCRIPT_DIR/config.yml"
+```
+
+#### Batch Script for Windows (`export.bat`)
+
+```batch
+@echo off
+set SCRIPT_DIR=%~dp0
+set EXECUTABLE=%SCRIPT_DIR%ctRestClient-windows-amd64.exe
+
+"%EXECUTABLE%" -k "%USERPROFILE%\churchtools-tokens.kdbx" -c "%SCRIPT_DIR%config.yml"
+pause
+```
+
+## Output
+
+### File Structure
+
+The export creates the following structure:
+
+```
+exports/
+└── [DATE]_[TIME]/
+    ├── ctRestClient.log
+    └── [HOSTNAME]/
+        ├── [GroupName_1].csv
+        ├── [GroupName_2].csv
+        └── ...
+```
+
+Example:
+```
+exports/
+└── 2025.08.06_14-30-15/
+    ├── ctRestClient.log
+    └── your-church.krz.tools/
+        ├── Confirmation_Class.csv
+        └── Parents_of_Confirmation_Class.csv
+```
+
+### CSV Format
+
+The CSV files use:
+- **Delimiter**: Semicolon (`;`)
+- **Encoding**: UTF-16 Little Endian with BOM
+- **First line**: Column headers
+
+Example content:
+```csv
+id;firstName;lastName;street;zip;city
+123;John;Doe;Main Street 1;12345;Hometown
+124;Jane;Smith;Example Ave 2;54321;Sample City
+```
+
+## Logging
+
+Detailed information about execution can be found in the `ctRestClient.log` file in the output directory. This contains:
+- Timestamps of all actions
+- Successful exports
+- Error messages with details
+- Performance information
+
+## Best Practices
+
+### Security
+
+1. **Protect KeePass Database**: Use a strong master password
+2. **Rotate API Tokens**: Regularly renew your ChurchTools tokens
+3. **Keep KeePassXC Updated**: Install regular updates for KeePassXC to close security vulnerabilities
+4. **File Permissions**: Restrict access to configuration files
+5. **Secure Transmission**: Ensure ChurchTools is accessible via HTTPS
+
+### Performance
+
+1. **Optimize Field Selection**: Export only required fields
+2. **Consider Group Size**: Very large groups may take longer to export
+3. **Network Connection**: Use a stable internet connection
+
+### Organization
+
+1. **Meaningful File Names**: Use descriptive configuration file names
+2. **Configuration Backups**: Regularly create backups of your configuration files
+3. **Documentation**: Document special configurations for your team
+4. **Automation**: Use scripts for recurring exports
+
+---
+
+### License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
