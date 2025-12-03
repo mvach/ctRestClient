@@ -1,0 +1,1730 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for ctRestClient">
+      
+      
+      
+        <link rel="canonical" href="https://mvach.github.io/ctRestClient/v0.2.1/manual-de/">
+      
+      
+      
+        <link rel="next" href="../manual-en/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>🇩🇪 German - ctRestClient</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ctrestclient-benutzerhandbuch" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ctRestClient" class="md-header__button md-logo" aria-label="ctRestClient" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ctRestClient
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              🇩🇪 German
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  🇩🇪 German
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../manual-en/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  🇬🇧 English
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ctRestClient" class="md-nav__button md-logo" aria-label="ctRestClient" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ctRestClient
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🇩🇪 German
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🇩🇪 German
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#uberblick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Überblick
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hauptfunktionen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hauptfunktionen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#voraussetzungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Voraussetzungen
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Voraussetzungen">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#software-anforderungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Software-Anforderungen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hardware-anforderungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardware-Anforderungen
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-executable-herunterladen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Executable herunterladen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-keepass-datenbank-einrichten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. KeePass-Datenbank einrichten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-ordnerstruktur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Ordnerstruktur
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#konfiguration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Konfiguration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Konfiguration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#grundlegende-konfiguration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grundlegende Konfiguration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#konfigurationsparameter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Konfigurationsparameter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Konfigurationsparameter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instanzen-instances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instanzen (instances)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gruppen-groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gruppen (groups)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#erweiterte-feldkonfiguration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Erweiterte Feldkonfiguration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Erweiterte Feldkonfiguration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wertumwandlung-mit-benutzerdefinierten-spaltennamen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wertumwandlung mit benutzerdefinierten Spaltennamen
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#beispielkonfigurationen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beispielkonfigurationen
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Beispielkonfigurationen">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geburtstagslisten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Geburtstagslisten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-instanz-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Instanz-Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verwendung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verwendung
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Verwendung">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kommandozeilen-parameter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kommandozeilen-Parameter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kommandozeilen-Parameter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verfugbare-optionen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verfügbare Optionen:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grundlegende-ausfuhrung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grundlegende Ausführung
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grundlegende Ausführung">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Windows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#macos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        macOS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linux
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ausfuhrung-mit-benutzerdefinierten-pfaden" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ausführung mit benutzerdefinierten Pfaden
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatisierung-mit-skripten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatisierung mit Skripten
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automatisierung mit Skripten">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bash-skript-fur-linuxmacos-exportsh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bash-Skript für Linux/macOS (export.sh)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#batch-skript-fur-windows-exportbat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Batch-Skript für Windows (export.bat)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ausgabe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ausgabe
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ausgabe">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dateistruktur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dateistruktur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#csv-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CSV-Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logging
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sicherheit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sicherheit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#organisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organisation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lizenz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lizenz
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manual-en/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🇬🇧 English
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#uberblick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Überblick
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hauptfunktionen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hauptfunktionen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#voraussetzungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Voraussetzungen
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Voraussetzungen">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#software-anforderungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Software-Anforderungen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hardware-anforderungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardware-Anforderungen
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-executable-herunterladen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Executable herunterladen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-keepass-datenbank-einrichten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. KeePass-Datenbank einrichten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-ordnerstruktur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Ordnerstruktur
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#konfiguration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Konfiguration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Konfiguration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#grundlegende-konfiguration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grundlegende Konfiguration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#konfigurationsparameter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Konfigurationsparameter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Konfigurationsparameter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instanzen-instances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instanzen (instances)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gruppen-groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gruppen (groups)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#erweiterte-feldkonfiguration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Erweiterte Feldkonfiguration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Erweiterte Feldkonfiguration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wertumwandlung-mit-benutzerdefinierten-spaltennamen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wertumwandlung mit benutzerdefinierten Spaltennamen
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#beispielkonfigurationen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beispielkonfigurationen
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Beispielkonfigurationen">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geburtstagslisten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Geburtstagslisten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-instanz-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Instanz-Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verwendung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verwendung
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Verwendung">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kommandozeilen-parameter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kommandozeilen-Parameter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kommandozeilen-Parameter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verfugbare-optionen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verfügbare Optionen:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grundlegende-ausfuhrung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grundlegende Ausführung
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grundlegende Ausführung">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Windows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#macos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        macOS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linux
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ausfuhrung-mit-benutzerdefinierten-pfaden" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ausführung mit benutzerdefinierten Pfaden
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatisierung-mit-skripten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatisierung mit Skripten
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automatisierung mit Skripten">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bash-skript-fur-linuxmacos-exportsh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bash-Skript für Linux/macOS (export.sh)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#batch-skript-fur-windows-exportbat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Batch-Skript für Windows (export.bat)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ausgabe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ausgabe
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ausgabe">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dateistruktur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dateistruktur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#csv-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CSV-Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logging
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sicherheit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sicherheit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#organisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organisation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lizenz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lizenz
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ctrestclient-benutzerhandbuch">ctRestClient - Benutzerhandbuch<a class="headerlink" href="#ctrestclient-benutzerhandbuch" title="Permanent link">&para;</a></h1>
+<h2 id="uberblick">Überblick<a class="headerlink" href="#uberblick" title="Permanent link">&para;</a></h2>
+<p><code>ctRestClient</code> ist ein Kommandozeilen-Tool, das den Export von Gruppen aus <a href="https://church.tools/de/home/">ChurchTools</a> als CSV-Dateien ermöglicht. Dies ist besonders nützlich für die Erstellung von Serienbriefen mit Tools wie Microsoft Word oder Adobe InDesign.</p>
+<h2 id="hauptfunktionen">Hauptfunktionen<a class="headerlink" href="#hauptfunktionen" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Export von ChurchTools-Gruppen</strong>: Exportiert Mitgliederdaten aus dynamischen Gruppen</li>
+<li><strong>CSV-Format</strong>: Ausgabe in standardisierten CSV-Dateien</li>
+<li><strong>Sichere Token-Verwaltung</strong>: Verwendung von KeePass-Datenbanken für API-Token</li>
+<li><strong>Multi-Instanz-Unterstützung</strong>: Gleichzeitiger Export von mehreren ChurchTools-Instanzen</li>
+<li><strong>Konfigurierbare Datenfelder</strong>: Flexible Auswahl der zu exportierenden Felder</li>
+<li><strong>Plattformübergreifend</strong>: Verfügbar für Windows, macOS und Linux</li>
+</ul>
+<h2 id="voraussetzungen">Voraussetzungen<a class="headerlink" href="#voraussetzungen" title="Permanent link">&para;</a></h2>
+<h3 id="software-anforderungen">Software-Anforderungen<a class="headerlink" href="#software-anforderungen" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>KeePassXC</strong>: KeePassXC muss installiert sein und das Kommandozeilen-Tool <code>keepassxc-cli</code> muss im System-PATH verfügbar sein</li>
+<li><strong>Windows</strong>: <code>keepassxc-cli.exe</code> befindet sich meist unter <code>Program Files/KeePassXC</code></li>
+<li><strong>macOS</strong>: <code>keepassxc-cli</code> befindet sich meist unter <code>/Applications/KeePassXC.app/Contents/MacOS</code></li>
+<li><strong>Linux</strong>: <code>keepassxc-cli</code> befindet sich meist unter <code>/usr/bin</code> oder <code>/usr/local/bin</code></li>
+</ol>
+<p><strong>Wichtig</strong>: Ohne <code>keepassxc-cli</code> im PATH kann ctRestClient nicht auf die Token-Datenbank zugreifen!</p>
+<ol>
+<li><strong>ChurchTools-Zugang</strong>: </li>
+<li>Gültiger API-Token für jede ChurchTools-Instanz</li>
+<li>Berechtigung zum Lesen der entsprechenden Gruppen</li>
+</ol>
+<h3 id="hardware-anforderungen">Hardware-Anforderungen<a class="headerlink" href="#hardware-anforderungen" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Minimal: Beliebiges System mit ausreichend Speicher für die zu exportierenden Daten</li>
+</ul>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<h3 id="1-executable-herunterladen">1. Executable herunterladen<a class="headerlink" href="#1-executable-herunterladen" title="Permanent link">&para;</a></h3>
+<p>Laden Sie die Software von <a href="https://github.com/mvach/ctRestClient/releases/tag/v0.2.1">GitHub</a> herunter.</p>
+<p>Das herunterzuladende Archiv trägt den Namen ctRestClient_&lt;version&gt;.tar.gz. In diesem Archiv befinden sich die ausführbaren Binaries für Windows, Linux, und MacOs.</p>
+<h3 id="2-keepass-datenbank-einrichten">2. KeePass-Datenbank einrichten<a class="headerlink" href="#2-keepass-datenbank-einrichten" title="Permanent link">&para;</a></h3>
+<p>Erstellen Sie eine KeePass-Datenbank (<code>.kdbx</code>-Datei) und speichern Sie Ihre ChurchTools-API-Token:</p>
+<ol>
+<li>Öffnen Sie KeePassXC</li>
+<li>Erstellen Sie eine neue Datenbank</li>
+<li>Für jede ChurchTools-Instanz erstellen Sie einen Eintrag:</li>
+<li><strong>Titel</strong>: Ein eindeutiger Name (z.B. <code>meineKirche</code>)</li>
+<li><strong>Passwort</strong>: Ihr ChurchTools-API-Token</li>
+<li>Speichern Sie die Datenbank als <code>churchtools-tokens.kdbx</code> (empfohlener Name)</li>
+</ol>
+<h3 id="3-ordnerstruktur">3. Ordnerstruktur<a class="headerlink" href="#3-ordnerstruktur" title="Permanent link">&para;</a></h3>
+<p>Erstellen Sie folgende Ordnerstruktur:
+<div class="highlight"><pre><span></span><code>mein-projekt/
+├── ctRestClient-[platform]        # Die Executable
+├── config.yml                     # Konfigurationsdatei
+├── churchtools-tokens.kdbx        # KeePass-Datenbank
+├── data/                          # ggf. Daten für Wertumwandlungen
+└── exports/                       # Ausgabeverzeichnis (wird automatisch erstellt)
+</code></pre></div></p>
+<h2 id="konfiguration">Konfiguration<a class="headerlink" href="#konfiguration" title="Permanent link">&para;</a></h2>
+<h3 id="grundlegende-konfiguration">Grundlegende Konfiguration<a class="headerlink" href="#grundlegende-konfiguration" title="Permanent link">&para;</a></h3>
+<p>Die Konfiguration erfolgt über eine YAML-Datei. Hier ein Beispiel (<code>config.yml</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="nt">instances</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">meineKirche.de</span>
+<span class="w">    </span><span class="nt">token_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">meineKirche</span>
+<span class="w">    </span><span class="nt">groups</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Konfirmanden</span>
+<span class="w">      </span><span class="nt">fields</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">id</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">firstName</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">lastName</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">sexId</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">street</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">zip</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">city</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Eltern von Konfirmanden</span>
+<span class="w">      </span><span class="nt">fields</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">id</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">firstName</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">lastName</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">sexId</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">email</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+<h3 id="konfigurationsparameter">Konfigurationsparameter<a class="headerlink" href="#konfigurationsparameter" title="Permanent link">&para;</a></h3>
+<h4 id="instanzen-instances">Instanzen (<code>instances</code>)<a class="headerlink" href="#instanzen-instances" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>hostname</strong>: Die Domäne Ihrer ChurchTools-Instanz (ohne https://)</li>
+<li><strong>token_name</strong>: Name des Token-Eintrags in der KeePass-Datenbank</li>
+<li><strong>groups</strong>: Liste der zu exportierenden Gruppen</li>
+</ul>
+<h4 id="gruppen-groups">Gruppen (<code>groups</code>)<a class="headerlink" href="#gruppen-groups" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>name</strong>: Exakter Name der Gruppe in ChurchTools</li>
+<li><strong>fields</strong>: Liste der zu exportierenden Datenfelder</li>
+</ul>
+<h3 id="erweiterte-feldkonfiguration">Erweiterte Feldkonfiguration<a class="headerlink" href="#erweiterte-feldkonfiguration" title="Permanent link">&para;</a></h3>
+<h4 id="wertumwandlung-mit-benutzerdefinierten-spaltennamen">Wertumwandlung mit benutzerdefinierten Spaltennamen<a class="headerlink" href="#wertumwandlung-mit-benutzerdefinierten-spaltennamen" title="Permanent link">&para;</a></h4>
+<p><code>ctRestClient</code> unterstützt die automatische Umwandlung von ChurchTools-Werten in benutzerfreundlichere Ausgaben. Gleichzeitig können Sie dabei auch die Spaltennamen in der CSV-Ausgabe anpassen.</p>
+<p><strong>Funktionsweise:</strong>
+- Werte werden aus YAML-Dateien im <code>data/</code>-Verzeichnis gelesen
+- Der Pfad folgt dem Schema: <code>data/&lt;modul&gt;/&lt;feldname&gt;.yml</code>
+- Für das Feld <code>sexId</code> im Modul <code>persons</code>: <code>data/persons/sexId.yml</code>
+- Spaltennamen können mit <code>columnname</code> angepasst werden</p>
+<p><strong>Beispiel für die Umwandlung der sexId-Werte:</strong></p>
+<p>Erstellen Sie die Datei <code>data/persons/sexId.yml</code>:
+<div class="highlight"><pre><span></span><code><span class="nt">1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">männlich</span>
+<span class="nt">2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weiblich</span>
+<span class="nt">3</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">divers</span>
+</code></pre></div></p>
+<p><strong>Konfiguration:</strong>
+<div class="highlight"><pre><span></span><code><span class="nt">fields</span><span class="p">:</span><span class="w"> </span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">id</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">firstName</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lastName</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">fieldname</span><span class="p">:</span><span class="w"> </span><span class="nv">sexId</span><span class="p p-Indicator">,</span><span class="nt"> columnname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;geschlecht&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">birthday</span>
+</code></pre></div></p>
+<h3 id="beispielkonfigurationen">Beispielkonfigurationen<a class="headerlink" href="#beispielkonfigurationen" title="Permanent link">&para;</a></h3>
+<h4 id="geburtstagslisten">Geburtstagslisten<a class="headerlink" href="#geburtstagslisten" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">instances</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">meineKirche.de</span>
+<span class="w">    </span><span class="nt">token_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">meineKirche</span>
+<span class="w">    </span><span class="nt">groups</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Konfirmanden</span>
+<span class="w">      </span><span class="nt">fields</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">id</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">firstName</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">lastName</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">sexId</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">street</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">zip</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">city</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Eltern von Konfirmanden</span>
+<span class="w">      </span><span class="nt">fields</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">id</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">firstName</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">lastName</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">sexId</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">email</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+<h4 id="multi-instanz-setup">Multi-Instanz-Setup<a class="headerlink" href="#multi-instanz-setup" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">instances</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kumulus.meineKirche.de</span>
+<span class="w">    </span><span class="nt">token_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kumulus</span>
+<span class="w">    </span><span class="nt">groups</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Kindergottesdienst</span>
+<span class="w">      </span><span class="nt">fields</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">id</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">firstName</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">lastName</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stratus.meineKirche.de</span>
+<span class="w">    </span><span class="nt">token_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stratus</span>
+<span class="w">    </span><span class="nt">groups</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Jugendgruppe</span>
+<span class="w">      </span><span class="nt">fields</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">id</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">firstName</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">lastName</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">email</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+<h2 id="verwendung">Verwendung<a class="headerlink" href="#verwendung" title="Permanent link">&para;</a></h2>
+<h3 id="kommandozeilen-parameter">Kommandozeilen-Parameter<a class="headerlink" href="#kommandozeilen-parameter" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>ctRestClient<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</code></pre></div>
+<h4 id="verfugbare-optionen">Verfügbare Optionen:<a class="headerlink" href="#verfugbare-optionen" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong><code>-c &lt;pfad&gt;</code></strong>: Pfad zur Konfigurationsdatei</li>
+<li>Standard: <code>config.yml</code> im Verzeichnis der Executable</li>
+<li><strong><code>-k &lt;pfad&gt;</code></strong>: Pfad zur KeePass-Datenbank</li>
+<li>Standard: <code>passwords.kdbx</code> im Verzeichnis der Executable</li>
+<li><strong><code>-o &lt;pfad&gt;</code></strong>: Ausgabeverzeichnis für CSV-Dateien</li>
+<li>Standard: <code>exports/</code> im Verzeichnis der Executable</li>
+<li><strong><code>-d &lt;pfad&gt;</code></strong>: Pfad zum Datenverzeichnis für Wertumwandlungen</li>
+<li>Standard: <code>data/</code> im Verzeichnis der Executable</li>
+</ul>
+<h3 id="grundlegende-ausfuhrung">Grundlegende Ausführung<a class="headerlink" href="#grundlegende-ausfuhrung" title="Permanent link">&para;</a></h3>
+<h4 id="windows">Windows<a class="headerlink" href="#windows" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>ctRestClient-windows-amd64.exe
+</code></pre></div>
+<h4 id="macos">macOS<a class="headerlink" href="#macos" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>./ctRestClient-darwin-arm64<span class="w">  </span><span class="c1"># Für Apple Silicon</span>
+./ctRestClient-darwin-amd64<span class="w">  </span><span class="c1"># Für Intel-Macs</span>
+</code></pre></div>
+<h4 id="linux">Linux<a class="headerlink" href="#linux" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>./ctRestClient-linux-amd64
+</code></pre></div>
+<h3 id="ausfuhrung-mit-benutzerdefinierten-pfaden">Ausführung mit benutzerdefinierten Pfaden<a class="headerlink" href="#ausfuhrung-mit-benutzerdefinierten-pfaden" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Mit spezifischer Konfiguration</span>
+./ctRestClient-linux-amd64<span class="w"> </span>-c<span class="w"> </span>/pfad/zu/meiner/config.yml
+
+<span class="c1"># Mit spezifischer KeePass-Datenbank</span>
+./ctRestClient-linux-amd64<span class="w"> </span>-k<span class="w"> </span>/pfad/zu/tokens.kdbx
+
+<span class="c1"># Mit spezifischem Ausgabeverzeichnis</span>
+./ctRestClient-linux-amd64<span class="w"> </span>-o<span class="w"> </span>/pfad/zu/exports/
+
+<span class="c1"># Mit spezifischem Datenverzeichnis</span>
+./ctRestClient-linux-amd64<span class="w"> </span>-d<span class="w"> </span>/pfad/zu/data/
+
+<span class="c1"># Kombination aller Parameter</span>
+./ctRestClient-linux-amd64<span class="w"> </span>-c<span class="w"> </span>config.yml<span class="w"> </span>-k<span class="w"> </span>tokens.kdbx<span class="w"> </span>-o<span class="w"> </span>exports/<span class="w"> </span>-d<span class="w"> </span>data/
+</code></pre></div>
+<h3 id="automatisierung-mit-skripten">Automatisierung mit Skripten<a class="headerlink" href="#automatisierung-mit-skripten" title="Permanent link">&para;</a></h3>
+<h4 id="bash-skript-fur-linuxmacos-exportsh">Bash-Skript für Linux/macOS (<code>export.sh</code>)<a class="headerlink" href="#bash-skript-fur-linuxmacos-exportsh" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env bash</span>
+
+<span class="nv">SCRIPT_DIR</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>dirname<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">BASH_SOURCE</span><span class="p">[0]</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>
+
+<span class="c1"># Plattform erkennen</span>
+<span class="nv">OS</span><span class="o">=</span><span class="k">$(</span>uname<span class="w"> </span>-s<span class="k">)</span>
+<span class="nv">ARCH</span><span class="o">=</span><span class="k">$(</span>uname<span class="w"> </span>-m<span class="k">)</span>
+
+<span class="k">case</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OS</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">in</span>
+<span class="w">    </span><span class="s2">&quot;Darwin&quot;</span><span class="o">)</span>
+<span class="w">        </span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/Applications/KeePassXC.app/Contents/MacOS
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$ARCH</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">in</span>
+<span class="w">            </span><span class="s2">&quot;arm64&quot;</span><span class="o">)</span>
+<span class="w">                </span><span class="nv">EXECUTABLE</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$SCRIPT_DIR</span><span class="s2">/ctRestClient-darwin-arm64&quot;</span>
+<span class="w">                </span><span class="p">;;</span>
+<span class="w">            </span><span class="s2">&quot;x86_64&quot;</span><span class="o">)</span>
+<span class="w">                </span><span class="nv">EXECUTABLE</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$SCRIPT_DIR</span><span class="s2">/ctRestClient-darwin-amd64&quot;</span>
+<span class="w">                </span><span class="p">;;</span>
+<span class="w">        </span><span class="k">esac</span>
+<span class="w">        </span><span class="p">;;</span>
+<span class="w">    </span><span class="s2">&quot;Linux&quot;</span><span class="o">)</span>
+<span class="w">        </span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/usr/bin:/usr/local/bin
+<span class="w">        </span><span class="nv">EXECUTABLE</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$SCRIPT_DIR</span><span class="s2">/ctRestClient-linux-amd64&quot;</span>
+<span class="w">        </span><span class="p">;;</span>
+<span class="k">esac</span>
+
+<span class="c1"># Ausführung</span>
+chmod<span class="w"> </span>+x<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$EXECUTABLE</span><span class="s2">&quot;</span>
+<span class="s2">&quot;</span><span class="nv">$EXECUTABLE</span><span class="s2">&quot;</span><span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/churchtools-tokens.kdbx&quot;</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SCRIPT_DIR</span><span class="s2">/config.yml&quot;</span>
+</code></pre></div>
+<h4 id="batch-skript-fur-windows-exportbat">Batch-Skript für Windows (<code>export.bat</code>)<a class="headerlink" href="#batch-skript-fur-windows-exportbat" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="p">@</span><span class="k">echo</span> off
+<span class="k">set</span> <span class="nv">SCRIPT_DIR</span><span class="p">=</span><span class="nv">%~dp0</span>
+<span class="k">set</span> <span class="nv">EXECUTABLE</span><span class="p">=</span><span class="nv">%SCRIPT_DIR%</span>ctRestClient-windows-amd64.exe
+
+<span class="s2">&quot;</span><span class="nv">%EXECUTABLE%</span><span class="s2">&quot;</span> -k <span class="s2">&quot;</span><span class="nv">%USERPROFILE%</span><span class="s2">\churchtools-tokens.kdbx&quot;</span> -c <span class="s2">&quot;</span><span class="nv">%SCRIPT_DIR%</span><span class="s2">config.yml&quot;</span>
+<span class="k">pause</span>
+</code></pre></div>
+<h2 id="ausgabe">Ausgabe<a class="headerlink" href="#ausgabe" title="Permanent link">&para;</a></h2>
+<h3 id="dateistruktur">Dateistruktur<a class="headerlink" href="#dateistruktur" title="Permanent link">&para;</a></h3>
+<p>Der Export erstellt folgende Struktur:</p>
+<div class="highlight"><pre><span></span><code>exports/
+└── [DATUM]_[ZEIT]/
+    ├── ctRestClient.log
+    └── [HOSTNAME]/
+        ├── [Gruppenname_1].csv
+        ├── [Gruppenname_2].csv
+        └── ...
+</code></pre></div>
+<p>Beispiel:
+<div class="highlight"><pre><span></span><code>exports/
+└── 2025.08.06_14-30-15/
+    ├── ctRestClient.log
+    └── ihre-kirche.krz.tools/
+        ├── Konfirmanden.csv
+        └── Eltern_von_Konfirmanden.csv
+</code></pre></div></p>
+<h3 id="csv-format">CSV-Format<a class="headerlink" href="#csv-format" title="Permanent link">&para;</a></h3>
+<p>Die CSV-Dateien verwenden:
+- <strong>Trennzeichen</strong>: Semikolon (<code>;</code>)
+- <strong>Kodierung</strong>: UTF-16 Little Endian mit BOM
+- <strong>Erste Zeile</strong>: Spaltenüberschriften</p>
+<p>Beispiel-Inhalt:
+<div class="highlight"><pre><span></span><code>id;firstName;lastName;street;zip;city
+123;Max;Mustermann;Musterstraße 1;12345;Musterstadt
+124;Maria;Musterfrau;Beispielweg 2;54321;Beispielort
+</code></pre></div></p>
+<h2 id="logging">Logging<a class="headerlink" href="#logging" title="Permanent link">&para;</a></h2>
+<p>Detaillierte Informationen über die Ausführung finden Sie in der <code>ctRestClient.log</code>-Datei im Ausgabeverzeichnis. Diese enthält:
+- Zeitstempel aller Aktionen
+- Erfolgreiche Exports
+- Fehlermeldungen mit Details
+- Performance-Informationen</p>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<h3 id="sicherheit">Sicherheit<a class="headerlink" href="#sicherheit" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>KeePass-Datenbank schützen</strong>: Verwenden Sie ein starkes Master-Passwort</li>
+<li><strong>API-Token rotieren</strong>: Erneuern Sie regelmäßig Ihre ChurchTools-Token</li>
+<li><strong>KeePassXC aktuell halten</strong>: Installieren Sie regelmäßig Updates für KeePassXC, um Sicherheitslücken zu schließen</li>
+<li><strong>Dateiberechtigungen</strong>: Beschränken Sie den Zugriff auf Konfigurationsdateien</li>
+<li><strong>Sichere Übertragung</strong>: Stellen Sie sicher, dass ChurchTools über HTTPS erreichbar ist</li>
+</ol>
+<h3 id="performance">Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Feldauswahl optimieren</strong>: Exportieren Sie nur benötigte Felder</li>
+<li><strong>Gruppengröße beachten</strong>: Bei sehr großen Gruppen kann der Export länger dauern</li>
+<li><strong>Netzwerkverbindung</strong>: Verwenden Sie eine stabile Internetverbindung</li>
+</ol>
+<h3 id="organisation">Organisation<a class="headerlink" href="#organisation" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Sinnvolle Dateinamen</strong>: Verwenden Sie aussagekräftige Konfigurationsdateinamen</li>
+<li><strong>Konfigurations-Backups</strong>: Erstellen Sie regelmäßig Backups Ihrer Konfigurationsdateien</li>
+<li><strong>Dokumentation</strong>: Dokumentieren Sie spezielle Konfigurationen für Ihr Team</li>
+<li><strong>Automatisierung</strong>: Nutzen Sie Skripte für wiederkehrende Exporte</li>
+</ol>
+<hr />
+<h3 id="lizenz">Lizenz<a class="headerlink" href="#lizenz" title="Permanent link">&para;</a></h3>
+<p>Dieses Projekt steht unter der MIT-Lizenz. Siehe <a href="../LICENSE/">LICENSE</a>-Datei für Details.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "toc.follow", "content.code.copy", "navigation.top"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "version": "v0.2.1"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
