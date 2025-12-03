@@ -7,6 +7,18 @@ import (
 )
 
 type FakeDynamicGroupsEndpoint struct {
+	GetAllDynamicGroupsStub        func() (rest.DynamicGroupsResponse, error)
+	getAllDynamicGroupsMutex       sync.RWMutex
+	getAllDynamicGroupsArgsForCall []struct {
+	}
+	getAllDynamicGroupsReturns struct {
+		result1 rest.DynamicGroupsResponse
+		result2 error
+	}
+	getAllDynamicGroupsReturnsOnCall map[int]struct {
+		result1 rest.DynamicGroupsResponse
+		result2 error
+	}
 	GetGroupStatusStub        func(int) (rest.DynamicGroupsStatusResponse, error)
 	getGroupStatusMutex       sync.RWMutex
 	getGroupStatusArgsForCall []struct {
@@ -22,6 +34,62 @@ type FakeDynamicGroupsEndpoint struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeDynamicGroupsEndpoint) GetAllDynamicGroups() (rest.DynamicGroupsResponse, error) {
+	fake.getAllDynamicGroupsMutex.Lock()
+	ret, specificReturn := fake.getAllDynamicGroupsReturnsOnCall[len(fake.getAllDynamicGroupsArgsForCall)]
+	fake.getAllDynamicGroupsArgsForCall = append(fake.getAllDynamicGroupsArgsForCall, struct {
+	}{})
+	stub := fake.GetAllDynamicGroupsStub
+	fakeReturns := fake.getAllDynamicGroupsReturns
+	fake.recordInvocation("GetAllDynamicGroups", []interface{}{})
+	fake.getAllDynamicGroupsMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeDynamicGroupsEndpoint) GetAllDynamicGroupsCallCount() int {
+	fake.getAllDynamicGroupsMutex.RLock()
+	defer fake.getAllDynamicGroupsMutex.RUnlock()
+	return len(fake.getAllDynamicGroupsArgsForCall)
+}
+
+func (fake *FakeDynamicGroupsEndpoint) GetAllDynamicGroupsCalls(stub func() (rest.DynamicGroupsResponse, error)) {
+	fake.getAllDynamicGroupsMutex.Lock()
+	defer fake.getAllDynamicGroupsMutex.Unlock()
+	fake.GetAllDynamicGroupsStub = stub
+}
+
+func (fake *FakeDynamicGroupsEndpoint) GetAllDynamicGroupsReturns(result1 rest.DynamicGroupsResponse, result2 error) {
+	fake.getAllDynamicGroupsMutex.Lock()
+	defer fake.getAllDynamicGroupsMutex.Unlock()
+	fake.GetAllDynamicGroupsStub = nil
+	fake.getAllDynamicGroupsReturns = struct {
+		result1 rest.DynamicGroupsResponse
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeDynamicGroupsEndpoint) GetAllDynamicGroupsReturnsOnCall(i int, result1 rest.DynamicGroupsResponse, result2 error) {
+	fake.getAllDynamicGroupsMutex.Lock()
+	defer fake.getAllDynamicGroupsMutex.Unlock()
+	fake.GetAllDynamicGroupsStub = nil
+	if fake.getAllDynamicGroupsReturnsOnCall == nil {
+		fake.getAllDynamicGroupsReturnsOnCall = make(map[int]struct {
+			result1 rest.DynamicGroupsResponse
+			result2 error
+		})
+	}
+	fake.getAllDynamicGroupsReturnsOnCall[i] = struct {
+		result1 rest.DynamicGroupsResponse
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakeDynamicGroupsEndpoint) GetGroupStatus(arg1 int) (rest.DynamicGroupsStatusResponse, error) {
@@ -91,6 +159,8 @@ func (fake *FakeDynamicGroupsEndpoint) GetGroupStatusReturnsOnCall(i int, result
 func (fake *FakeDynamicGroupsEndpoint) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.getAllDynamicGroupsMutex.RLock()
+	defer fake.getAllDynamicGroupsMutex.RUnlock()
 	fake.getGroupStatusMutex.RLock()
 	defer fake.getGroupStatusMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}

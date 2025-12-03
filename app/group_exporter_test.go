@@ -73,36 +73,47 @@ var _ = Describe("GroupExporter", func() {
 			Expect(personData[1]).To(MatchJSON(person2))
 		})
 
-		It("returns an error if fetching the dynamic group status fails", func() {
-			dynamicGroupsEndpoint.GetGroupStatusReturns(
-				rest.DynamicGroupsStatusResponse{}, errors.New("boom"),
-			)
+		var _ = Context("group is a dynamic group", func() {
 
-			personData, err := groupExporter.ExportGroupMembers(
-				"group1",
-				groupsEndpoint,
-				dynamicGroupsEndpoint,
-				personsEndpoint,
-			)
+			BeforeEach(func() {
+				// The id 1 of the group "group1" is contained in the list of dynamic group IDs
+				// thus "group1" is a dynamic group
+				dynamicGroupsEndpoint.GetAllDynamicGroupsReturns(
+					rest.DynamicGroupsResponse{GroupIDs: []int{1}}, nil,
+				)
+			})
 
-			Expect(err.Error()).To(Equal("failed to get dynamic group status, boom"))
-			Expect(personData).To(BeNil())
-		})
+			It("returns an error if fetching the dynamic group status fails", func() {
+				dynamicGroupsEndpoint.GetGroupStatusReturns(
+					rest.DynamicGroupsStatusResponse{}, errors.New("boom"),
+				)
 
-		It("returns an error if the dynamic group status is not active", func() {
-			dynamicGroupsEndpoint.GetGroupStatusReturns(
-				rest.DynamicGroupsStatusResponse{Status: ptr("not-active")}, nil,
-			)
+				personData, err := groupExporter.ExportGroupMembers(
+					"group1",
+					groupsEndpoint,
+					dynamicGroupsEndpoint,
+					personsEndpoint,
+				)
 
-			personData, err := groupExporter.ExportGroupMembers(
-				"group1",
-				groupsEndpoint,
-				dynamicGroupsEndpoint,
-				personsEndpoint,
-			)
+				Expect(err.Error()).To(Equal("failed to get dynamic group status, boom"))
+				Expect(personData).To(BeNil())
+			})
 
-			Expect(err.Error()).To(Equal("dynamic group 'group1' is not active"))
-			Expect(personData).To(BeNil())
+			It("returns an error if the dynamic group status is not active", func() {
+				dynamicGroupsEndpoint.GetGroupStatusReturns(
+					rest.DynamicGroupsStatusResponse{Status: ptr("not-active")}, nil,
+				)
+
+				personData, err := groupExporter.ExportGroupMembers(
+					"group1",
+					groupsEndpoint,
+					dynamicGroupsEndpoint,
+					personsEndpoint,
+				)
+
+				Expect(err.Error()).To(Equal("dynamic group 'group1' is not active"))
+				Expect(personData).To(BeNil())
+			})
 		})
 
 		It("returns an error if group members cannot be resolved", func() {

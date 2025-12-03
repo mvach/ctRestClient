@@ -4,6 +4,7 @@ import (
 	"ctRestClient/rest"
 	"encoding/json"
 	"fmt"
+	"slices"
 )
 
 type GroupName2IDMap map[string]int
@@ -38,13 +39,20 @@ func (g groupExporter) ExportGroupMembers(
 		return nil, fmt.Errorf("failed to get group by name: %v", err)
 	}
 
-	dynamicGroup, err := dynamicGroupsEndpoint.GetGroupStatus(ctGroup.ID)
+	dynamicGroupsResponse, err := dynamicGroupsEndpoint.GetAllDynamicGroups()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get dynamic group status, %w", err)
+		return nil, fmt.Errorf("failed to get all dynamic groups, %w", err)
 	}
 
-	if *dynamicGroup.Status != "active" {
-		return nil, &GroupNotActiveError{GroupName: groupName}
+	if slices.Contains(dynamicGroupsResponse.GroupIDs, ctGroup.ID) {
+		dynamicGroup, err := dynamicGroupsEndpoint.GetGroupStatus(ctGroup.ID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get dynamic group status, %w", err)
+		}
+
+		if *dynamicGroup.Status != "active" {
+			return nil, &GroupNotActiveError{GroupName: groupName}
+		}
 	}
 
 	groupMembers, err := groupsEndpoint.GetGroupMembers(ctGroup.ID)

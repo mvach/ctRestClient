@@ -12,6 +12,8 @@ import (
 //counterfeiter:generate . DynamicGroupsEndpoint
 type DynamicGroupsEndpoint interface {
 	GetGroupStatus(groupID int) (DynamicGroupsStatusResponse, error)
+
+	GetAllDynamicGroups() (DynamicGroupsResponse, error)
 }
 
 type dynamicGroupsEndpoint struct {
@@ -54,6 +56,37 @@ func (c dynamicGroupsEndpoint) GetGroupStatus(groupID int) (DynamicGroupsStatusR
 	}
 	if response.Status == nil {
 		return DynamicGroupsStatusResponse{}, fmt.Errorf("response body is missing dynamicGroupStatus field")
+	}
+
+	return response, nil
+}
+
+func (c dynamicGroupsEndpoint) GetAllDynamicGroups() (DynamicGroupsResponse, error) {
+	req, err := http.NewRequest("GET", "", nil)
+	if err != nil {
+		return DynamicGroupsResponse{}, fmt.Errorf("failed to create request, %w", err)
+	}
+
+	req.URL.Path = "/api/dynamicgroups"
+
+	resp, err := c.httpclient.Do(req)
+	if err != nil {
+		return DynamicGroupsResponse{}, fmt.Errorf("failed to send request, %w", err)
+	}
+	defer resp.Body.Close()
+	
+	if resp.StatusCode != http.StatusOK {
+		return DynamicGroupsResponse{}, fmt.Errorf("received non-200 response code: %d", resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return DynamicGroupsResponse{}, fmt.Errorf("failed to read response body, %w", err)
+	}
+
+	var response DynamicGroupsResponse
+	if err := json.Unmarshal(body, &response); err != nil {
+		return DynamicGroupsResponse{}, fmt.Errorf("response body is not containing expected json, %w", err)
 	}
 
 	return response, nil
