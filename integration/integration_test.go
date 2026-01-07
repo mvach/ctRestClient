@@ -41,7 +41,9 @@ var _ = Describe("ChurchTools Integration Test with HTTP Server", func() {
 		outputDir = filepath.Join(tempDir, "output")
 
 		// Create necessary directories
-		err = os.MkdirAll(filepath.Join(dataDir, "persons"), 0755)
+		err = os.MkdirAll(filepath.Join(dataDir, "mappings/persons"), 0755)
+		Expect(err).ToNot(HaveOccurred())
+		err = os.MkdirAll(filepath.Join(dataDir, "blocklists"), 0755)
 		Expect(err).ToNot(HaveOccurred())
 		err = os.MkdirAll(outputDir, 0755)
 		Expect(err).ToNot(HaveOccurred())
@@ -137,7 +139,7 @@ instances:
 			sexMappingContent := `---
 1: "Male"
 2: "Female"`
-			err = os.WriteFile(filepath.Join(dataDir, "persons", "sexId.yml"), []byte(sexMappingContent), 0644)
+			err = os.WriteFile(filepath.Join(dataDir, "mappings/persons", "sexId.yml"), []byte(sexMappingContent), 0644)
 			Expect(err).ToNot(HaveOccurred())
 
 			// Load configuration
@@ -159,6 +161,56 @@ instances:
 			csvString := getUTF8String(csvContent)
 
 			Expect(csvString).To(Equal("id;firstName;lastName;email;sex\n101;John;Doe;john.doe@example.com;Male\n102;Jane;Smith;jane.smith@example.com;Female\n"))
+		})
+
+		It("exports group members but blocks defined addresses", func() {
+
+			configContent := fmt.Sprintf(`---
+instances:
+  - hostname: %s
+    token_name: TEST_TOKEN
+    groups:
+    - name: youth_group
+      fields:
+      - id
+      - firstName  
+      - lastName
+      - zip
+      - city
+      - street`, strings.TrimPrefix(server.URL, "https://"))
+
+			err := os.WriteFile(configPath, []byte(configContent), 0644)
+			Expect(err).ToNot(HaveOccurred())
+
+			// Create mapping data for sexId field
+			blocklistContent := `
+---
+- street: "Mainstreet 1"
+  city: "Änytown"
+  zip: "12345"
+`
+			err = os.WriteFile(filepath.Join(dataDir, "blocklists", "youth_group.yml"), []byte(blocklistContent), 0644)
+			Expect(err).ToNot(HaveOccurred())
+
+			// Load configuration
+			cfg, err := config.LoadConfig(configPath)
+			Expect(err).ToNot(HaveOccurred())
+
+			err = RunApplicationWrapper(cfg, outputDir, dataDir, keepassDbPath, "abcd1234", appLogger)
+			Expect(err).ToNot(HaveOccurred())
+
+			// Check if log file was created
+			_, err = os.Stat(logFile)
+			Expect(err).ToNot(HaveOccurred())
+
+			// Check if output CSV file was created
+			csvFilePath := getCsvPath(outputDir, "youth_group")
+
+			// Validate CSV content
+			csvContent, _ := os.ReadFile(csvFilePath)
+			csvString := getUTF8String(csvContent)
+
+			Expect(csvString).To(Equal("id;firstName;lastName;zip;city;street\n102;Jane;Smith;12345;Änytown;Mainstreet 2\n"))
 		})
 	})
 })
@@ -308,6 +360,7 @@ func createChurchToolsHandler() http.Handler {
 
 		var persons []json.RawMessage
 
+		// Uses utf-8 escaped Ä in city names like one would get via ChurchTools API
 		for _, idStr := range personIds {
 			if idStr == "101" {
 				person := json.RawMessage(`{
@@ -315,6 +368,9 @@ func createChurchToolsHandler() http.Handler {
 					"firstName": "John",
 					"lastName": "Doe", 
 					"email": "john.doe@example.com",
+					"zip": "12345",
+					"city": "\u00c4nytown",
+					"street": "Mainstreet 1",
 					"sexId": 1
 				}`)
 				persons = append(persons, person)
@@ -324,6 +380,9 @@ func createChurchToolsHandler() http.Handler {
 					"firstName": "Jane",
 					"lastName": "Smith",
 					"email": "jane.smith@example.com", 
+					"zip": "12345",
+					"city": "\u00c4nytown",
+					"street": "Mainstreet 2",
 					"sexId": 2
 				}`)
 				persons = append(persons, person)

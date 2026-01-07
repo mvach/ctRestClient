@@ -9,7 +9,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("PersonData", func() {
+var _ = Describe("FileDataProvider", func() {
 
 	var (
 		err            error
@@ -19,7 +19,7 @@ var _ = Describe("PersonData", func() {
 	)
 
 	BeforeEach(func() {
-		tempDataDir, err = os.MkdirTemp("", "data_provider_test_")
+		tempDataDir, err = os.MkdirTemp("", "file_data_provider_test_")
 		Expect(err).ToNot(HaveOccurred())
 
 		mappedFilePath = filepath.Join(tempDataDir, "mappedField.yml")

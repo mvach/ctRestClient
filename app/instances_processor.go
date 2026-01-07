@@ -13,7 +13,14 @@ import (
 )
 
 type InstancesProcessor interface {
-	Process(groupExporter GroupExporter, csvWriter csv.CSVFileWriter, rootDir string, personDataProvider csv.FileDataProvider, keepassCli KeepassCli) error
+	Process(
+		groupExporter GroupExporter,
+		csvWriter csv.CSVFileWriter,
+		rootDir string,
+		personDataProvider csv.FileDataProvider,
+		blocklistsDataProvider csv.BlockListDataProvider,
+		keepassCli KeepassCli,
+	) error
 }
 
 type instancesProcessor struct {
@@ -31,7 +38,14 @@ func NewInstancesProcessor(
 	}
 }
 
-func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter csv.CSVFileWriter, rootDir string, personDataProvider csv.FileDataProvider, keepassCli KeepassCli) error {
+func (p instancesProcessor) Process(
+	groupExporter GroupExporter,
+	csvWriter csv.CSVFileWriter,
+	rootDir string,
+	fileDataProvider csv.FileDataProvider,
+	blocklistsDataProvider csv.BlockListDataProvider,
+	keepassCli KeepassCli,
+) error {
 	for _, instance := range p.config.Instances {
 
 		p.logTitle(instance)
@@ -74,7 +88,11 @@ func (p instancesProcessor) Process(groupExporter GroupExporter, csvWriter csv.C
 				p.logger.Info(fmt.Sprintf("      the group has %d persons", len(persons)))
 			}
 
-			personData, err := csv.NewPersonData(persons, group.Fields, personDataProvider, p.logger)
+			if blocklistsDataProvider.BlockListExists(group) {
+				p.logger.Info(fmt.Sprintf("      using blocklist '%s.yml'", group.SanitizedGroupName()))
+			}
+
+			personData, err := csv.NewPersonData(persons, group, fileDataProvider, blocklistsDataProvider, p.logger)
 			if err != nil {
 				p.logger.Error(fmt.Sprintf("      failed to extract persons: %v", err))
 				continue

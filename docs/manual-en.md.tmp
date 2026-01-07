@@ -122,6 +122,40 @@ fields:
   - birthday
 ```
 
+### Blocklists
+
+Blocklists allow members of specific ChurchTools groups to be excluded before exporting the generated CSV files.
+This is especially useful for handling special address groups such as student dormitories, shared housing facilities, or correctional institutions separately.
+
+**How it works:**
+
+- Blocklists are loaded from YAML files located in the `data/blocklists` directory.
+- The filename of a blocklist must match the name of the generated CSV file and must use the .yml extension.
+- Each blocklist contains a list of address definitions.
+- Within a single list entry, all specified fields are combined using a logical AND. An address is only blocked if all fields of a blocklist element match the address.
+
+**Example:** Two addresses should not be exported to the CSV file of the group "Zuzug_2025".
+
+Create the file `data/blocklists/Zuzug_2025.yml`:
+```yaml
+- zip: "12345"
+  city: "Glücksstadt"
+  street: "Hauptstraße 1"
+- zip: "12345"
+  city: "Glücksstadt"
+  street: "Hauptstraße 1"
+```
+
+**Example:** All addresses from a specific city should not be exported to the CSV file of the group Gemeindepost.
+
+Create the file data/blocklists/Gemeindepost.yml:
+```yaml
+- zip: "12345"
+  city: "Autschdorf"
+```
+
+In this case, all persons whose address contains the postal code 12345 and the city Autschdorf will be excluded – regardless of street name or house number.
+
 ### Example Configurations
 
 #### Birthday Lists

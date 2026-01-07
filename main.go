@@ -26,8 +26,8 @@ func main() {
 	var keepassDbFilePath string
 
 	flag.StringVar(&configFilePath, "c", "config.yml", "the config file path")
-	flag.StringVar(&dataDir, "d", getDataDir(), "the data directory")
-	flag.StringVar(&outputDir, "o", getOutputDir(), "the output directory")
+	flag.StringVar(&dataDir, "d", getDefaultDataDir(), "the data directory")
+	flag.StringVar(&outputDir, "o", getDefaultOutputDir(), "the output directory")
 	flag.StringVar(&keepassDbFilePath, "k", "passwords.kdbx", "the Keepass DB file path")
 	flag.Parse()
 
@@ -73,7 +73,8 @@ func main() {
 		app.NewGroupExporter(),
 		csv.NewCSVFileWriter(),
 		rootDir,
-		csv.NewFileDataProvider(filepath.Join(dataDir, "persons")),
+		csv.NewFileDataProvider(filepath.Join(dataDir, "mappings/persons")),
+		csv.NewBlockListDataProvider(filepath.Join(dataDir, "blocklists"), appLogger),
 		keepassCli,
 	)
 	if err != nil {
@@ -81,14 +82,14 @@ func main() {
 	}
 }
 
-func getOutputDir() string {
+func getDefaultOutputDir() string {
 	executableDir := getExecutableDir()
 	return filepath.Join(executableDir, "..", "exports")
 }
 
-func getDataDir() string {
-	executabelDir := getExecutableDir()
-	return filepath.Join(executabelDir, "..", "data")
+func getDefaultDataDir() string {
+	executableDir := getExecutableDir()
+	return filepath.Join(executableDir, "..", "data")
 }
 
 func getExecutableDir() string {

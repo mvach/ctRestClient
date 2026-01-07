@@ -99,9 +99,10 @@ instances:
 `ctRestClient` unterstützt die automatische Umwandlung von ChurchTools-Werten in benutzerfreundlichere Ausgaben. Gleichzeitig können Sie dabei auch die Spaltennamen in der CSV-Ausgabe anpassen.
 
 **Funktionsweise:**
-- Werte werden aus YAML-Dateien im `data/`-Verzeichnis gelesen
-- Der Pfad folgt dem Schema: `data/<modul>/<feldname>.yml`
-- Für das Feld `sexId` im Modul `persons`: `data/persons/sexId.yml`
+
+- Werte werden aus YAML-Dateien im `data/mappings`-Verzeichnis gelesen
+- Der Pfad folgt dem Schema: `data/mappings/<modul>/<feldname>.yml`
+- Für das Feld `sexId` im Modul `persons`: `data/mappings/persons/sexId.yml`
 - Spaltennamen können mit `columnname` angepasst werden
 
 **Beispiel für die Umwandlung der sexId-Werte:**
@@ -122,6 +123,40 @@ fields:
   - {fieldname: sexId, columnname: "geschlecht"}
   - birthday
 ```
+
+### Blocklisten
+
+Blocklisten ermöglichen es, Mitglieder bestimmter ChurchTools-Gruppen vor dem Export aus den erzeugten CSV-Dateien auszuschließen.
+Dies ist insbesondere hilfreich, um spezielle Adressgruppen wie Studentenwohnheime, Sammelunterkünfte oder Justizvollzugsanstalten gesondert zu behandeln.
+
+**Funktionsweise:**
+
+- Blocklisten werden aus YAML-Dateien im Verzeichnis `data/blocklists` geladen.
+- Der Dateiname einer Blockliste muss dem Namen der erzeugten CSV-Datei entsprechen und die Endung .yml besitzen.
+- Jede Blockliste enthält eine Liste von Adressdefinitionen.
+- Innerhalb eines Listeneintrags werden alle angegebenen Felder logisch UND-verknüpft. Eine Adresse wird nur dann blockiert, wenn alle Felder eines Blocklistenelements mit der Adresse übereinstimmen.
+
+**Beispiel:** Zwei Adressen sollen nicht in das CSV der Gruppe "Zuzug_2025" exportiert werden.
+
+Erstellen Sie die Datei `data/blocklists/Zuzug_2025.yml`:
+```yaml
+- zip: "12345"
+  city: "Glücksstadt"
+  street: "Hauptstraße 1"
+- zip: "12345"
+  city: "Glücksstadt"
+  street: "Hauptstraße 1"
+```
+
+**Beispiel:** Alle Adressen einer bestimmten Stadt sollen nicht in das CSV der Gruppe Gemeindepost exportiert werden.
+
+Erstellen Sie die Datei `data/blocklists/Gemeindepost.yml`:
+```yaml
+- zip: "12345"
+  city: "Autschdorf"
+```
+
+In diesem Fall werden alle Personen ausgeschlossen, deren Adresse die Postleitzahl 12345 und den Ort Autschdorf enthält – unabhängig von Straße oder Hausnummer.
 
 ### Beispielkonfigurationen
 

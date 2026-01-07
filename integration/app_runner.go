@@ -21,7 +21,8 @@ func RunApplicationWrapper(config *config.Config, rootDir string, dataDir string
 		app.NewGroupExporter(),
 		csv.NewCSVFileWriter(),
 		rootDir,
-		csv.NewFileDataProvider(filepath.Join(dataDir, "persons")),
+		csv.NewFileDataProvider(filepath.Join(dataDir, "mappings/persons")),
+		csv.NewBlockListDataProvider(filepath.Join(dataDir, "blocklists"), appLogger),
 		keepassCli,
 	)
 }
