@@ -10,7 +10,15 @@ type Group struct {
 	Fields []Field `yaml:"fields"`
 }
 
-func (g Group) SanitizedGroupName() string {
+func (g Group) CSVFileName() string {
+	return g.sanitizedGroupName() + ".csv"
+}
+
+func (g Group) BlocklistFileName() string {
+	return g.sanitizedGroupName() + ".yml"
+}
+
+func (g Group) sanitizedGroupName() string {
 	fileName := g.Name
 	fileName = strings.ReplaceAll(fileName, " ", "_")
 	fileName = strings.ReplaceAll(fileName, ",", ".")

@@ -44,12 +44,9 @@ func NewBlockListDataProvider(dataDir string, logger logger.Logger) BlockListDat
 
 func (bp *blockListDataProvider) IsBlocked(personJson map[string]json.RawMessage, group config.Group) (bool, error) {
 	var entry cacheEntry
-
-	sanitizedGroupName := group.SanitizedGroupName()
-
-	entry, err := bp.loadBlocklist(sanitizedGroupName)
+	entry, err := bp.loadBlocklist(group.BlocklistFileName())
 	if err != nil {
-		return false, fmt.Errorf("failed to load blocklist for group %s: %w", sanitizedGroupName, err)
+		return false, fmt.Errorf("failed to load blocklist %s: %w", group.BlocklistFileName(), err)
 	}
 
 	for _, blockedAddress := range entry.data {
@@ -89,7 +86,7 @@ func (bp *blockListDataProvider) loadBlocklist(name string) (cacheEntry, error) 
 		return entry, entry.err
 	}
 
-	path := filepath.Join(bp.dataDir, name+".yml")
+	path := filepath.Join(bp.dataDir, name)
 
 	yamlData, err := os.ReadFile(path)
 	if errors.Is(err, fs.ErrNotExist) {
@@ -135,7 +132,7 @@ func (bp *blockListDataProvider) loadBlocklist(name string) (cacheEntry, error) 
 }
 
 func (bp *blockListDataProvider) BlockListExists(group config.Group) bool {
-	blocklistFilePath := filepath.Join(bp.dataDir, group.SanitizedGroupName()+".yml")
+	blocklistFilePath := filepath.Join(bp.dataDir, group.BlocklistFileName())
 	_, err := os.Stat(blocklistFilePath)
 	if err != nil {
 		if os.IsNotExist(err) {

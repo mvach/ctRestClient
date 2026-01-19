@@ -89,7 +89,7 @@ func (p instancesProcessor) Process(
 			}
 
 			if blocklistsDataProvider.BlockListExists(group) {
-				p.logger.Info(fmt.Sprintf("      using blocklist '%s.yml'", group.SanitizedGroupName()))
+				p.logger.Info(fmt.Sprintf("      using blocklist '%s'", group.BlocklistFileName()))
 			}
 
 			personData, err := csv.NewPersonData(persons, group, fileDataProvider, blocklistsDataProvider, p.logger)
@@ -107,7 +107,7 @@ func (p instancesProcessor) Process(
 			csvFilePath := filepath.Join(
 				rootDir,
 				instance.Hostname,
-				group.SanitizedGroupName()+".csv",
+				group.CSVFileName(),
 			)
 
 			err = csvWriter.Write(csvFilePath, personData.Header(), personData.Records())
