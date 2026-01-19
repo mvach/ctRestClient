@@ -1,8 +1,8 @@
-package csv_test
+package data_provider_test
 
 import (
 	"ctRestClient/config"
-	"ctRestClient/csv"
+	"ctRestClient/data_provider"
 	"ctRestClient/logger/loggerfakes"
 	"encoding/json"
 	"os"
@@ -17,7 +17,7 @@ var _ = Describe("BlocklistDataProvider", func() {
 	var (
 		err         error
 		tempDataDir string
-		dp          csv.BlockListDataProvider
+		dp          data_provider.BlockListDataProvider
 		logger      *loggerfakes.FakeLogger
 		personJson  map[string]json.RawMessage
 		group       config.Group
@@ -37,7 +37,7 @@ var _ = Describe("BlocklistDataProvider", func() {
 			"weddingDate":  json.RawMessage(`null`),
 		}
 		logger = &loggerfakes.FakeLogger{}
-		dp = csv.NewBlockListDataProvider(tempDataDir, logger)
+		dp = data_provider.NewBlockListDataProvider(tempDataDir, logger)
 
 		group = config.Group{Name: "mappedField"}
 	})

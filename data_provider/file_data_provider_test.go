@@ -1,7 +1,7 @@
-package csv_test
+package data_provider_test
 
 import (
-	"ctRestClient/csv"
+	"ctRestClient/data_provider"
 	"os"
 	"path/filepath"
 
@@ -14,7 +14,7 @@ var _ = Describe("FileDataProvider", func() {
 	var (
 		err            error
 		tempDataDir    string
-		dp             csv.FileDataProvider
+		dp             data_provider.FileDataProvider
 		mappedFilePath string
 	)
 
@@ -36,7 +36,7 @@ var _ = Describe("FileDataProvider", func() {
 
 		err = os.WriteFile(mappedFilePath, []byte(yamlContent), 0644)
 		Expect(err).ToNot(HaveOccurred())
-		dp = csv.NewFileDataProvider(tempDataDir)
+		dp = data_provider.NewFileDataProvider(tempDataDir)
 	})
 
 	AfterEach(func() {

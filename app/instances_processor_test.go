@@ -5,6 +5,7 @@ import (
 	"ctRestClient/app/appfakes"
 	"ctRestClient/config"
 	"ctRestClient/csv/csvfakes"
+	"ctRestClient/data_provider/data_providerfakes"
 	"ctRestClient/logger/loggerfakes"
 	"encoding/json"
 	"errors"
@@ -21,8 +22,8 @@ var _ = Describe("InstanceProcessor", func() {
 		csvWriter              *csvfakes.FakeCSVFileWriter
 		logger                 *loggerfakes.FakeLogger
 		keepassCli             *appfakes.FakeKeepassCli
-		personDataProvider     *csvfakes.FakeFileDataProvider
-		blocklistsDataProvider *csvfakes.FakeBlockListDataProvider
+		personDataProvider     *data_providerfakes.FakeFileDataProvider
+		blocklistsDataProvider *data_providerfakes.FakeBlockListDataProvider
 		cfg                    config.Config
 		instancesProcessor     app.InstancesProcessor
 		result                 []json.RawMessage
@@ -33,8 +34,8 @@ var _ = Describe("InstanceProcessor", func() {
 		csvWriter = &csvfakes.FakeCSVFileWriter{}
 		logger = &loggerfakes.FakeLogger{}
 		keepassCli = &appfakes.FakeKeepassCli{}
-		personDataProvider = &csvfakes.FakeFileDataProvider{}
-		blocklistsDataProvider = &csvfakes.FakeBlockListDataProvider{}
+		personDataProvider = &data_providerfakes.FakeFileDataProvider{}
+		blocklistsDataProvider = &data_providerfakes.FakeBlockListDataProvider{}
 
 		cfg = config.Config{
 			Instances: []config.Instance{
@@ -53,12 +54,12 @@ var _ = Describe("InstanceProcessor", func() {
 
 		instancesProcessor = app.NewInstancesProcessor(cfg, logger)
 
-		person1 := `{	
+		person1 := `{
             "id": 1,
             "firstName": "foo_firstname",
             "lastName": "foo_lastname"
         }`
-		person2 := `{	
+		person2 := `{
             "id": 2,
             "firstName": "bar_firstname",
             "lastName": "bar_lastname"

@@ -1,4 +1,4 @@
-package csv
+package data_provider
 
 import (
 	"bytes"

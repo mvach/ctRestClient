@@ -3,7 +3,7 @@ package csv_test
 import (
 	"ctRestClient/config"
 	"ctRestClient/csv"
-	"ctRestClient/csv/csvfakes"
+	"ctRestClient/data_provider/data_providerfakes"
 	"ctRestClient/logger/loggerfakes"
 	"encoding/json"
 	"errors"
@@ -20,27 +20,27 @@ var _ = Describe("PersonData", func() {
 
 	var (
 		persons                []json.RawMessage
-		fileDataProvider       *csvfakes.FakeFileDataProvider
-		blocklistsDataProvider *csvfakes.FakeBlockListDataProvider
+		fileDataProvider       *data_providerfakes.FakeFileDataProvider
+		blocklistsDataProvider *data_providerfakes.FakeBlockListDataProvider
 		logger                 *loggerfakes.FakeLogger
 	)
 
 	BeforeEach(func() {
-		person1 := `{	
+		person1 := `{
             "id": 1,
             "firstName": "foo_firstname",
             "lastName": "foo_lastname",
 			"height": 2.75
         }`
-		person2 := `{	
+		person2 := `{
             "id": 2,
             "firstName": "bar_firstname",
             "lastName": "bar_lastname",
 			"height": 1.0
         }`
 		persons = []json.RawMessage{json.RawMessage(person1), json.RawMessage(person2)}
-		fileDataProvider = &csvfakes.FakeFileDataProvider{}
-		blocklistsDataProvider = &csvfakes.FakeBlockListDataProvider{}
+		fileDataProvider = &data_providerfakes.FakeFileDataProvider{}
+		blocklistsDataProvider = &data_providerfakes.FakeBlockListDataProvider{}
 		logger = &loggerfakes.FakeLogger{}
 	})
 
@@ -165,7 +165,7 @@ var _ = Describe("PersonData", func() {
 		})
 
 		It("returns mapped data for string key fields", func() {
-			person1 := `{	
+			person1 := `{
 				"id": 1,
 				"key": "value"
 			}`
@@ -190,7 +190,7 @@ var _ = Describe("PersonData", func() {
 		})
 
 		It("returns empty string for string key fields that are not mapped", func() {
-			person1 := `{	
+			person1 := `{
 				"id": 1,
 				"key": "value"
 			}`
@@ -215,7 +215,7 @@ var _ = Describe("PersonData", func() {
 		})
 
 		It("returns mapped data for float64 key fields", func() {
-			person1 := `{	
+			person1 := `{
 				"id": 1,
 				"key": 1.2
 			}`
@@ -240,7 +240,7 @@ var _ = Describe("PersonData", func() {
 		})
 
 		It("returns empty string for float64 key fields that are not mapped", func() {
-			person1 := `{	
+			person1 := `{
 				"id": 1,
 				"key": 1.2
 			}`

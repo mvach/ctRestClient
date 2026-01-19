@@ -4,6 +4,7 @@ import (
 	"ctRestClient/app"
 	"ctRestClient/config"
 	"ctRestClient/csv"
+	"ctRestClient/data_provider"
 	"ctRestClient/logger"
 	"flag"
 	"fmt"
@@ -73,8 +74,8 @@ func main() {
 		app.NewGroupExporter(),
 		csv.NewCSVFileWriter(),
 		rootDir,
-		csv.NewFileDataProvider(filepath.Join(dataDir, "mappings/persons")),
-		csv.NewBlockListDataProvider(filepath.Join(dataDir, "blocklists"), appLogger),
+		data_provider.NewFileDataProvider(filepath.Join(dataDir, "mappings/persons")),
+		data_provider.NewBlockListDataProvider(filepath.Join(dataDir, "blocklists"), appLogger),
 		keepassCli,
 	)
 	if err != nil {

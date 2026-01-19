@@ -2,6 +2,7 @@ package csv
 
 import (
 	"ctRestClient/config"
+	"ctRestClient/data_provider"
 	"ctRestClient/logger"
 	"encoding/json"
 	"fmt"
@@ -15,8 +16,8 @@ type personData struct {
 func NewPersonData(
 	persons []json.RawMessage,
 	group config.Group,
-	fileDataProvider FileDataProvider,
-	blocklistsDataProvider BlockListDataProvider,
+	fileDataProvider data_provider.FileDataProvider,
+	blocklistsDataProvider data_provider.BlockListDataProvider,
 	logger logger.Logger) (CsvData, error) {
 	csvRecords := make([][]string, 0)
 	fields := group.Fields
