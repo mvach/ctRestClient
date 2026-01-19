@@ -7,6 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"ctRestClient/config"
+	"ctRestClient/testutil"
 )
 
 var _ = Describe("Field", func() {
@@ -26,17 +27,18 @@ var _ = Describe("Field", func() {
 
 	var _ = Describe("GetFieldName", func() {
 		It("return the field name from simple field name", func() {
-			yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-      - name: foo
-        fields:
-        - foo_field_1
-`
-			_, err := tempFile.Write([]byte(yamlContent))
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				instances:
+				- hostname: foo
+				  token_name: foo
+				  groups:
+				  - name: foo
+				    fields:
+				    - foo_field_1
+				`)
+
+			_, err := tempFile.Write(yamlContent)
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
@@ -48,17 +50,18 @@ instances:
 		})
 
 		It("return the field name from object", func() {
-			yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-      - name: foo
-        fields:
-        - {fieldname: foo_field_1, columnname: foo_column_1}
-`
-			_, err := tempFile.Write([]byte(yamlContent))
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				instances:
+				- hostname: foo
+				  token_name: foo
+				  groups:
+				  - name: foo
+				    fields:
+				    - {fieldname: foo_field_1, columnname: foo_column_1}
+				`)
+
+			_, err := tempFile.Write(yamlContent)
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
@@ -72,17 +75,18 @@ instances:
 
 	var _ = Describe("GetColumnName", func() {
 		It("return the simple field name as column name", func() {
-			yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-      - name: foo
-        fields:
-        - foo_field_1
-`
-			_, err := tempFile.Write([]byte(yamlContent))
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				instances:
+				- hostname: foo
+				  token_name: foo
+				  groups:
+				  - name: foo
+				    fields:
+				    - foo_field_1
+				`)
+
+			_, err := tempFile.Write(yamlContent)
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
@@ -94,17 +98,18 @@ instances:
 		})
 
 		It("return the columnname from object", func() {
-			yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-      - name: foo
-        fields:
-        - {fieldname: foo_field_1, columnname: foo_column_1}
-`
-			_, err := tempFile.Write([]byte(yamlContent))
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				instances:
+				- hostname: foo
+				  token_name: foo
+				  groups:
+				  - name: foo
+				    fields:
+				    - {fieldname: foo_field_1, columnname: foo_column_1}
+				`)
+
+			_, err := tempFile.Write(yamlContent)
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
@@ -118,17 +123,18 @@ instances:
 
 	var _ = Describe("IsMappedData", func() {
 		It("returns false if field name is present", func() {
-			yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-      - name: foo
-        fields:
-        - foo_field_1
-`
-			_, err := tempFile.Write([]byte(yamlContent))
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				instances:
+				- hostname: foo
+				  token_name: foo
+				  groups:
+				  - name: foo
+				    fields:
+				    - foo_field_1
+				`)
+
+			_, err := tempFile.Write(yamlContent)
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
@@ -140,16 +146,17 @@ instances:
 		})
 
 		It("returns true if field object is present", func() {
-			yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-      - name: foo
-        fields:
-        - {fieldname: foo_field_1, columnname: foo_column_1}
-`
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				instances:
+				- hostname: foo
+				  token_name: foo
+				  groups:
+				  - name: foo
+				    fields:
+				    - {fieldname: foo_field_1, columnname: foo_column_1}
+				`)
+
 			_, err := tempFile.Write([]byte(yamlContent))
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()

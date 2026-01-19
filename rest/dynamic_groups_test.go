@@ -11,6 +11,7 @@ import (
 
 	"ctRestClient/httpclient/httpclientfakes"
 	"ctRestClient/rest"
+	"ctRestClient/testutil"
 )
 
 var _ = Describe("DynamicGroupsEndpoint", func() {
@@ -29,10 +30,10 @@ var _ = Describe("DynamicGroupsEndpoint", func() {
 		BeforeEach(func(){
 			httpResponse = &http.Response{
 			StatusCode: 200,
-			Body: io.NopCloser(bytes.NewBufferString(
-				`{  
-  					"dynamicGroupStatus": "active"
-                }`)),
+			Body: io.NopCloser(testutil.JsonToBufferString(
+				`{
+					"dynamicGroupStatus": "active"
+				}`)),
 			}
 		})
 
@@ -89,8 +90,11 @@ var _ = Describe("DynamicGroupsEndpoint", func() {
 		It("returns an error if the response body is missing the dynamicGroupStatus field", func() {
 			httpResponse := &http.Response{
 				StatusCode: 200,
-				Body: io.NopCloser(bytes.NewBufferString(
-					`{"foo": []}`))}
+				Body: io.NopCloser(testutil.JsonToBufferString(
+					`{
+						"foo": []
+					}`)),
+			}
 			httpClient.DoReturns(httpResponse, nil)
 
 			endpoint := rest.NewDynamicGroupsEndpoint(httpClient)
@@ -106,10 +110,10 @@ var _ = Describe("DynamicGroupsEndpoint", func() {
 		BeforeEach(func(){
 			httpResponse = &http.Response{
 			StatusCode: 200,
-			Body: io.NopCloser(bytes.NewBufferString(
-				`{  
-  					"data": [0,1,2,3]
-                }`)),
+			Body: io.NopCloser(testutil.JsonToBufferString(
+				`{
+					"data": [0,1,2,3]
+				}`)),
 			}
 		})
 

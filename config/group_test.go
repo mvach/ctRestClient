@@ -7,6 +7,9 @@ import (
 	. "github.com/onsi/gomega"
 
 	"ctRestClient/config"
+	"ctRestClient/testutil"
+
+
 )
 
 var _ = Describe("Group", func() {
@@ -26,17 +29,18 @@ var _ = Describe("Group", func() {
 
 	var _ = Describe("CSVFileName", func() {
 		It("sanitizes group names correctly", func() {
-			yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-      - name: foo- ,äöüÄÖÜ-group
-        fields:
-        - foo_field_1
-`
-			_, err := tempFile.Write([]byte(yamlContent))
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				instances:
+				- hostname: foo
+				  token_name: foo
+				  groups:
+				  - name: foo- ,äöüÄÖÜ-group
+				    fields:
+				    - foo_field_1
+				`)
+
+			_, err := tempFile.Write(yamlContent)
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
@@ -50,17 +54,18 @@ instances:
 
 	var _ = Describe("BlocklistFileName", func() {
 		It("sanitizes group names correctly", func() {
-			yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-      - name: foo- ,äöüÄÖÜ-group
-        fields:
-        - foo_field_1
-`
-			_, err := tempFile.Write([]byte(yamlContent))
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				instances:
+				- hostname: foo
+				  token_name: foo
+				  groups:
+				  - name: foo- ,äöüÄÖÜ-group
+				    fields:
+				    - foo_field_1
+				`)
+
+			_, err := tempFile.Write(yamlContent)
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 

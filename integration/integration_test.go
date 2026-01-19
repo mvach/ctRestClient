@@ -3,6 +3,7 @@ package integration
 import (
 	"ctRestClient/config"
 	"ctRestClient/logger"
+	"ctRestClient/testutil"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -80,18 +81,20 @@ var _ = Describe("ChurchTools Integration Test with HTTP Server", func() {
 	Context("Full end-to-end integration test", func() {
 		It("exports group members into a CSV file", func() {
 
-			configContent := fmt.Sprintf(`---
-instances:
-  - hostname: %s
-    token_name: TEST_TOKEN
-    groups:
-    - name: youth_group
-      fields:
-      - id
-      - firstName  
-      - lastName
-      - email
-      - sexId`, strings.TrimPrefix(server.URL, "https://"))
+			configContent := fmt.Sprintf(testutil.YamlToString(`
+				---
+				instances:
+				- hostname: %s
+				  token_name: TEST_TOKEN
+				  groups:
+				  - name: youth_group
+				    fields:
+				    - id
+				    - firstName
+				    - lastName
+				    - email
+				    - sexId
+				`), strings.TrimPrefix(server.URL, "https://"))
 
 			err := os.WriteFile(configPath, []byte(configContent), 0644)
 			Expect(err).ToNot(HaveOccurred())
@@ -119,27 +122,31 @@ instances:
 
 		It("exports replaces field of group members by data files", func() {
 
-			configContent := fmt.Sprintf(`---
-instances:
-  - hostname: %s
-    token_name: TEST_TOKEN
-    groups:
-    - name: youth_group
-      fields:
-      - id
-      - firstName  
-      - lastName
-      - email
-      - {fieldname: sexId, columnname: "sex"}`, strings.TrimPrefix(server.URL, "https://"))
+			configContent := fmt.Sprintf(testutil.YamlToString(`
+				---
+				instances:
+				- hostname: %s
+				  token_name: TEST_TOKEN
+				  groups:
+				  - name: youth_group
+				    fields:
+				    - id
+				    - firstName
+				    - lastName
+				    - email
+				    - {fieldname: sexId, columnname: "sex"}
+				`), strings.TrimPrefix(server.URL, "https://"))
 
 			err := os.WriteFile(configPath, []byte(configContent), 0644)
 			Expect(err).ToNot(HaveOccurred())
 
 			// Create mapping data for sexId field
-			sexMappingContent := `---
-1: "Male"
-2: "Female"`
-			err = os.WriteFile(filepath.Join(dataDir, "mappings/persons", "sexId.yml"), []byte(sexMappingContent), 0644)
+			sexMappingContent := testutil.YamlToByteArray(`
+				---
+				1: "Male"
+				2: "Female"
+				`)
+			err = os.WriteFile(filepath.Join(dataDir, "mappings/persons", "sexId.yml"), sexMappingContent, 0644)
 			Expect(err).ToNot(HaveOccurred())
 
 			// Load configuration
@@ -165,31 +172,32 @@ instances:
 
 		It("exports group members but blocks defined addresses", func() {
 
-			configContent := fmt.Sprintf(`---
-instances:
-  - hostname: %s
-    token_name: TEST_TOKEN
-    groups:
-    - name: youth_group
-      fields:
-      - id
-      - firstName  
-      - lastName
-      - zip
-      - city
-      - street`, strings.TrimPrefix(server.URL, "https://"))
-
+			configContent := fmt.Sprintf(testutil.YamlToString(`
+				---
+				instances:
+				- hostname: %s
+				  token_name: TEST_TOKEN
+				  groups:
+				  - name: youth_group
+				    fields:
+				    - id
+				    - firstName
+				    - lastName
+				    - zip
+				    - city
+				    - street
+				`), strings.TrimPrefix(server.URL, "https://"))
 			err := os.WriteFile(configPath, []byte(configContent), 0644)
 			Expect(err).ToNot(HaveOccurred())
 
 			// Create mapping data for sexId field
-			blocklistContent := `
----
-- street: "Mainstreet 1"
-  city: "Änytown"
-  zip: "12345"
-`
-			err = os.WriteFile(filepath.Join(dataDir, "blocklists", "youth_group.yml"), []byte(blocklistContent), 0644)
+			blocklistContent := testutil.YamlToByteArray(`
+				---
+				- street: "Mainstreet 1"
+				  city: "Änytown"
+				  zip: "12345"
+				`)
+			err = os.WriteFile(filepath.Join(dataDir, "blocklists", "youth_group.yml"), blocklistContent, 0644)
 			Expect(err).ToNot(HaveOccurred())
 
 			// Load configuration
@@ -366,7 +374,7 @@ func createChurchToolsHandler() http.Handler {
 				person := json.RawMessage(`{
 					"id": 101,
 					"firstName": "John",
-					"lastName": "Doe", 
+					"lastName": "Doe",
 					"email": "john.doe@example.com",
 					"zip": "12345",
 					"city": "\u00c4nytown",
@@ -379,7 +387,7 @@ func createChurchToolsHandler() http.Handler {
 					"id": 102,
 					"firstName": "Jane",
 					"lastName": "Smith",
-					"email": "jane.smith@example.com", 
+					"email": "jane.smith@example.com",
 					"zip": "12345",
 					"city": "\u00c4nytown",
 					"street": "Mainstreet 2",

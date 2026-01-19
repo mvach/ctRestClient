@@ -2,6 +2,7 @@ package data_provider_test
 
 import (
 	"ctRestClient/data_provider"
+	"ctRestClient/testutil"
 	"os"
 	"path/filepath"
 
@@ -24,15 +25,15 @@ var _ = Describe("FileDataProvider", func() {
 
 		mappedFilePath = filepath.Join(tempDataDir, "mappedField.yml")
 
-		yamlContent := `
-1: "number one"
-2: "number two"
-1.1: "number one point one"
-1.0: "number one point zero"
-"2": "string two"
-"A": "string A"
-"B": "string B"
-`
+		yamlContent := testutil.YamlToByteArray(`
+			1: "number one"
+			2: "number two"
+			1.1: "number one point one"
+			1.0: "number one point zero"
+			"2": "string two"
+			"A": "string A"
+			"B": "string B"
+			`)
 
 		err = os.WriteFile(mappedFilePath, []byte(yamlContent), 0644)
 		Expect(err).ToNot(HaveOccurred())
