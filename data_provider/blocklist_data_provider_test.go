@@ -4,6 +4,7 @@ import (
 	"ctRestClient/config"
 	"ctRestClient/data_provider"
 	"ctRestClient/logger/loggerfakes"
+	"ctRestClient/testutil"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -76,10 +77,10 @@ var _ = Describe("BlocklistDataProvider", func() {
 
 		It("returns false if blocklist is not matching the person json - zipcode", func() {
 			blocklistFilePath := filepath.Join(tempDataDir, "mappedField.yml")
-			yamlContent := `
----
-- zip: ""
-`
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				- zip: ""
+				`)
 			err = os.WriteFile(blocklistFilePath, []byte(yamlContent), 0644)
 			Expect(err).ToNot(HaveOccurred())
 
@@ -90,10 +91,10 @@ var _ = Describe("BlocklistDataProvider", func() {
 
 		It("returns false if blocklist is not matching the person json - age", func() {
 			blocklistFilePath := filepath.Join(tempDataDir, "mappedField.yml")
-			yamlContent := `
----
-- age: ""
-`
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				- age: ""
+				`)
 			err = os.WriteFile(blocklistFilePath, []byte(yamlContent), 0644)
 			Expect(err).ToNot(HaveOccurred())
 
@@ -104,10 +105,10 @@ var _ = Describe("BlocklistDataProvider", func() {
 
 		It("returns false if blocklist is not matching the person json - isDead", func() {
 			blocklistFilePath := filepath.Join(tempDataDir, "mappedField.yml")
-			yamlContent := `
----
-- isDead: ""
-`
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				- isDead: ""
+				`)
 			err = os.WriteFile(blocklistFilePath, []byte(yamlContent), 0644)
 			Expect(err).ToNot(HaveOccurred())
 
@@ -118,10 +119,10 @@ var _ = Describe("BlocklistDataProvider", func() {
 
 		It("returns false if blocklist is not matching the person json - sexId", func() {
 			blocklistFilePath := filepath.Join(tempDataDir, "mappedField.yml")
-			yamlContent := `
----
-- sexId: ""
-`
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				- sexId: ""
+				`)
 			err = os.WriteFile(blocklistFilePath, []byte(yamlContent), 0644)
 			Expect(err).ToNot(HaveOccurred())
 
@@ -132,10 +133,10 @@ var _ = Describe("BlocklistDataProvider", func() {
 
 		It("returns false if blocklist is not matching the person json - weddingDate", func() {
 			blocklistFilePath := filepath.Join(tempDataDir, "mappedField.yml")
-			yamlContent := `
----
-- weddingDate: ""
-`
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				- weddingDate: ""
+				`)
 			err = os.WriteFile(blocklistFilePath, []byte(yamlContent), 0644)
 			Expect(err).ToNot(HaveOccurred())
 
@@ -146,12 +147,12 @@ var _ = Describe("BlocklistDataProvider", func() {
 
 		It("returns false if blocklist is not fully matching the person json", func() {
 			blocklistFilePath := filepath.Join(tempDataDir, "mappedField.yml")
-			yamlContent := `
----
-- street: "Mainstreet"
-  city: "Anytown"
-  zip: "9999"
-`
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				- street: "Mainstreet"
+				  city: "Anytown"
+				  zip: "9999"
+				`)
 			err = os.WriteFile(blocklistFilePath, []byte(yamlContent), 0644)
 			Expect(err).ToNot(HaveOccurred())
 
@@ -162,12 +163,12 @@ var _ = Describe("BlocklistDataProvider", func() {
 
 		It("returns true if blocklist is matching the person json", func() {
 			blocklistFilePath := filepath.Join(tempDataDir, "mappedField.yml")
-			yamlContent := `
----
-- street: "Mainstreet"
-  city: "Anytown"
-  zip: "12345"
-`
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				- street: "Mainstreet"
+				city: "Anytown"
+				zip: "12345"
+				`)
 			err = os.WriteFile(blocklistFilePath, []byte(yamlContent), 0644)
 			Expect(err).ToNot(HaveOccurred())
 
@@ -178,16 +179,16 @@ var _ = Describe("BlocklistDataProvider", func() {
 
 		It("returns true if blocklist is matching the person json (comparing all data)", func() {
 			blocklistFilePath := filepath.Join(tempDataDir, "mappedField.yml")
-			yamlContent := `
----
-- street: "Mainstreet"
-  city: "Anytown"
-  zip: "12345"
-  age: 30
-  isDead: false
-  sexId: 1
-  weddingDate: null
-`
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				- street: "Mainstreet"
+				city: "Anytown"
+				zip: "12345"
+				age: 30
+				isDead: false
+				sexId: 1
+				weddingDate: null
+				`)
 			err = os.WriteFile(blocklistFilePath, []byte(yamlContent), 0644)
 			Expect(err).ToNot(HaveOccurred())
 

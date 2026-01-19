@@ -1,7 +1,6 @@
 package rest_test
 
 import (
-	"bytes"
 	"errors"
 	"io"
 	"net/http"
@@ -11,6 +10,7 @@ import (
 
 	"ctRestClient/httpclient/httpclientfakes"
 	"ctRestClient/rest"
+	"ctRestClient/testutil"
 )
 
 var _ = Describe("GroupsEndpoint", func() {
@@ -25,25 +25,26 @@ var _ = Describe("GroupsEndpoint", func() {
 
 		httpResponse = &http.Response{
 			StatusCode: 200,
-			Body: io.NopCloser(bytes.NewBufferString(
+			Body: io.NopCloser(testutil.JsonToBufferString(
 				`{
-                    "data": [
-                        {
-                            "id": 10,
-                            "guid": "1234",
-                            "name": "group1"
-                        }
-                    ],
-                    "meta": {
-                        "count": 1
-                    }
-                }`))}
+					"data": [
+						{
+							"id": 10,
+							"guid": "1234",
+							"name": "group1"
+						}
+					],
+					"meta": {
+						"count": 1
+					}
+				}`)),
+		}
 	})
 
 	var _ = Describe("GetGroup", func() {
 
 		It("returns a group", func() {
-            
+
 			httpClient.DoReturns(httpResponse, nil)
 
 			groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
@@ -69,11 +70,12 @@ var _ = Describe("GroupsEndpoint", func() {
 		It("returns an error if the status code is wrong", func() {
 			httpResponse := &http.Response{
 				StatusCode: 404,
-				Body: io.NopCloser(bytes.NewBufferString(
+				Body: io.NopCloser(testutil.JsonToBufferString(
 					`{
-                        "data": [],
-                        "meta": { "count": 0 }
-                    }`))}
+						"data": [],
+						"meta": { "count": 0 }
+					}`)),
+			}
 			httpClient.DoReturns(httpResponse, nil)
 
 			groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
@@ -86,10 +88,11 @@ var _ = Describe("GroupsEndpoint", func() {
 		It("returns an error if the response body is not a church tools json response", func() {
 			httpResponse := &http.Response{
 				StatusCode: 200,
-				Body: io.NopCloser(bytes.NewBufferString(
+				Body: io.NopCloser(testutil.JsonToBufferString(
 					`{
-                        "foo": [],
-                    }`))}
+						"foo": [],
+					}`)),
+			}
 			httpClient.DoReturns(httpResponse, nil)
 
 			groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
@@ -102,14 +105,14 @@ var _ = Describe("GroupsEndpoint", func() {
         It("returns an error if the response body is empty", func() {
 			httpResponse := &http.Response{
 				StatusCode: 200,
-				Body: io.NopCloser(bytes.NewBufferString(
+				Body: io.NopCloser(testutil.JsonToBufferString(
 					`{
-                    "data": [
-                    ],
-                    "meta": {
-                        "count": 0
-                    }
-                    }`))}
+						"data": [],
+						"meta": {
+							"count": 0
+						}
+					}`)),
+			}
 			httpClient.DoReturns(httpResponse, nil)
 
 			groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
@@ -122,24 +125,24 @@ var _ = Describe("GroupsEndpoint", func() {
         It("returns an error if the response body is containing multiple groups", func() {
 			httpResponse := &http.Response{
 				StatusCode: 200,
-				Body: io.NopCloser(bytes.NewBufferString(
+				Body: io.NopCloser(testutil.JsonToBufferString(
 					`{
-                    "data": [
-                        {
-                            "id": 10,
-                            "guid": "1234",
-                            "name": "group1"
-                        },
-                        {
-                            "id": 11,
-                            "guid": "5678",
-                            "name": "group1"
-                        }
-                    ],
-                    "meta": {
-                        "count": 2
-                    }
-                    }`))}
+						"data": [
+							{
+								"id": 10,
+								"guid": "1234",
+								"name": "group1"
+							},
+							{
+								"id": 11,
+								"guid": "5678",
+								"name": "group1"
+							}
+						],
+						"meta": {
+							"count": 2
+						}
+					}`))}
 			httpClient.DoReturns(httpResponse, nil)
 
 			groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
@@ -155,21 +158,21 @@ var _ = Describe("GroupsEndpoint", func() {
 		It("returns group members", func() {
 			httpResponse := &http.Response{
 				StatusCode: 200,
-				Body: io.NopCloser(bytes.NewBufferString(
+				Body: io.NopCloser(testutil.JsonToBufferString(
 					`{
-                        "data": [
-                            {
-                                "personId": 1,
-                                "groupId": 71
-                            },{
-                                "personId": 2,
-                                "groupId": 71
-                            }
-                        ],
-                        "meta": {
-                            "count": 1
-                        }
-                    }`))}
+						"data": [
+							{
+								"personId": 1,
+								"groupId": 71
+							},{
+								"personId": 2,
+								"groupId": 71
+							}
+						],
+						"meta": {
+							"count": 1
+						}
+					}`))}
 			httpClient.DoReturns(httpResponse, nil)
 
 			groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
@@ -193,11 +196,12 @@ var _ = Describe("GroupsEndpoint", func() {
 		It("returns an error if the status code is wrong", func() {
 			httpResponse := &http.Response{
 				StatusCode: 404,
-				Body: io.NopCloser(bytes.NewBufferString(
+				Body: io.NopCloser(testutil.JsonToBufferString(
 					`{
-                        "data": [],
-                        "meta": { "count": 0 }
-                    }`))}
+						"data": [],
+						"meta": { "count": 0 }
+					}`)),
+				}
 			httpClient.DoReturns(httpResponse, nil)
 
 			groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
@@ -210,10 +214,10 @@ var _ = Describe("GroupsEndpoint", func() {
 		It("returns an error if the response body is not a church tools json response", func() {
 			httpResponse := &http.Response{
 				StatusCode: 200,
-				Body: io.NopCloser(bytes.NewBufferString(
+				Body: io.NopCloser(testutil.JsonToBufferString(
 					`{
-                        "foo": [],
-                    }`))}
+						"foo": [],
+					}`))}
 			httpClient.DoReturns(httpResponse, nil)
 
 			groupsEndpoint := rest.NewGroupsEndpoint(httpClient)

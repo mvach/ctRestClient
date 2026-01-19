@@ -7,6 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"ctRestClient/config"
+	"ctRestClient/testutil"
 )
 
 func ptr(s string) *string {
@@ -31,26 +32,26 @@ var _ = Describe("Config", func() {
 	var _ = Describe("LoadConfig", func() {
 
 		It("should load the configuration", func() {
-			yamlContent := `
----
-instances:
-  - hostname: foo.com
-    token_name: foo
-    groups:
-    - name: foo_group_0
-      fields:
-      - foo_field_1
-      - foo_field_2
-    - name: foo_group_1
-      fields:
-      - {fieldname: foo_field_3, columnname: foo_column_3}
-  - hostname: bar.com
-    token_name: bar
-    groups:
-    - name: bar_group_0
-      fields:
-      - bar_field_1
-`
+			yamlContent := testutil.YamlToByteArray(`
+				---
+				instances:
+				- hostname: foo.com
+					token_name: foo
+					groups:
+					- name: foo_group_0
+						fields:
+						- foo_field_1
+						- foo_field_2
+					- name: foo_group_1
+						fields:
+						- {fieldname: foo_field_3, columnname: foo_column_3}
+				- hostname: bar.com
+					token_name: bar
+					groups:
+					- name: bar_group_0
+						fields:
+						- bar_field_1
+				`)
 			_, err := tempFile.Write([]byte(yamlContent))
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
@@ -76,9 +77,9 @@ instances:
 
 		var _ = Describe("instances property errors", func() {
 			It("returns an error if mandatory instances field is missing", func() {
-				yamlContent := `
---- 
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -90,10 +91,10 @@ instances:
 			})
 
 			It("returns an error if mandatory instances field is nil", func() {
-				yamlContent := `
----
-instances:
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -105,10 +106,10 @@ instances:
 			})
 
 			It("returns an error if mandatory instances field has wrong type", func() {
-				yamlContent := `
----
-instances: "not_array"
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances: "not_array"
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -120,10 +121,10 @@ instances: "not_array"
 			})
 
 			It("returns an error if mandatory instances field is empty array", func() {
-				yamlContent := `
----
-instances: []
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances: []
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -137,11 +138,11 @@ instances: []
 
 		var _ = Describe("hostname property errors", func() {
 			It("returns an error if mandatory hostname field is missing", func() {
-				yamlContent := `
----
-instances:
-  - foo: bar
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- foo: bar
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -153,11 +154,11 @@ instances:
 			})
 
 			It("returns an error if mandatory hostname field is nil", func() {
-				yamlContent := `
----
-instances:
-  - hostname:
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname:
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -171,12 +172,12 @@ instances:
 
 		var _ = Describe("token_name property errors", func() {
 			It("returns an error if mandatory token_name field is missing", func() {
-				yamlContent := `
----
-instances:
-  - hostname: foo
-    foo: bar
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname: foo
+						foo: bar
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -188,12 +189,12 @@ instances:
 			})
 
 			It("returns an error if mandatory token_name field is nil", func() {
-				yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name:
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname: foo
+						token_name:
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -207,12 +208,12 @@ instances:
 
 		var _ = Describe("groups property errors", func() {
 			It("returns an error if mandatory groups field is missing", func() {
-				yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname: foo
+						token_name: foo
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -224,13 +225,13 @@ instances:
 			})
 
 			It("returns an error if mandatory groups field is nil", func() {
-				yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname: foo
+						token_name: foo
+						groups:
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -242,13 +243,13 @@ instances:
 			})
 
 			It("returns an error if mandatory groups field has wrong type", func() {
-				yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups: "not_array"
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname: foo
+						token_name: foo
+						groups: "not_array"
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -260,13 +261,13 @@ instances:
 			})
 
 			It("returns an error if mandatory groups field is empty array", func() {
-				yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups: []
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname: foo
+						token_name: foo
+						groups: []
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -280,14 +281,14 @@ instances:
 
 		var _ = Describe("group name property errors", func() {
 			It("returns an error if mandatory group name field is missing", func() {
-				yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups: 
-      - foo: bar
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname: foo
+						token_name: foo
+						groups:
+						- foo: bar
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -299,14 +300,14 @@ instances:
 			})
 
 			It("returns an error if mandatory group name field is nil", func() {
-				yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups: 
-      - name:
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname: foo
+						token_name: foo
+						groups:
+						- name:
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -321,14 +322,14 @@ instances:
 		var _ = Describe("fields property errors", func() {
 
 			It("returns an error if mandatory fields field is missing", func() {
-				yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-      - name: foo_group_0
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname: foo
+						token_name: foo
+						groups:
+						- name: foo_group_0
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -340,15 +341,15 @@ instances:
 			})
 
 			It("returns an error if mandatory fields field is nil", func() {
-				yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-      - name: foo_group_0
-        fields:
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname: foo
+						token_name: foo
+						groups:
+						- name: foo_group_0
+							fields:
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -360,15 +361,15 @@ instances:
 			})
 
 			It("returns an error if mandatory fields field has wrong type", func() {
-				yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-      - name: foo_group_0
-        fields: "not_array"
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname: foo
+						token_name: foo
+						groups:
+						- name: foo_group_0
+							fields: "not_array"
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -380,15 +381,15 @@ instances:
 			})
 
 			It("returns an error if mandatory fields field is empty array", func() {
-				yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-      - name: foo_group_0
-        fields: []
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname: foo
+						token_name: foo
+						groups:
+						- name: foo_group_0
+							fields: []
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
@@ -400,15 +401,15 @@ instances:
 			})
 
 			It("returns an error if fields array contains invalid object", func() {
-				yamlContent := `
----
-instances:
-  - hostname: foo
-    token_name: foo
-    groups:
-      - name: foo_group_0
-        fields: [{}]
-`
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					- hostname: foo
+						token_name: foo
+						groups:
+						- name: foo_group_0
+							fields: [{}]
+					`)
 				_, err := tempFile.Write([]byte(yamlContent))
 				Expect(err).ToNot(HaveOccurred())
 				tempFile.Close()
