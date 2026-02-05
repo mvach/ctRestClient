@@ -1,0 +1,15 @@
+#!/bin/bash
+
+SCANNER_VERSION=$(clamscan --version)
+echo "Using scanner version: $SCANNER_VERSION" | tee -a dist/virus_scan.log
+
+echo "Scanning built binary with ClamAV..."
+clamscan --recursive --infected --verbose dist/ | tee -a dist/virus_scan.log || SCAN_STATUS=$?
+if [ "${SCAN_STATUS:-0}" -eq 1 ]; then
+  echo "❌ Virus detected in build artifacts. Build failed." | tee -a dist/virus_scan.log >&2
+  exit 1
+elif [ "${SCAN_STATUS:-0}" -gt 1 ]; then
+  echo "❌ ClamAV scan error (exit code $SCAN_STATUS). Build failed." | tee -a dist/virus_scan.log >&2
+  exit $SCAN_STATUS
+fi
+echo "✅ No viruses found." | tee -a dist/virus_scan.log

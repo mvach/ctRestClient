@@ -45,20 +45,7 @@ jobs:
         run: scripts/build_binaries
 
       - name: Virus scan
-        run: |
-          scannerVersion=$(clamscan --version)
-          echo "Using scanner version: $scannerVersion"
-
-          echo "Scanning built binary with ClamAV..."
-          clamscan --recursive --infected --verbose dist/ || SCAN_STATUS=$?
-          if [ "${SCAN_STATUS:-0}" -eq 1 ]; then
-            echo "❌ Virus detected in build artifacts. Build failed." >&2
-            exit 1
-          elif [ "${SCAN_STATUS:-0}" -gt 1 ]; then
-            echo "❌ ClamAV scan error (exit code $SCAN_STATUS). Build failed." >&2
-            exit $SCAN_STATUS
-          fi
-          echo "✅ No viruses found."
+        run: scripts/run_virus_scan
 
       - name: Create GitHub Release & upload artifacts
         uses: softprops/action-gh-release@v2
@@ -69,6 +56,7 @@ jobs:
           files: |
             dist/ctRestClient_*.tar.gz
             dist/checksums.txt
+            dist/virus_scan.log
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -85,30 +73,30 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-          
+
       - name: Install MkDocs and dependencies
         run: |
           python -m pip install --upgrade pip
           pip install mkdocs mkdocs-material mike
-          
+
       - name: Extract version from tag
         id: version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          
+
       - name: Create versioned MkDocs config
         run: |
           bash .github/scripts/create-versioned-mkdocs-config.sh ${{ steps.version.outputs.VERSION }}
-          
+
       - name: Configure Git for mike
         run: |
           git config user.name "${{ github.repository_owner }}"
           git config user.email "${{ github.repository_owner }}@users.noreply.github.com"
-          
+
       - name: Deploy versioned docs
         run: |
           # Deploy the new version to gh-pages branch
