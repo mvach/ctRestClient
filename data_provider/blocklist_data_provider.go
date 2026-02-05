@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"ctRestClient/config"
 	"ctRestClient/logger"
+	"ctRestClient/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -60,7 +61,7 @@ func (bp *blockListDataProvider) IsBlocked(personJson map[string]json.RawMessage
 			} else {
 
 				// Unescape the json data that contains (\u00df and \u00fc instead of ß and ü) for later string comparison with data from the blocklist.
-				personJsonValue, err := unescapeUnicodeCharacters(personJsonFieldValue)
+				personJsonValue, err := utils.UnescapeUnicodeCharacters(personJsonFieldValue)
 				if err != nil {
 					return false, fmt.Errorf("failed to unescape unicode characters for field %s: %w", fieldName, err)
 				}
@@ -145,15 +146,3 @@ func (bp *blockListDataProvider) BlockListExists(group config.Group) bool {
 	return true
 }
 
-func unescapeUnicodeCharacters(jsonRaw json.RawMessage) (json.RawMessage, error) {
-	var temp interface{}
-	if err := json.Unmarshal(jsonRaw, &temp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal person json field")
-	}
-
-	result, err := json.Marshal(temp)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal person json field")
-	}
-	return result, nil
-}

@@ -4,6 +4,7 @@ import (
 	"ctRestClient/config"
 	"ctRestClient/data_provider"
 	"ctRestClient/logger"
+	"ctRestClient/utils"
 	"encoding/json"
 	"fmt"
 )
@@ -36,7 +37,19 @@ func NewPersonData(
 		}
 		if isBlocked {
 			blockCount++
-			logger.Info(fmt.Sprintf("      -> %s %s will not be added to csv file", personJson["firstName"], personJson["lastName"]))
+
+			firstname, err := utils.UnescapeUnicodeCharacters(personJson["firstName"])
+			if err != nil {
+				logger.Error(fmt.Sprintf("      failed to unescape unicode characters in firstName: '%v'", err))
+				firstname = personJson["firstName"]
+			}
+			lastname, err := utils.UnescapeUnicodeCharacters(personJson["lastName"])
+			if err != nil {
+				logger.Error(fmt.Sprintf("      failed to unescape unicode characters in lastName: '%v'", err))
+				lastname = personJson["lastName"]
+			}
+
+			logger.Info(fmt.Sprintf("      -> %s %s will not be added to csv file", firstname, lastname))
 			continue
 		}
 

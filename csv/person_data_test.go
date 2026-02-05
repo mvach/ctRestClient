@@ -23,21 +23,22 @@ var _ = Describe("PersonData", func() {
 		fileDataProvider       *data_providerfakes.FakeFileDataProvider
 		blocklistsDataProvider *data_providerfakes.FakeBlockListDataProvider
 		logger                 *loggerfakes.FakeLogger
+		person1, person2       string
 	)
 
 	BeforeEach(func() {
-		person1 := `{
-            "id": 1,
-            "firstName": "foo_firstname",
-            "lastName": "foo_lastname",
+		person1 = `{
+			"id": 1,
+			"firstName": "foo_firstname",
+			"lastName": "foo_lastname",
 			"height": 2.75
-        }`
-		person2 := `{
-            "id": 2,
-            "firstName": "bar_firstname",
-            "lastName": "bar_lastname",
+		}`
+		person2 = `{
+			"id": 2,
+			"firstName": "bar_firstname",
+			"lastName": "bar_lastname",
 			"height": 1.0
-        }`
+		}`
 		persons = []json.RawMessage{json.RawMessage(person1), json.RawMessage(person2)}
 		fileDataProvider = &data_providerfakes.FakeFileDataProvider{}
 		blocklistsDataProvider = &data_providerfakes.FakeBlockListDataProvider{}
@@ -69,33 +70,49 @@ var _ = Describe("PersonData", func() {
 			blocklistsDataProvider.IsBlockedReturnsOnCall(0, true, nil)
 			blocklistsDataProvider.IsBlockedReturnsOnCall(1, false, nil)
 
-			group := config.Group{Name: "test", Fields: []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("unknown")}, {FieldName: ptr("lastName")}}}
+			group := config.Group{Name: "test", Fields: []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("firstName")}, {FieldName: ptr("lastName")}}}
 			data, err := csv.NewPersonData(persons, group, fileDataProvider, blocklistsDataProvider, logger)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(logger.InfoArgsForCall(0)).To(Equal("      -> \"foo_firstname\" \"foo_lastname\" will not be added to csv file"))
-			Expect(logger.WarnArgsForCall(0)).To(Equal("      Field 'unknown' does not exist"))
 
-			Expect(data.Header()).To(Equal([]string{"id", "unknown", "lastName"}))
+			Expect(data.Header()).To(Equal([]string{"id", "firstName", "lastName"}))
 			Expect(data.Records()).To(HaveLen(1))
-			Expect(data.Records()[0]).To(Equal([]string{"2", "", "bar_lastname"}))
+			Expect(data.Records()[0]).To(Equal([]string{"2", "bar_firstname", "bar_lastname"}))
+		})
+
+		It("logs blocked persons with special characters", func() {
+			person1 = `{
+				"id": 1,
+				"firstName": "\u00E4\u00FC\u00F6\u00DF_firstname",
+				"lastName": "\u00C4\u00D6\u00DC\u00DF_lastname"
+			}`
+			persons = []json.RawMessage{json.RawMessage(person1), json.RawMessage(person2)}
+
+			blocklistsDataProvider.IsBlockedReturnsOnCall(0, true, nil)
+			blocklistsDataProvider.IsBlockedReturnsOnCall(1, false, nil)
+
+			group := config.Group{Name: "test", Fields: []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("firstName")}, {FieldName: ptr("lastName")}}}
+			_, err := csv.NewPersonData(persons, group, fileDataProvider, blocklistsDataProvider, logger)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(logger.InfoArgsForCall(0)).To(Equal("      -> \"äüöß_firstname\" \"ÄÖÜß_lastname\" will not be added to csv file"))
 		})
 
 		It("does not skip persons if an error occurs while checking blocklists", func() {
 			blocklistsDataProvider.IsBlockedReturnsOnCall(0, false, nil)
 			blocklistsDataProvider.IsBlockedReturnsOnCall(1, false, errors.New("boom"))
 
-			group := config.Group{Name: "test", Fields: []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("unknown")}, {FieldName: ptr("lastName")}}}
+			group := config.Group{Name: "test", Fields: []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("firstName")}, {FieldName: ptr("lastName")}}}
 			data, err := csv.NewPersonData(persons, group, fileDataProvider, blocklistsDataProvider, logger)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(logger.ErrorArgsForCall(0)).To(Equal("      failed to check if person is blocked: 'boom'"))
-			Expect(logger.WarnArgsForCall(0)).To(Equal("      Field 'unknown' does not exist"))
 
-			Expect(data.Header()).To(Equal([]string{"id", "unknown", "lastName"}))
+			Expect(data.Header()).To(Equal([]string{"id", "firstName", "lastName"}))
 			Expect(data.Records()).To(HaveLen(2))
-			Expect(data.Records()[0]).To(Equal([]string{"1", "", "foo_lastname"}))
-			Expect(data.Records()[1]).To(Equal([]string{"2", "", "bar_lastname"}))
+			Expect(data.Records()[0]).To(Equal([]string{"1", "foo_firstname", "foo_lastname"}))
+			Expect(data.Records()[1]).To(Equal([]string{"2", "bar_firstname", "bar_lastname"}))
 		})
 
 		It("sets unknown fields to empty string", func() {
@@ -115,7 +132,7 @@ var _ = Describe("PersonData", func() {
 			person := `{
 				"id": 1,
 				"date": null
-        	}`
+			}`
 			persons = []json.RawMessage{json.RawMessage(person)}
 			group := config.Group{Fields: []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("date")}}}
 			data, err := csv.NewPersonData(persons, group, fileDataProvider, blocklistsDataProvider, logger)
@@ -154,14 +171,6 @@ var _ = Describe("PersonData", func() {
 			Expect(data.Header()).To(Equal([]string{"id", "isSet"}))
 			Expect(data.Records()).To(HaveLen(1))
 			Expect(data.Records()[0]).To(Equal([]string{"1", "true"}))
-		})
-
-		It("sets unknown fields to empty string", func() {
-			group := config.Group{Fields: []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("unknown")}}}
-			_, err := csv.NewPersonData(persons, group, fileDataProvider, blocklistsDataProvider, logger)
-			Expect(err).NotTo(HaveOccurred())
-
-			Expect(logger.WarnArgsForCall(0)).To(Equal("      Field 'unknown' does not exist"))
 		})
 
 		It("returns mapped data for string key fields", func() {
