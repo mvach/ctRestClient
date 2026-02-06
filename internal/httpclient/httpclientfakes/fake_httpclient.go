@@ -2,7 +2,7 @@
 package httpclientfakes
 
 import (
-	"ctRestClient/httpclient"
+	"ctRestClient/internal/httpclient"
 	"net/http"
 	"sync"
 )

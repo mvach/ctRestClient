@@ -9,7 +9,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"ctRestClient/httpclient/httpclientfakes"
+	"ctRestClient/internal/httpclient/httpclientfakes"
 	"ctRestClient/internal/rest"
 	"ctRestClient/testutil"
 )

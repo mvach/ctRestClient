@@ -1,7 +1,7 @@
 package rest
 
 import (
-	"ctRestClient/httpclient"
+	"ctRestClient/internal/httpclient"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -74,7 +74,7 @@ func (c dynamicGroupsEndpoint) GetAllDynamicGroups() (DynamicGroupsResponse, err
 		return DynamicGroupsResponse{}, fmt.Errorf("failed to send request, %w", err)
 	}
 	defer resp.Body.Close()
-	
+
 	if resp.StatusCode != http.StatusOK {
 		return DynamicGroupsResponse{}, fmt.Errorf("received non-200 response code: %d", resp.StatusCode)
 	}

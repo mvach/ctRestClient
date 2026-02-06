@@ -4,7 +4,7 @@ import (
 	"ctRestClient/config"
 	"ctRestClient/csv"
 	"ctRestClient/data_provider"
-	"ctRestClient/httpclient"
+	"ctRestClient/internal/httpclient"
 	"ctRestClient/internal/logger"
 	"ctRestClient/internal/rest"
 	"fmt"

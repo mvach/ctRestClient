@@ -1,7 +1,7 @@
 package rest
 
 import (
-	"ctRestClient/httpclient"
+	"ctRestClient/internal/httpclient"
 	"encoding/json"
 	"fmt"
 	"io"
