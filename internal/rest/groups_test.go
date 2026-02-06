@@ -10,7 +10,7 @@ import (
 
 	"ctRestClient/internal/httpclient/httpclientfakes"
 	"ctRestClient/internal/rest"
-	"ctRestClient/testutil"
+	"ctRestClient/internal/testutil"
 )
 
 var _ = Describe("GroupsEndpoint", func() {

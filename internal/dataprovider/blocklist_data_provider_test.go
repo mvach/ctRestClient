@@ -4,7 +4,7 @@ import (
 	"ctRestClient/internal/config"
 	"ctRestClient/internal/dataprovider"
 	"ctRestClient/internal/logger/loggerfakes"
-	"ctRestClient/testutil"
+	"ctRestClient/internal/testutil"
 	"encoding/json"
 	"os"
 	"path/filepath"

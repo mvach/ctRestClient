@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"ctRestClient/internal/config"
-	"ctRestClient/testutil"
+	"ctRestClient/internal/testutil"
 )
 
 func ptr(s string) *string {

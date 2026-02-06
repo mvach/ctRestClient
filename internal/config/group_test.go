@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"ctRestClient/internal/config"
-	"ctRestClient/testutil"
+	"ctRestClient/internal/testutil"
 )
 
 var _ = Describe("Group", func() {

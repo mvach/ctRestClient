@@ -2,7 +2,7 @@ package dataprovider_test
 
 import (
 	"ctRestClient/internal/dataprovider"
-	"ctRestClient/testutil"
+	"ctRestClient/internal/testutil"
 	"os"
 	"path/filepath"
 
