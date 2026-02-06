@@ -2,7 +2,7 @@ package app
 
 import (
 	"bytes"
-	"ctRestClient/logger"
+	"ctRestClient/internal/logger"
 	"fmt"
 	"os"
 	"os/exec"

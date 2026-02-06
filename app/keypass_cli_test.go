@@ -1,7 +1,7 @@
 package app
 
 import (
-	"ctRestClient/logger"
+	"ctRestClient/internal/logger"
 	"os"
 
 	. "github.com/onsi/ginkgo/v2"

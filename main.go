@@ -5,7 +5,7 @@ import (
 	"ctRestClient/config"
 	"ctRestClient/csv"
 	"ctRestClient/data_provider"
-	"ctRestClient/logger"
+	"ctRestClient/internal/logger"
 	"flag"
 	"fmt"
 	"log"

@@ -2,7 +2,7 @@
 package loggerfakes
 
 import (
-	"ctRestClient/logger"
+	"ctRestClient/internal/logger"
 	"sync"
 )
 

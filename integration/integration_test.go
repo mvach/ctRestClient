@@ -2,7 +2,7 @@ package integration
 
 import (
 	"ctRestClient/config"
-	"ctRestClient/logger"
+	"ctRestClient/internal/logger"
 	"ctRestClient/testutil"
 	"encoding/json"
 	"fmt"

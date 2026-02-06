@@ -3,7 +3,7 @@ package data_provider_test
 import (
 	"ctRestClient/config"
 	"ctRestClient/data_provider"
-	"ctRestClient/logger/loggerfakes"
+	"ctRestClient/internal/logger/loggerfakes"
 	"ctRestClient/testutil"
 	"encoding/json"
 	"os"
@@ -29,13 +29,13 @@ var _ = Describe("BlocklistDataProvider", func() {
 		Expect(err).ToNot(HaveOccurred())
 
 		personJson = map[string]json.RawMessage{
-			"street": json.RawMessage(`"Mainstreet"`),
-			"zip":    json.RawMessage(`"12345"`),
-			"city":   json.RawMessage(`"Anytown"`),
-			"age":    json.RawMessage(`30`),
-			"isDead": json.RawMessage(`false`),
-			"sexId":  json.RawMessage(`1`),
-			"weddingDate":  json.RawMessage(`null`),
+			"street":      json.RawMessage(`"Mainstreet"`),
+			"zip":         json.RawMessage(`"12345"`),
+			"city":        json.RawMessage(`"Anytown"`),
+			"age":         json.RawMessage(`30`),
+			"isDead":      json.RawMessage(`false`),
+			"sexId":       json.RawMessage(`1`),
+			"weddingDate": json.RawMessage(`null`),
 		}
 		logger = &loggerfakes.FakeLogger{}
 		dp = data_provider.NewBlockListDataProvider(tempDataDir, logger)

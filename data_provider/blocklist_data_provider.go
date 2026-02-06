@@ -3,7 +3,7 @@ package data_provider
 import (
 	"bytes"
 	"ctRestClient/config"
-	"ctRestClient/logger"
+	"ctRestClient/internal/logger"
 	"ctRestClient/utils"
 	"encoding/json"
 	"errors"
@@ -145,4 +145,3 @@ func (bp *blockListDataProvider) BlockListExists(group config.Group) bool {
 
 	return true
 }
-

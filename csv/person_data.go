@@ -3,7 +3,7 @@ package csv
 import (
 	"ctRestClient/config"
 	"ctRestClient/data_provider"
-	"ctRestClient/logger"
+	"ctRestClient/internal/logger"
 	"ctRestClient/utils"
 	"encoding/json"
 	"fmt"

@@ -5,7 +5,7 @@ import (
 	"ctRestClient/csv"
 	"ctRestClient/data_provider"
 	"ctRestClient/httpclient"
-	"ctRestClient/logger"
+	"ctRestClient/internal/logger"
 	"ctRestClient/rest"
 	"fmt"
 	"os"

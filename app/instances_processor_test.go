@@ -6,7 +6,7 @@ import (
 	"ctRestClient/config"
 	"ctRestClient/csv/csvfakes"
 	"ctRestClient/data_provider/data_providerfakes"
-	"ctRestClient/logger/loggerfakes"
+	"ctRestClient/internal/logger/loggerfakes"
 	"encoding/json"
 	"errors"
 	"os"
