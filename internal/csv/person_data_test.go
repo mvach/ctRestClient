@@ -1,8 +1,8 @@
 package csv_test
 
 import (
-	"ctRestClient/config"
 	"ctRestClient/data_provider/data_providerfakes"
+	"ctRestClient/internal/config"
 	"ctRestClient/internal/csv"
 	"ctRestClient/internal/logger/loggerfakes"
 	"encoding/json"

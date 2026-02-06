@@ -1,8 +1,8 @@
 package data_provider_test
 
 import (
-	"ctRestClient/config"
 	"ctRestClient/data_provider"
+	"ctRestClient/internal/config"
 	"ctRestClient/internal/logger/loggerfakes"
 	"ctRestClient/testutil"
 	"encoding/json"

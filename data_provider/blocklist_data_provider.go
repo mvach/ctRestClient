@@ -2,7 +2,7 @@ package data_provider
 
 import (
 	"bytes"
-	"ctRestClient/config"
+	"ctRestClient/internal/config"
 	"ctRestClient/internal/logger"
 	"ctRestClient/utils"
 	"encoding/json"

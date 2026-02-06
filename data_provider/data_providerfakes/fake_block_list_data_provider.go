@@ -2,8 +2,8 @@
 package data_providerfakes
 
 import (
-	"ctRestClient/config"
 	"ctRestClient/data_provider"
+	"ctRestClient/internal/config"
 	"encoding/json"
 	"sync"
 )

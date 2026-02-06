@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"ctRestClient/config"
+	"ctRestClient/internal/config"
 	"ctRestClient/testutil"
 )
 

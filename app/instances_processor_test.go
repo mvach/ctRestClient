@@ -3,8 +3,8 @@ package app_test
 import (
 	"ctRestClient/app"
 	"ctRestClient/app/appfakes"
-	"ctRestClient/config"
 	"ctRestClient/data_provider/data_providerfakes"
+	"ctRestClient/internal/config"
 	"ctRestClient/internal/csv/csvfakes"
 	"ctRestClient/internal/logger/loggerfakes"
 	"encoding/json"
