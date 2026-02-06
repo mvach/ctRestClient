@@ -1,7 +1,7 @@
 package app_test
 
 import (
-	"ctRestClient/app"
+	"ctRestClient/internal/app"
 	"ctRestClient/internal/rest"
 	"ctRestClient/internal/rest/restfakes"
 	"encoding/json"

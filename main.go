@@ -1,8 +1,8 @@
 package main
 
 import (
-	"ctRestClient/app"
 	"ctRestClient/data_provider"
+	"ctRestClient/internal/app"
 	"ctRestClient/internal/config"
 	"ctRestClient/internal/csv"
 	"ctRestClient/internal/logger"

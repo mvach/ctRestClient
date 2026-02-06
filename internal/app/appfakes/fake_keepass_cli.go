@@ -2,7 +2,7 @@
 package appfakes
 
 import (
-	"ctRestClient/app"
+	"ctRestClient/internal/app"
 	"sync"
 )
 

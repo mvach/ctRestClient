@@ -1,9 +1,9 @@
 package app_test
 
 import (
-	"ctRestClient/app"
-	"ctRestClient/app/appfakes"
 	"ctRestClient/data_provider/data_providerfakes"
+	"ctRestClient/internal/app"
+	"ctRestClient/internal/app/appfakes"
 	"ctRestClient/internal/config"
 	"ctRestClient/internal/csv/csvfakes"
 	"ctRestClient/internal/logger/loggerfakes"
