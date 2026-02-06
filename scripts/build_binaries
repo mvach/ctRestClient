@@ -23,19 +23,19 @@ touch "$OUTPUT_DIR/checksums.txt"
 echo ""
 echo "Creating binaries for multiple platforms..."
 echo "  Building for Windows (64 bit)..."
-GOOS=windows GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient-windows-amd64.exe"
+GOOS=windows GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient-windows-amd64.exe" ./cmd/ctrestclient
 sha256sum "$OUTPUT_DIR/ctRestClient-windows-amd64.exe" >> "$OUTPUT_DIR/checksums.txt"
 
 echo "  Building for macOS (Intel)..."
-GOOS=darwin GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient-darwin-amd64"
+GOOS=darwin GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient-darwin-amd64" ./cmd/ctrestclient
 sha256sum "$OUTPUT_DIR/ctRestClient-darwin-amd64" >> "$OUTPUT_DIR/checksums.txt"
 
 echo "  Building for macOS (M1/M2)..."
-GOOS=darwin GOARCH=arm64 go build -o "$OUTPUT_DIR/ctRestClient-darwin-arm64"
+GOOS=darwin GOARCH=arm64 go build -o "$OUTPUT_DIR/ctRestClient-darwin-arm64" ./cmd/ctrestclient
 sha256sum "$OUTPUT_DIR/ctRestClient-darwin-arm64" >> "$OUTPUT_DIR/checksums.txt"
 
 echo "  Building for Linux (64 bit)..."
-GOOS=linux GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient-linux-amd64"
+GOOS=linux GOARCH=amd64 go build -o "$OUTPUT_DIR/ctRestClient-linux-amd64" ./cmd/ctrestclient
 sha256sum "$OUTPUT_DIR/ctRestClient-linux-amd64" >> "$OUTPUT_DIR/checksums.txt"
 
 echo "Binaries are located in the $OUTPUT_DIR directory."
