@@ -2,8 +2,8 @@ package app_test
 
 import (
 	"ctRestClient/app"
-	"ctRestClient/rest"
-	"ctRestClient/rest/restfakes"
+	"ctRestClient/internal/rest"
+	"ctRestClient/internal/rest/restfakes"
 	"encoding/json"
 	"errors"
 
@@ -46,12 +46,12 @@ var _ = Describe("GroupExporter", func() {
 				rest.DynamicGroupsStatusResponse{Status: ptr("active")}, nil,
 			)
 
-			person1 := `{	
+			person1 := `{
                 "id": 1,
                 "firstName": "foo_firstname",
                 "lastName": "foo_lastname"
             }`
-			person2 := `{	
+			person2 := `{
                 "id": 2,
                 "firstName": "bar_firstname",
                 "lastName": "bar_lastname"

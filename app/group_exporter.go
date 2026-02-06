@@ -1,7 +1,7 @@
 package app
 
 import (
-	"ctRestClient/rest"
+	"ctRestClient/internal/rest"
 	"encoding/json"
 	"fmt"
 	"slices"

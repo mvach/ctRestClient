@@ -3,7 +3,7 @@ package appfakes
 
 import (
 	"ctRestClient/app"
-	"ctRestClient/rest"
+	"ctRestClient/internal/rest"
 	"encoding/json"
 	"sync"
 )

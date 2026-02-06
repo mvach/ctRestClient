@@ -9,7 +9,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"ctRestClient/httpclient/httpclientfakes"
-	"ctRestClient/rest"
+	"ctRestClient/internal/rest"
 	"ctRestClient/testutil"
 )
 
@@ -53,8 +53,8 @@ var _ = Describe("GroupsEndpoint", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(group.Name).To(Equal("group1"))
 
-            request := httpClient.DoArgsForCall(0)
-            Expect(request.URL.RawQuery).To(Equal("query=group1"))
+			request := httpClient.DoArgsForCall(0)
+			Expect(request.URL.RawQuery).To(Equal("query=group1"))
 		})
 
 		It("returns an error if the request cannot be send", func() {
@@ -102,7 +102,7 @@ var _ = Describe("GroupsEndpoint", func() {
 			Expect(err.Error()).To(ContainSubstring("response body is not containing expected json"))
 		})
 
-        It("returns an error if the response body is empty", func() {
+		It("returns an error if the response body is empty", func() {
 			httpResponse := &http.Response{
 				StatusCode: 200,
 				Body: io.NopCloser(testutil.JsonToBufferString(
@@ -122,7 +122,7 @@ var _ = Describe("GroupsEndpoint", func() {
 			Expect(err.Error()).To(ContainSubstring("'group1' is either not existing or you are not allowed to see the group"))
 		})
 
-        It("returns an error if the response body is containing multiple groups", func() {
+		It("returns an error if the response body is containing multiple groups", func() {
 			httpResponse := &http.Response{
 				StatusCode: 200,
 				Body: io.NopCloser(testutil.JsonToBufferString(
@@ -201,7 +201,7 @@ var _ = Describe("GroupsEndpoint", func() {
 						"data": [],
 						"meta": { "count": 0 }
 					}`)),
-				}
+			}
 			httpClient.DoReturns(httpResponse, nil)
 
 			groupsEndpoint := rest.NewGroupsEndpoint(httpClient)

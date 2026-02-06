@@ -10,7 +10,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"ctRestClient/httpclient/httpclientfakes"
-	"ctRestClient/rest"
+	"ctRestClient/internal/rest"
 	"ctRestClient/testutil"
 )
 
@@ -27,11 +27,11 @@ var _ = Describe("DynamicGroupsEndpoint", func() {
 
 	var _ = Describe("GetGroupStatus", func() {
 
-		BeforeEach(func(){
+		BeforeEach(func() {
 			httpResponse = &http.Response{
-			StatusCode: 200,
-			Body: io.NopCloser(testutil.JsonToBufferString(
-				`{
+				StatusCode: 200,
+				Body: io.NopCloser(testutil.JsonToBufferString(
+					`{
 					"dynamicGroupStatus": "active"
 				}`)),
 			}
@@ -107,11 +107,11 @@ var _ = Describe("DynamicGroupsEndpoint", func() {
 
 	var _ = Describe("GetAllDynamicGroups", func() {
 
-		BeforeEach(func(){
+		BeforeEach(func() {
 			httpResponse = &http.Response{
-			StatusCode: 200,
-			Body: io.NopCloser(testutil.JsonToBufferString(
-				`{
+				StatusCode: 200,
+				Body: io.NopCloser(testutil.JsonToBufferString(
+					`{
 					"data": [0,1,2,3]
 				}`)),
 			}

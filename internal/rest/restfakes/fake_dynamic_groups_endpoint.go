@@ -2,7 +2,7 @@
 package restfakes
 
 import (
-	"ctRestClient/rest"
+	"ctRestClient/internal/rest"
 	"sync"
 )
 
