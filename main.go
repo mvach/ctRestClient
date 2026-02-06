@@ -3,8 +3,8 @@ package main
 import (
 	"ctRestClient/app"
 	"ctRestClient/config"
-	"ctRestClient/csv"
 	"ctRestClient/data_provider"
+	"ctRestClient/internal/csv"
 	"ctRestClient/internal/logger"
 	"flag"
 	"fmt"

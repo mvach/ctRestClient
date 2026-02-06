@@ -2,7 +2,7 @@
 package csvfakes
 
 import (
-	"ctRestClient/csv"
+	"ctRestClient/internal/csv"
 	"sync"
 )
 

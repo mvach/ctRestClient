@@ -1,7 +1,7 @@
 package csv_test
 
 import (
-	"ctRestClient/csv"
+	"ctRestClient/internal/csv"
 	"os"
 
 	"golang.org/x/text/encoding/unicode"
