@@ -1,8 +1,8 @@
-package data_provider_test
+package dataprovider_test
 
 import (
-	"ctRestClient/data_provider"
 	"ctRestClient/internal/config"
+	"ctRestClient/internal/dataprovider"
 	"ctRestClient/internal/logger/loggerfakes"
 	"ctRestClient/testutil"
 	"encoding/json"
@@ -18,14 +18,14 @@ var _ = Describe("BlocklistDataProvider", func() {
 	var (
 		err         error
 		tempDataDir string
-		dp          data_provider.BlockListDataProvider
+		dp          dataprovider.BlockListDataProvider
 		logger      *loggerfakes.FakeLogger
 		personJson  map[string]json.RawMessage
 		group       config.Group
 	)
 
 	BeforeEach(func() {
-		tempDataDir, err = os.MkdirTemp("", "blocklist_data_provider_test_")
+		tempDataDir, err = os.MkdirTemp("", "blocklist_dataprovider_test_")
 		Expect(err).ToNot(HaveOccurred())
 
 		personJson = map[string]json.RawMessage{
@@ -38,7 +38,7 @@ var _ = Describe("BlocklistDataProvider", func() {
 			"weddingDate": json.RawMessage(`null`),
 		}
 		logger = &loggerfakes.FakeLogger{}
-		dp = data_provider.NewBlockListDataProvider(tempDataDir, logger)
+		dp = dataprovider.NewBlockListDataProvider(tempDataDir, logger)
 
 		group = config.Group{Name: "mappedField"}
 	})

@@ -1,11 +1,11 @@
 package app_test
 
 import (
-	"ctRestClient/data_provider/data_providerfakes"
 	"ctRestClient/internal/app"
 	"ctRestClient/internal/app/appfakes"
 	"ctRestClient/internal/config"
 	"ctRestClient/internal/csv/csvfakes"
+	"ctRestClient/internal/dataprovider/dataproviderfakes"
 	"ctRestClient/internal/logger/loggerfakes"
 	"encoding/json"
 	"errors"
@@ -22,8 +22,8 @@ var _ = Describe("InstanceProcessor", func() {
 		csvWriter              *csvfakes.FakeCSVFileWriter
 		logger                 *loggerfakes.FakeLogger
 		keepassCli             *appfakes.FakeKeepassCli
-		personDataProvider     *data_providerfakes.FakeFileDataProvider
-		blocklistsDataProvider *data_providerfakes.FakeBlockListDataProvider
+		personDataProvider     *dataproviderfakes.FakeFileDataProvider
+		blocklistsDataProvider *dataproviderfakes.FakeBlockListDataProvider
 		cfg                    config.Config
 		instancesProcessor     app.InstancesProcessor
 		result                 []json.RawMessage
@@ -34,8 +34,8 @@ var _ = Describe("InstanceProcessor", func() {
 		csvWriter = &csvfakes.FakeCSVFileWriter{}
 		logger = &loggerfakes.FakeLogger{}
 		keepassCli = &appfakes.FakeKeepassCli{}
-		personDataProvider = &data_providerfakes.FakeFileDataProvider{}
-		blocklistsDataProvider = &data_providerfakes.FakeBlockListDataProvider{}
+		personDataProvider = &dataproviderfakes.FakeFileDataProvider{}
+		blocklistsDataProvider = &dataproviderfakes.FakeBlockListDataProvider{}
 
 		cfg = config.Config{
 			Instances: []config.Instance{

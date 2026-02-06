@@ -1,9 +1,9 @@
 package csv_test
 
 import (
-	"ctRestClient/data_provider/data_providerfakes"
 	"ctRestClient/internal/config"
 	"ctRestClient/internal/csv"
+	"ctRestClient/internal/dataprovider/dataproviderfakes"
 	"ctRestClient/internal/logger/loggerfakes"
 	"encoding/json"
 	"errors"
@@ -20,8 +20,8 @@ var _ = Describe("PersonData", func() {
 
 	var (
 		persons                []json.RawMessage
-		fileDataProvider       *data_providerfakes.FakeFileDataProvider
-		blocklistsDataProvider *data_providerfakes.FakeBlockListDataProvider
+		fileDataProvider       *dataproviderfakes.FakeFileDataProvider
+		blocklistsDataProvider *dataproviderfakes.FakeBlockListDataProvider
 		logger                 *loggerfakes.FakeLogger
 		person1, person2       string
 	)
@@ -40,8 +40,8 @@ var _ = Describe("PersonData", func() {
 			"height": 1.0
 		}`
 		persons = []json.RawMessage{json.RawMessage(person1), json.RawMessage(person2)}
-		fileDataProvider = &data_providerfakes.FakeFileDataProvider{}
-		blocklistsDataProvider = &data_providerfakes.FakeBlockListDataProvider{}
+		fileDataProvider = &dataproviderfakes.FakeFileDataProvider{}
+		blocklistsDataProvider = &dataproviderfakes.FakeBlockListDataProvider{}
 		logger = &loggerfakes.FakeLogger{}
 	})
 

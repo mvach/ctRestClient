@@ -1,4 +1,4 @@
-package data_provider
+package dataprovider
 
 import (
 	"encoding/json"

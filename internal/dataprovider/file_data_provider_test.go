@@ -1,7 +1,7 @@
-package data_provider_test
+package dataprovider_test
 
 import (
-	"ctRestClient/data_provider"
+	"ctRestClient/internal/dataprovider"
 	"ctRestClient/testutil"
 	"os"
 	"path/filepath"
@@ -15,12 +15,12 @@ var _ = Describe("FileDataProvider", func() {
 	var (
 		err            error
 		tempDataDir    string
-		dp             data_provider.FileDataProvider
+		dp             dataprovider.FileDataProvider
 		mappedFilePath string
 	)
 
 	BeforeEach(func() {
-		tempDataDir, err = os.MkdirTemp("", "file_data_provider_test_")
+		tempDataDir, err = os.MkdirTemp("", "file_dataprovider_test_")
 		Expect(err).ToNot(HaveOccurred())
 
 		mappedFilePath = filepath.Join(tempDataDir, "mappedField.yml")
@@ -37,7 +37,7 @@ var _ = Describe("FileDataProvider", func() {
 
 		err = os.WriteFile(mappedFilePath, []byte(yamlContent), 0644)
 		Expect(err).ToNot(HaveOccurred())
-		dp = data_provider.NewFileDataProvider(tempDataDir)
+		dp = dataprovider.NewFileDataProvider(tempDataDir)
 	})
 
 	AfterEach(func() {

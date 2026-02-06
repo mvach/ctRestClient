@@ -1,9 +1,9 @@
 package app
 
 import (
-	"ctRestClient/data_provider"
 	"ctRestClient/internal/config"
 	"ctRestClient/internal/csv"
+	"ctRestClient/internal/dataprovider"
 	"ctRestClient/internal/httpclient"
 	"ctRestClient/internal/logger"
 	"ctRestClient/internal/rest"
@@ -18,8 +18,8 @@ type InstancesProcessor interface {
 		groupExporter GroupExporter,
 		csvWriter csv.CSVFileWriter,
 		rootDir string,
-		personDataProvider data_provider.FileDataProvider,
-		blocklistsDataProvider data_provider.BlockListDataProvider,
+		personDataProvider dataprovider.FileDataProvider,
+		blocklistsDataProvider dataprovider.BlockListDataProvider,
 		keepassCli KeepassCli,
 	) error
 }
@@ -43,8 +43,8 @@ func (p instancesProcessor) Process(
 	groupExporter GroupExporter,
 	csvWriter csv.CSVFileWriter,
 	rootDir string,
-	fileDataProvider data_provider.FileDataProvider,
-	blocklistsDataProvider data_provider.BlockListDataProvider,
+	fileDataProvider dataprovider.FileDataProvider,
+	blocklistsDataProvider dataprovider.BlockListDataProvider,
 	keepassCli KeepassCli,
 ) error {
 	for _, instance := range p.config.Instances {

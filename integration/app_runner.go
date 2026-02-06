@@ -1,10 +1,10 @@
 package integration
 
 import (
-	"ctRestClient/data_provider"
 	"ctRestClient/internal/app"
 	"ctRestClient/internal/config"
 	"ctRestClient/internal/csv"
+	"ctRestClient/internal/dataprovider"
 	"ctRestClient/internal/logger"
 	"path/filepath"
 )
@@ -22,8 +22,8 @@ func RunApplicationWrapper(config *config.Config, rootDir string, dataDir string
 		app.NewGroupExporter(),
 		csv.NewCSVFileWriter(),
 		rootDir,
-		data_provider.NewFileDataProvider(filepath.Join(dataDir, "mappings/persons")),
-		data_provider.NewBlockListDataProvider(filepath.Join(dataDir, "blocklists"), appLogger),
+		dataprovider.NewFileDataProvider(filepath.Join(dataDir, "mappings/persons")),
+		dataprovider.NewBlockListDataProvider(filepath.Join(dataDir, "blocklists"), appLogger),
 		keepassCli,
 	)
 }
