@@ -4,7 +4,7 @@ import (
 	"ctRestClient/internal/config"
 	"ctRestClient/internal/dataprovider"
 	"ctRestClient/internal/logger"
-	"ctRestClient/utils"
+	"ctRestClient/internal/utils"
 	"encoding/json"
 	"fmt"
 )

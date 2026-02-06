@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"ctRestClient/internal/config"
 	"ctRestClient/internal/logger"
-	"ctRestClient/utils"
+	"ctRestClient/internal/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
