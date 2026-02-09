@@ -40,3 +40,6 @@ test/
 ctRestClient*
 
 coverage.*
+
+*.kdbx
+.vscode

@@ -104,6 +104,10 @@ func getExecutableDir() string {
 }
 
 func getPasswordFromUser() (string, error) {
+	if password, exists := os.LookupEnv("KEY_PASS_PASSWORD"); exists {
+		return password, nil
+	}
+
 	fmt.Print("Enter Keepass database password: ")
 
 	// Use the appropriate file descriptor based on the platform

@@ -3,7 +3,7 @@ module ctRestClient
 go 1.24.0
 
 require (
-	github.com/maxbrunsfeld/counterfeiter/v6 v6.9.0
+	github.com/lithammer/dedent v1.1.0
 	github.com/onsi/ginkgo/v2 v2.20.2
 	github.com/onsi/gomega v1.34.2
 	golang.org/x/term v0.38.0
@@ -17,11 +17,9 @@ require (
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/pprof v0.0.0-20241001023024-f4c0cfd0cf1d // indirect
 	github.com/kr/pretty v0.3.1 // indirect
-	github.com/lithammer/dedent v1.1.0 // indirect
-	golang.org/x/mod v0.31.0 // indirect
 	golang.org/x/net v0.48.0 // indirect
-	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/tools v0.40.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
+	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )

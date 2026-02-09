@@ -1,6 +1,9 @@
-.PHONY: test coverage coverage-html coverage-func generate lint build clean help
+.PHONY: test alltest coverage coverage-html coverage-func generate lint build clean help
 
 test:
+	go test -coverprofile=coverage.out $$(go list ./... | grep -v fakes | grep -v ./tests/end2end)
+
+alltest:
 	go test -coverprofile=coverage.out $$(go list ./... | grep -v fakes)
 
 coverage-report: test
