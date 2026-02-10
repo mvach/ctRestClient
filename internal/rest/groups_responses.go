@@ -1,23 +1,28 @@
 package rest
 
 type GroupsResponseJson struct {
-    Data []GroupsResponse `json:"data"`
+	Data []GroupsResponse `json:"data"`
 }
 
 type GroupsResponse struct {
-    ID   int    `json:"id"`
-    GUID string `json:"guid"`
-    Name string `json:"name"`
+	ID          int              `json:"id"`
+	GUID        string           `json:"guid"`
+	Name        string           `json:"name"`
+	Information GroupInformation `json:"information"`
+}
+
+type GroupInformation struct {
+	GroupTypeId int `json:"groupTypeId"`
 }
 
 type GroupsMembersResponseJson struct {
-    Data []GroupsMembersResponse `json:"data"`
+	Data []GroupsMembersResponse `json:"data"`
 }
 
 type GroupsMembersResponse struct {
-    PersonId          int    `json:"personId"`
-    GroupId           int    `json:"groupId"`
-    GroupTypeRoleId   int    `json:"groupTypeRoleId"`
-    GroupMemberStatus string `json:"groupMemberStatus"`
-    Deleted           bool   `json:"deleted"`
+	PersonId          int    `json:"personId"`
+	GroupId           int    `json:"groupId"`
+	GroupTypeRoleId   int    `json:"groupTypeRoleId"`
+	GroupMemberStatus string `json:"groupMemberStatus"`
+	Deleted           bool   `json:"deleted"`
 }

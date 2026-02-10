@@ -271,6 +271,22 @@ func createChurchToolsHandler() http.Handler {
 	})
 
 	// Handle groups endpoint - return groups list
+	mux.HandleFunc("/api/group/grouptypes/6", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		groupStatus := map[string]interface{}{
+				"id":   6,
+				"name": "Dynamische Gruppe",
+		}
+
+		response := map[string]interface{}{
+			"data": groupStatus,
+		}
+		err := json.NewEncoder(w).Encode(response)
+		Expect(err).NotTo(HaveOccurred())
+	})
+
+	// Handle groups endpoint - return groups list
 	mux.HandleFunc("/api/groups", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -285,11 +301,17 @@ func createChurchToolsHandler() http.Handler {
 				"id":   1,
 				"guid": "youth-group-guid",
 				"name": "youth_group",
+				"information": map[string]any{
+					"groupTypeId": 6,
+				},
 			},
 			{
 				"id":   2,
 				"guid": "adult-group-guid",
 				"name": "adult_group",
+				"information": map[string]any{
+					"groupTypeId": 6,
+				},
 			},
 		}
 

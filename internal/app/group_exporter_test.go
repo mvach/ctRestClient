@@ -15,6 +15,7 @@ var _ = Describe("GroupExporter", func() {
 
 	var (
 		groupsEndpoint        *restfakes.FakeGroupsEndpoint
+		groupEndpoint         *restfakes.FakeGroupEndpoint
 		dynamicGroupsEndpoint *restfakes.FakeDynamicGroupsEndpoint
 		personsEndpoint       *restfakes.FakePersonsEndpoint
 		groupExporter         app.GroupExporter
@@ -22,6 +23,7 @@ var _ = Describe("GroupExporter", func() {
 
 	BeforeEach(func() {
 		groupsEndpoint = &restfakes.FakeGroupsEndpoint{}
+		groupEndpoint = &restfakes.FakeGroupEndpoint{}
 		dynamicGroupsEndpoint = &restfakes.FakeDynamicGroupsEndpoint{}
 		personsEndpoint = &restfakes.FakePersonsEndpoint{}
 
@@ -62,6 +64,7 @@ var _ = Describe("GroupExporter", func() {
 			personData, err := groupExporter.ExportGroupMembers(
 				"group1",
 				groupsEndpoint,
+				groupEndpoint,
 				dynamicGroupsEndpoint,
 				personsEndpoint,
 			)
@@ -76,10 +79,8 @@ var _ = Describe("GroupExporter", func() {
 		var _ = Context("group is a dynamic group", func() {
 
 			BeforeEach(func() {
-				// The id 1 of the group "group1" is contained in the list of dynamic group IDs
-				// thus "group1" is a dynamic group
-				dynamicGroupsEndpoint.GetAllDynamicGroupsReturns(
-					rest.DynamicGroupsResponse{GroupIDs: []int{1}}, nil,
+				groupEndpoint.GetGroupTypeReturns(
+					rest.GroupTypeResponse{ID: 6, Name: "Dynamische Gruppe"}, nil,
 				)
 			})
 
@@ -91,6 +92,7 @@ var _ = Describe("GroupExporter", func() {
 				personData, err := groupExporter.ExportGroupMembers(
 					"group1",
 					groupsEndpoint,
+					groupEndpoint,
 					dynamicGroupsEndpoint,
 					personsEndpoint,
 				)
@@ -107,6 +109,7 @@ var _ = Describe("GroupExporter", func() {
 				personData, err := groupExporter.ExportGroupMembers(
 					"group1",
 					groupsEndpoint,
+					groupEndpoint,
 					dynamicGroupsEndpoint,
 					personsEndpoint,
 				)
@@ -126,6 +129,7 @@ var _ = Describe("GroupExporter", func() {
 			personData, err := groupExporter.ExportGroupMembers(
 				"group1",
 				groupsEndpoint,
+				groupEndpoint,
 				dynamicGroupsEndpoint,
 				personsEndpoint,
 			)
@@ -144,6 +148,7 @@ var _ = Describe("GroupExporter", func() {
 			personData, err := groupExporter.ExportGroupMembers(
 				"group1",
 				groupsEndpoint,
+				groupEndpoint,
 				dynamicGroupsEndpoint,
 				personsEndpoint,
 			)

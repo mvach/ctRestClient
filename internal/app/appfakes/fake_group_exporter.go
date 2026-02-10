@@ -9,13 +9,14 @@ import (
 )
 
 type FakeGroupExporter struct {
-	ExportGroupMembersStub        func(string, rest.GroupsEndpoint, rest.DynamicGroupsEndpoint, rest.PersonsEndpoint) ([]json.RawMessage, error)
+	ExportGroupMembersStub        func(string, rest.GroupsEndpoint, rest.GroupEndpoint, rest.DynamicGroupsEndpoint, rest.PersonsEndpoint) ([]json.RawMessage, error)
 	exportGroupMembersMutex       sync.RWMutex
 	exportGroupMembersArgsForCall []struct {
 		arg1 string
 		arg2 rest.GroupsEndpoint
-		arg3 rest.DynamicGroupsEndpoint
-		arg4 rest.PersonsEndpoint
+		arg3 rest.GroupEndpoint
+		arg4 rest.DynamicGroupsEndpoint
+		arg5 rest.PersonsEndpoint
 	}
 	exportGroupMembersReturns struct {
 		result1 []json.RawMessage
@@ -29,21 +30,22 @@ type FakeGroupExporter struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeGroupExporter) ExportGroupMembers(arg1 string, arg2 rest.GroupsEndpoint, arg3 rest.DynamicGroupsEndpoint, arg4 rest.PersonsEndpoint) ([]json.RawMessage, error) {
+func (fake *FakeGroupExporter) ExportGroupMembers(arg1 string, arg2 rest.GroupsEndpoint, arg3 rest.GroupEndpoint, arg4 rest.DynamicGroupsEndpoint, arg5 rest.PersonsEndpoint) ([]json.RawMessage, error) {
 	fake.exportGroupMembersMutex.Lock()
 	ret, specificReturn := fake.exportGroupMembersReturnsOnCall[len(fake.exportGroupMembersArgsForCall)]
 	fake.exportGroupMembersArgsForCall = append(fake.exportGroupMembersArgsForCall, struct {
 		arg1 string
 		arg2 rest.GroupsEndpoint
-		arg3 rest.DynamicGroupsEndpoint
-		arg4 rest.PersonsEndpoint
-	}{arg1, arg2, arg3, arg4})
+		arg3 rest.GroupEndpoint
+		arg4 rest.DynamicGroupsEndpoint
+		arg5 rest.PersonsEndpoint
+	}{arg1, arg2, arg3, arg4, arg5})
 	stub := fake.ExportGroupMembersStub
 	fakeReturns := fake.exportGroupMembersReturns
-	fake.recordInvocation("ExportGroupMembers", []interface{}{arg1, arg2, arg3, arg4})
+	fake.recordInvocation("ExportGroupMembers", []interface{}{arg1, arg2, arg3, arg4, arg5})
 	fake.exportGroupMembersMutex.Unlock()
 	if stub != nil {
-		return stub(arg1, arg2, arg3, arg4)
+		return stub(arg1, arg2, arg3, arg4, arg5)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -57,17 +59,17 @@ func (fake *FakeGroupExporter) ExportGroupMembersCallCount() int {
 	return len(fake.exportGroupMembersArgsForCall)
 }
 
-func (fake *FakeGroupExporter) ExportGroupMembersCalls(stub func(string, rest.GroupsEndpoint, rest.DynamicGroupsEndpoint, rest.PersonsEndpoint) ([]json.RawMessage, error)) {
+func (fake *FakeGroupExporter) ExportGroupMembersCalls(stub func(string, rest.GroupsEndpoint, rest.GroupEndpoint, rest.DynamicGroupsEndpoint, rest.PersonsEndpoint) ([]json.RawMessage, error)) {
 	fake.exportGroupMembersMutex.Lock()
 	defer fake.exportGroupMembersMutex.Unlock()
 	fake.ExportGroupMembersStub = stub
 }
 
-func (fake *FakeGroupExporter) ExportGroupMembersArgsForCall(i int) (string, rest.GroupsEndpoint, rest.DynamicGroupsEndpoint, rest.PersonsEndpoint) {
+func (fake *FakeGroupExporter) ExportGroupMembersArgsForCall(i int) (string, rest.GroupsEndpoint, rest.GroupEndpoint, rest.DynamicGroupsEndpoint, rest.PersonsEndpoint) {
 	fake.exportGroupMembersMutex.RLock()
 	defer fake.exportGroupMembersMutex.RUnlock()
 	argsForCall := fake.exportGroupMembersArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4, argsForCall.arg5
 }
 
 func (fake *FakeGroupExporter) ExportGroupMembersReturns(result1 []json.RawMessage, result2 error) {

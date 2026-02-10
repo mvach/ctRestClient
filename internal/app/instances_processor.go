@@ -59,6 +59,7 @@ func (p instancesProcessor) Process(
 
 		httpClient := httpclient.NewHTTPClient(instance.Hostname, token)
 		groupsEndpoint := rest.NewGroupsEndpoint(httpClient)
+		groupEndpoint := rest.NewGroupEndpoint(httpClient)
 		dynamicGroupsEndpoint := rest.NewDynamicGroupsEndpoint(httpClient)
 		personEndpoint := rest.NewPersonsEndpoint(httpClient)
 
@@ -69,6 +70,7 @@ func (p instancesProcessor) Process(
 			persons, err := groupExporter.ExportGroupMembers(
 				group.Name,
 				groupsEndpoint,
+				groupEndpoint,
 				dynamicGroupsEndpoint,
 				personEndpoint,
 			)
