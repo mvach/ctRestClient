@@ -45,6 +45,10 @@ echo "Creating release archive..."
 echo "  Copying LICENSE file..."
 cp LICENSE "$OUTPUT_DIR/"
 
+# Copy indesign script to output directory
+mkdir -p "$OUTPUT_DIR/jsx"
+cp jsx/*.jsx "$OUTPUT_DIR/jsx/"
+
 # Get version from git
 VERSION="$(git describe --tags --always)"
 echo "  Using version: $VERSION"
@@ -60,6 +64,7 @@ tar -czf "$OUTPUT_DIR/$ARCHIVE_NAME" \
     "ctRestClient-linux-amd64" \
     "LICENSE" \
     "VERSION" \
-    "checksums.txt"
+    "checksums.txt" \
+    "jsx/create_serial_letters.jsx"
 echo "Archive is located at $OUTPUT_DIR/$ARCHIVE_NAME"
 echo ""
