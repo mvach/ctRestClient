@@ -24,7 +24,7 @@
 
    **Wichtig**: Ohne `keepassxc-cli` im PATH kann ctRestClient nicht auf die Token-Datenbank zugreifen!
 
-2. **ChurchTools-Zugang**: 
+2. **ChurchTools-Zugang**:
    - Gültiger API-Token für jede ChurchTools-Instanz
    - Berechtigung zum Lesen der entsprechenden Gruppen
 
@@ -116,7 +116,7 @@ Erstellen Sie die Datei `data/persons/sexId.yml`:
 
 **Konfiguration:**
 ```yaml
-fields: 
+fields:
   - id
   - firstName
   - lastName
@@ -339,6 +339,38 @@ Detaillierte Informationen über die Ausführung finden Sie in der `ctRestClient
 - Erfolgreiche Exports
 - Fehlermeldungen mit Details
 - Performance-Informationen
+
+## Serienbrief-Automation
+
+Um die exportierten CSV-Dateien komfortabel in Adobe InDesign für Serienbriefe zu verarbeiten, enthält das `ctRestClient_<version>.tar.gz`-Archiv das InDesign-Skript `create_serial_letters.jsx` im Verzeichnis `jsx`.
+Vor der ersten Verwendung muss dieses Skript zunächst in das entsprechende InDesign-Skriptverzeichnis kopiert werden.
+
+Bei der Ausführung des Skripts in InDesign werden Sie aufgefordert, ein Verzeichnis mit CSV-Dateien auszuwählen.
+Das Skript verarbeitet die exportierten CSV-Dateien mithilfe der benötigten InDesign-Vorlagen zu Serienbriefen.
+Die erforderlichen InDesign-Vorlagen werden im Verzeichnis `templates` erwartet. Dieses `templates`-Verzeichnis muss auf derselben Ebene wie das `exports`-Verzeichnis verfügbar sein.
+Die erzeugten Serienbriefdokumente werden im `serial_letters`-Verzeichnis abgelegt. Innerhalb des `serial_letters`-Verzeichnisses wird ein datumsbasiertes Unterverzeichnis angelegt, das dem Datumsverzeichnis der verwendeten CSV-Dateien entspricht.
+
+Das Script geht davon aus, dass `exports`, `templates` und `serial_letters` im Benutzerverzeichnis liegen. Falls diese Verzeichnisse an einem anderen Ort abgelegt sind, müssen diese Pfade im Skript verändert werden.
+
+Nachfolgend ist die gesamte Verzeichnisstruktur dargestellt.
+```
+exports/
+└── 2025.08.06_14-30-15/                      // Dieses Verzeichnis kann als Quelle für CSV-Dateien ausgewählt werden
+    ├── ctRestClient.log
+    └── ihre-kirche.krz.tools/                // Alternativ kann auch dieses Verzeichnis als Quelle gewählt werden
+        ├── Konfirmanden.csv
+        └── Eltern_von_Konfirmanden.csv
+
+templates/
+└── ihre-kirche.krz.tools/                    // Die Vorlagen müssen vor der Skriptausführung bereitgestellt werden
+    ├── Konfirmanden.indd                     // Die Namen der Vorlagen müssen mit den CSV-Dateien übereinstimmen
+    └── Eltern_von_Konfirmanden.indd
+
+serial_letters/                               // Alle Daten in diesem Verzeichnis werden vom Skript generiert
+└── 2025.08.06_14-30-15/
+    ├── ihre-kirche_Konfirmanden_merged.indd
+    └── ihre-kirche_Eltern_von_Konfirmanden_merged.indd
+```
 
 ## Best Practices
 

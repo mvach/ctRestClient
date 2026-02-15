@@ -1,4 +1,4 @@
-.PHONY: test alltest coverage coverage-html coverage-func generate lint build clean help
+.PHONY: test alltest coverage coverage-html coverage-func generate lint build mkdocs clean help
 
 test:
 	go test -coverprofile=coverage.out $$(go list ./... | grep -v fakes | grep -v ./tests/end2end)
@@ -25,6 +25,9 @@ build:
 
 generate:
 	./scripts/generate_fakes
+
+mkdocs:
+	./scripts/run_mkdocs.sh
 
 clean:
 	rm -f coverage.out coverage.html
