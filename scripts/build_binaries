@@ -65,6 +65,6 @@ tar -czf "$OUTPUT_DIR/$ARCHIVE_NAME" \
     "LICENSE" \
     "VERSION" \
     "checksums.txt" \
-    "jsx/create_serial_letters.jsx"
+    "jsx/"
 echo "Archive is located at $OUTPUT_DIR/$ARCHIVE_NAME"
 echo ""
