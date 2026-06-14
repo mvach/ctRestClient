@@ -91,8 +91,6 @@ func (fake *FakeDynamicGroupsEndpoint) GetGroupStatusReturnsOnCall(i int, result
 func (fake *FakeDynamicGroupsEndpoint) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.getGroupStatusMutex.RLock()
-	defer fake.getGroupStatusMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

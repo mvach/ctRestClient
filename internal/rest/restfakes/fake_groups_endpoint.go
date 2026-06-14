@@ -168,10 +168,6 @@ func (fake *FakeGroupsEndpoint) GetGroupMembersReturnsOnCall(i int, result1 []re
 func (fake *FakeGroupsEndpoint) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.getGroupMutex.RLock()
-	defer fake.getGroupMutex.RUnlock()
-	fake.getGroupMembersMutex.RLock()
-	defer fake.getGroupMembersMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

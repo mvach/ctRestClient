@@ -91,8 +91,6 @@ func (fake *FakeGroupEndpoint) GetGroupTypeReturnsOnCall(i int, result1 rest.Gro
 func (fake *FakeGroupEndpoint) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.getGroupTypeMutex.RLock()
-	defer fake.getGroupTypeMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

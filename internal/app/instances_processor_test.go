@@ -4,12 +4,8 @@ import (
 	"ctRestClient/internal/app"
 	"ctRestClient/internal/app/appfakes"
 	"ctRestClient/internal/config"
-	"ctRestClient/internal/csv/csvfakes"
-	"ctRestClient/internal/dataprovider/dataproviderfakes"
 	"ctRestClient/internal/logger/loggerfakes"
-	"encoding/json"
 	"errors"
-	"os"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -18,27 +14,21 @@ import (
 var _ = Describe("InstanceProcessor", func() {
 
 	var (
-		groupExporter          *appfakes.FakeGroupExporter
-		csvWriter              *csvfakes.FakeCSVFileWriter
-		logger                 *loggerfakes.FakeLogger
-		keepassCli             *appfakes.FakeKeepassCli
-		personDataProvider     *dataproviderfakes.FakeFileDataProvider
-		blocklistsDataProvider *dataproviderfakes.FakeBlockListDataProvider
-		cfg                    config.Config
-		instancesProcessor     app.InstancesProcessor
-		result                 []json.RawMessage
+		instanceTask       *appfakes.FakeInstanceTask
+		logger             *loggerfakes.FakeLogger
+		keepassCli         *appfakes.FakeKeepassCli
+		instancesProcessor app.InstancesProcessor
 	)
 
 	BeforeEach(func() {
-		groupExporter = &appfakes.FakeGroupExporter{}
-		csvWriter = &csvfakes.FakeCSVFileWriter{}
+		instanceTask = &appfakes.FakeInstanceTask{}
 		logger = &loggerfakes.FakeLogger{}
 		keepassCli = &appfakes.FakeKeepassCli{}
-		personDataProvider = &dataproviderfakes.FakeFileDataProvider{}
-		blocklistsDataProvider = &dataproviderfakes.FakeBlockListDataProvider{}
+	})
 
-		cfg = config.Config{
-			Instances: []config.Instance{
+	var _ = Describe("Process", func() {
+		It("invokes the provided task", func() {
+			instances := []config.Instance{
 				{
 					Hostname:  "foo",
 					TokenName: "THE_TOKEN",
@@ -49,52 +39,27 @@ var _ = Describe("InstanceProcessor", func() {
 						},
 					},
 				},
-			},
-		}
+			}
 
-		instancesProcessor = app.NewInstancesProcessor(cfg, logger)
+			keepassCli.GetPasswordReturns("the_token", nil)
 
-		person1 := `{
-            "id": 1,
-            "firstName": "foo_firstname",
-            "lastName": "foo_lastname"
-        }`
-		person2 := `{
-            "id": 2,
-            "firstName": "bar_firstname",
-            "lastName": "bar_lastname"
-        }`
-
-		result = []json.RawMessage{json.RawMessage(person1), json.RawMessage(person2)}
-
-		keepassCli.GetPasswordReturns("the_token", nil)
-	})
-
-	var _ = Describe("Process", func() {
-		It("writes a csv", func() {
-			groupExporter.ExportGroupMembersReturns(result, nil)
-			csvWriter.WriteReturns(nil)
-
-			err := instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(), personDataProvider, blocklistsDataProvider, keepassCli)
+			instancesProcessor = app.NewInstancesProcessor(instances, keepassCli, logger)
+			err := instancesProcessor.Process(instanceTask)
 			Expect(err).NotTo(HaveOccurred())
 
-			path, header, content := csvWriter.WriteArgsForCall(0)
-			Expect(path).To(ContainSubstring("foo_group.csv"))
-			Expect(header).To(Equal([]string{"id", "firstName", "lastName"}))
-			Expect(content).To(Equal([][]string{{"1", "foo_firstname", "foo_lastname"}, {"2", "bar_firstname", "bar_lastname"}}))
+			Expect(instanceTask.ExecuteCallCount()).To(Equal(1))
+			Expect(logger.InfoArgsForCall(2)).To(ContainSubstring("Processing instance 'foo'"))
 		})
 
 		It("logs a warning if a token is not in the environment", func() {
-			cfg = config.Config{
-				Instances: []config.Instance{
-					{
-						Hostname:  "foo",
-						TokenName: "THE_UNKNOWN_TOKEN",
-						Groups: []config.Group{
-							{
-								Name:   "foo_group",
-								Fields: []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("firstName")}, {FieldName: ptr("lastName")}},
-							},
+			instances := []config.Instance{
+				{
+					Hostname:  "foo",
+					TokenName: "THE_UNKNOWN_TOKEN",
+					Groups: []config.Group{
+						{
+							Name:   "foo_group",
+							Fields: []config.Field{{FieldName: ptr("id")}, {FieldName: ptr("firstName")}, {FieldName: ptr("lastName")}},
 						},
 					},
 				},
@@ -102,73 +67,12 @@ var _ = Describe("InstanceProcessor", func() {
 
 			keepassCli.GetPasswordReturns("", errors.New("booom"))
 
-			instancesProcessor = app.NewInstancesProcessor(cfg, logger)
-			err := instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(), personDataProvider, blocklistsDataProvider, keepassCli)
+			instancesProcessor = app.NewInstancesProcessor(instances, keepassCli, logger)
+			err := instancesProcessor.Process(instanceTask)
 			Expect(err).NotTo(HaveOccurred())
 
 			message := logger.WarnArgsForCall(0)
 			Expect(message).To(Equal("  skipping export, failed to get token with name 'THE_UNKNOWN_TOKEN' from Keepass. Err: booom"))
-		})
-
-		It("logs empty groups", func() {
-			emptyGroupResult := []json.RawMessage{}
-			groupExporter.ExportGroupMembersReturns(emptyGroupResult, nil)
-			csvWriter.WriteReturns(nil)
-
-			err := instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(), personDataProvider, blocklistsDataProvider, keepassCli)
-			Expect(err).NotTo(HaveOccurred())
-
-			Expect(logger.InfoArgsForCall(2)).To(ContainSubstring("Processing instance 'foo'"))
-			Expect(logger.InfoArgsForCall(5)).To(Equal("  processing group 'foo_group'"))
-			Expect(logger.InfoArgsForCall(6)).To(Equal("      the group is empty"))
-		})
-
-		It("logs the group size", func() {
-			groupExporter.ExportGroupMembersReturns(result, nil)
-			csvWriter.WriteReturns(nil)
-
-			err := instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(), personDataProvider, blocklistsDataProvider, keepassCli)
-			Expect(err).NotTo(HaveOccurred())
-
-			Expect(logger.InfoArgsForCall(2)).To(ContainSubstring("Processing instance 'foo'"))
-			Expect(logger.InfoArgsForCall(5)).To(Equal("  processing group 'foo_group'"))
-			Expect(logger.InfoArgsForCall(6)).To(Equal("      the group has 2 persons"))
-		})
-
-		It("logs a warning for not active groups", func() {
-			groupExporter.ExportGroupMembersReturns(nil, &app.GroupNotActiveError{GroupName: "foo_group"})
-
-			err := instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(), personDataProvider, blocklistsDataProvider, keepassCli)
-			Expect(err).NotTo(HaveOccurred())
-
-			Expect(logger.InfoArgsForCall(2)).To(ContainSubstring("Processing instance 'foo'"))
-			Expect(logger.InfoArgsForCall(5)).To(Equal("  processing group 'foo_group'"))
-			Expect(logger.WarnArgsForCall(0)).To(Equal("      skipping csv creation since the group is not active"))
-		})
-
-		It("returns an error if person data export fails", func() {
-			groupExporter.ExportGroupMembersReturns(nil, errors.New("boom"))
-
-			err := instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(), personDataProvider, blocklistsDataProvider, keepassCli)
-			Expect(err).NotTo(HaveOccurred())
-
-			Expect(logger.InfoArgsForCall(2)).To(ContainSubstring("Processing instance 'foo'"))
-			Expect(logger.InfoArgsForCall(5)).To(Equal("  processing group 'foo_group'"))
-			Expect(logger.ErrorArgsForCall(0)).To(Equal("      failed to get person information: boom"))
-		})
-
-		It("logs an error if person data cannot be read", func() {
-			result := []json.RawMessage{json.RawMessage(`[]`)}
-
-			groupExporter.ExportGroupMembersReturns(result, nil)
-			csvWriter.WriteReturns(nil)
-
-			err := instancesProcessor.Process(groupExporter, csvWriter, os.TempDir(), personDataProvider, blocklistsDataProvider, keepassCli)
-			Expect(err).ToNot(HaveOccurred())
-
-			Expect(logger.InfoArgsForCall(2)).To(ContainSubstring("Processing instance 'foo'"))
-			Expect(logger.InfoArgsForCall(5)).To(Equal("  processing group 'foo_group'"))
-			Expect(logger.ErrorArgsForCall(0)).To(ContainSubstring("    failed to extract persons:"))
 		})
 	})
 })

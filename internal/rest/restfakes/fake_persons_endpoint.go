@@ -92,8 +92,6 @@ func (fake *FakePersonsEndpoint) GetPersonReturnsOnCall(i int, result1 []json.Ra
 func (fake *FakePersonsEndpoint) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.getPersonMutex.RLock()
-	defer fake.getPersonMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

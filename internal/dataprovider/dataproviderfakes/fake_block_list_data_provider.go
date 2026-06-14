@@ -167,10 +167,6 @@ func (fake *FakeBlockListDataProvider) IsBlockedReturnsOnCall(i int, result1 boo
 func (fake *FakeBlockListDataProvider) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.blockListExistsMutex.RLock()
-	defer fake.blockListExistsMutex.RUnlock()
-	fake.isBlockedMutex.RLock()
-	defer fake.isBlockedMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

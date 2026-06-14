@@ -15,15 +15,21 @@ func RunApplicationWrapper(config *config.Config, rootDir string, dataDir string
 	if err != nil {
 		return err
 	}
-	return app.NewInstancesProcessor(
-		*config,
-		appLogger,
-	).Process(
+
+	exportGroupTask := app.NewExportGroupTask(
 		app.NewGroupExporter(),
 		csv.NewCSVFileWriter(),
 		rootDir,
 		dataprovider.NewFileDataProvider(filepath.Join(dataDir, "mappings/persons")),
 		dataprovider.NewBlockListDataProvider(filepath.Join(dataDir, "blocklists"), appLogger),
+		appLogger,
+	)
+
+	return app.NewInstancesProcessor(
+		config.Instances,
 		keepassCli,
+		appLogger,
+	).Process(
+		exportGroupTask,
 	)
 }

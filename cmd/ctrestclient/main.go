@@ -67,16 +67,21 @@ func main() {
 		appLogger.Fatal("The keepass password is invalid")
 	}
 
-	err = app.NewInstancesProcessor(
-		*config,
-		appLogger,
-	).Process(
+	exportGroupTask := app.NewExportGroupTask(
 		app.NewGroupExporter(),
 		csv.NewCSVFileWriter(),
 		rootDir,
 		dataprovider.NewFileDataProvider(filepath.Join(dataDir, "mappings/persons")),
 		dataprovider.NewBlockListDataProvider(filepath.Join(dataDir, "blocklists"), appLogger),
+		appLogger,
+	)
+
+	err = app.NewInstancesProcessor(
+		config.Instances,
 		keepassCli,
+		appLogger,
+	).Process(
+		exportGroupTask,
 	)
 	if err != nil {
 		appLogger.Fatal(fmt.Sprintf("Failed to process instances: %v", err))

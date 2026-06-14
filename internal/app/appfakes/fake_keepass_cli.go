@@ -168,10 +168,6 @@ func (fake *FakeKeepassCli) IsPasswordValidReturnsOnCall(i int, result1 bool, re
 func (fake *FakeKeepassCli) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.getPasswordMutex.RLock()
-	defer fake.getPasswordMutex.RUnlock()
-	fake.isPasswordValidMutex.RLock()
-	defer fake.isPasswordValidMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

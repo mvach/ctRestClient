@@ -101,8 +101,6 @@ func (fake *FakeGroupExporter) ExportGroupMembersReturnsOnCall(i int, result1 []
 func (fake *FakeGroupExporter) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.exportGroupMembersMutex.RLock()
-	defer fake.exportGroupMembersMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value
