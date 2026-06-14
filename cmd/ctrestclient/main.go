@@ -1,12 +1,6 @@
 package main
 
 import (
-	"ctRestClient/internal/app"
-	"ctRestClient/internal/config"
-	"ctRestClient/internal/csv"
-	"ctRestClient/internal/dataprovider"
-	"ctRestClient/internal/logger"
-	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -17,21 +11,45 @@ import (
 	"syscall"
 	"time"
 
+	"ctRestClient/internal/app"
+	"ctRestClient/internal/config"
+	"ctRestClient/internal/csv"
+	"ctRestClient/internal/dataprovider"
+	"ctRestClient/internal/logger"
+
+	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )
 
+var (
+	configFilePath     string
+	dataDir            string
+	outputDir          string
+	keepassDbFilePath  string
+	rootCmd            = &cobra.Command{
+		Use:   "ctRestClient",
+		Short: "A CLI tool for exporting data using Keepass and CSV",
+		Long:  `ctRestClient is a command-line application that exports data from configured instances using Keepass for secure credential management and CSV for output.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			run()
+		},
+	}
+)
+
+func init() {
+	rootCmd.PersistentFlags().StringVarP(&configFilePath, "config", "c", "config.yml", "Path to the config file")
+	rootCmd.PersistentFlags().StringVarP(&dataDir, "data-dir", "d", getDefaultDataDir(), "Path to the data directory")
+	rootCmd.PersistentFlags().StringVarP(&outputDir, "output-dir", "o", getDefaultOutputDir(), "Path to the output directory")
+	rootCmd.PersistentFlags().StringVarP(&keepassDbFilePath, "keepass", "k", "passwords.kdbx", "Path to the Keepass database file")
+}
+
 func main() {
-	var configFilePath string
-	var dataDir string
-	var outputDir string
-	var keepassDbFilePath string
+	if err := rootCmd.Execute(); err != nil {
+		log.Fatalf("Failed to execute command: %v", err)
+	}
+}
 
-	flag.StringVar(&configFilePath, "c", "config.yml", "the config file path")
-	flag.StringVar(&dataDir, "d", getDefaultDataDir(), "the data directory")
-	flag.StringVar(&outputDir, "o", getDefaultOutputDir(), "the output directory")
-	flag.StringVar(&keepassDbFilePath, "k", "passwords.kdbx", "the Keepass DB file path")
-	flag.Parse()
-
+func run() {
 	rootDir := filepath.Join(outputDir, time.Now().Format("2006.01.02_15-04-05"))
 	err := os.MkdirAll(rootDir, 0755)
 	if err != nil {
