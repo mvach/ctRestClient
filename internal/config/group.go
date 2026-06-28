@@ -3,6 +3,8 @@ package config
 import (
 	"regexp"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 )
 
 type Group struct {
@@ -34,4 +36,50 @@ func (g Group) sanitizedGroupName() string {
 	fileName = strings.ReplaceAll(fileName, "__", "_")
 
 	return fileName
+}
+
+func (g *Group) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	// Define a temporary type to capture the raw YAML structure
+	type rawGroup struct {
+		Name   string                   `yaml:"name"`
+		Fields []map[string]interface{} `yaml:"fields"`
+	}
+
+	raw := rawGroup{}
+	if err := unmarshal(&raw); err != nil {
+		return err
+	}
+
+	g.Name = raw.Name
+	g.Fields = make([]Field, len(raw.Fields))
+
+	for i, rawField := range raw.Fields {
+		// Check if the field has an "object" key (ExportGroupField)
+		if _, hasObject := rawField["object"]; hasObject {
+			var exportField ExportGroupField
+			// Re-marshal the raw field into ExportGroupField
+			fieldYAML, err := yaml.Marshal(rawField)
+			if err != nil {
+				return err
+			}
+			if err := yaml.Unmarshal(fieldYAML, &exportField); err != nil {
+				return err
+			}
+			g.Fields[i] = &exportField
+		} else {
+			// Otherwise, treat it as a CreateGroupField
+			var createField CreateGroupField
+			// Re-marshal the raw field into CreateGroupField
+			fieldYAML, err := yaml.Marshal(rawField)
+			if err != nil {
+				return err
+			}
+			if err := yaml.Unmarshal(fieldYAML, &createField); err != nil {
+				return err
+			}
+			g.Fields[i] = &createField
+		}
+	}
+
+	return nil
 }

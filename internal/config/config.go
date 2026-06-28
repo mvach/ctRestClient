@@ -18,11 +18,6 @@ type Instance struct {
 	Groups    []Group `yaml:"groups"`
 }
 
-type FieldInformation struct {
-	FieldName  string `yaml:"fieldname"`
-	ColumnName string `yaml:"columnname"`
-}
-
 func LoadConfig(filePath string) (*Config, error) {
 	data, err := os.ReadFile(filePath)
 	if err != nil {
