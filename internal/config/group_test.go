@@ -42,11 +42,12 @@ var _ = Describe("Group", func() {
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
-			cfg, err := config.LoadConfig(tempFile.Name())
+			cfg, err := config.ExportGroupConfig{}.LoadConfig(tempFile.Name())
 			Expect(err).ToNot(HaveOccurred())
-			Expect(cfg).ToNot(BeNil())
+			exportGroupCfg := cfg.(config.ExportGroupConfig)
+			Expect(exportGroupCfg).ToNot(BeNil())
 
-			Expect(cfg.Instances[0].Groups[0].CSVFileName()).To(Equal("foo-_.aeoeueAeOeUe-group.csv"))
+			Expect(exportGroupCfg.Instances[0].Groups[0].CSVFileName()).To(Equal("foo-_.aeoeueAeOeUe-group.csv"))
 		})
 	})
 
@@ -67,11 +68,12 @@ var _ = Describe("Group", func() {
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
-			cfg, err := config.LoadConfig(tempFile.Name())
+			cfg, err := config.ExportGroupConfig{}.LoadConfig(tempFile.Name())
 			Expect(err).ToNot(HaveOccurred())
-			Expect(cfg).ToNot(BeNil())
+			exportGroupCfg := cfg.(config.ExportGroupConfig)
+			Expect(exportGroupCfg).ToNot(BeNil())
 
-			Expect(cfg.Instances[0].Groups[0].BlocklistFileName()).To(Equal("foo-_.aeoeueAeOeUe-group.yml"))
+			Expect(exportGroupCfg.Instances[0].Groups[0].BlocklistFileName()).To(Equal("foo-_.aeoeueAeOeUe-group.yml"))
 		})
 	})
 })

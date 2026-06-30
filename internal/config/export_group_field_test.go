@@ -42,11 +42,12 @@ var _ = Describe("Field", func() {
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
-			cfg, err := config.LoadConfig(tempFile.Name())
+			cfg, err := config.ExportGroupConfig{}.LoadConfig(tempFile.Name())
 			Expect(err).ToNot(HaveOccurred())
-			Expect(cfg).ToNot(BeNil())
+			exportGroupCfg := cfg.(config.ExportGroupConfig)
+			Expect(exportGroupCfg).ToNot(BeNil())
 
-			Expect(cfg.Instances[0].Groups[0].Fields[0].GetFieldName()).To(Equal("foo_field_1"))
+			Expect(exportGroupCfg.Instances[0].Groups[0].Fields[0].GetFieldName()).To(Equal("foo_field_1"))
 		})
 
 		It("return the field name from object", func() {
@@ -65,11 +66,12 @@ var _ = Describe("Field", func() {
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
-			cfg, err := config.LoadConfig(tempFile.Name())
+			cfg, err := config.ExportGroupConfig{}.LoadConfig(tempFile.Name())
 			Expect(err).ToNot(HaveOccurred())
-			Expect(cfg).ToNot(BeNil())
+			exportGroupCfg := cfg.(config.ExportGroupConfig)
+			Expect(exportGroupCfg).ToNot(BeNil())
 
-			Expect(cfg.Instances[0].Groups[0].Fields[0].GetFieldName()).To(Equal("foo_field_1"))
+			Expect(exportGroupCfg.Instances[0].Groups[0].Fields[0].GetFieldName()).To(Equal("foo_field_1"))
 		})
 	})
 
@@ -90,11 +92,12 @@ var _ = Describe("Field", func() {
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
-			cfg, err := config.LoadConfig(tempFile.Name())
+			cfg, err := config.ExportGroupConfig{}.LoadConfig(tempFile.Name())
 			Expect(err).ToNot(HaveOccurred())
-			Expect(cfg).ToNot(BeNil())
+			exportGroupCfg := cfg.(config.ExportGroupConfig)
+			Expect(exportGroupCfg).ToNot(BeNil())
 
-			Expect(cfg.Instances[0].Groups[0].Fields[0].GetColumnName()).To(Equal("foo_field_1"))
+			Expect(exportGroupCfg.Instances[0].Groups[0].Fields[0].GetColumnName()).To(Equal("foo_field_1"))
 		})
 
 		It("return the columnname from object", func() {
@@ -113,11 +116,12 @@ var _ = Describe("Field", func() {
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
-			cfg, err := config.LoadConfig(tempFile.Name())
+			cfg, err := config.ExportGroupConfig{}.LoadConfig(tempFile.Name())
 			Expect(err).ToNot(HaveOccurred())
-			Expect(cfg).ToNot(BeNil())
+			exportGroupCfg := cfg.(config.ExportGroupConfig)
+			Expect(exportGroupCfg).ToNot(BeNil())
 
-			Expect(cfg.Instances[0].Groups[0].Fields[0].GetColumnName()).To(Equal("foo_column_1"))
+			Expect(exportGroupCfg.Instances[0].Groups[0].Fields[0].GetColumnName()).To(Equal("foo_column_1"))
 		})
 	})
 
@@ -138,11 +142,12 @@ var _ = Describe("Field", func() {
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
-			cfg, err := config.LoadConfig(tempFile.Name())
+			cfg, err := config.ExportGroupConfig{}.LoadConfig(tempFile.Name())
 			Expect(err).ToNot(HaveOccurred())
-			Expect(cfg).ToNot(BeNil())
+			exportGroupCfg := cfg.(config.ExportGroupConfig)
+			Expect(exportGroupCfg).ToNot(BeNil())
 
-			Expect(cfg.Instances[0].Groups[0].Fields[0].IsMappedData()).To(Equal(false))
+			Expect(exportGroupCfg.Instances[0].Groups[0].Fields[0].IsMappedData()).To(Equal(false))
 		})
 
 		It("returns true if field object is present", func() {
@@ -161,11 +166,12 @@ var _ = Describe("Field", func() {
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
-			cfg, err := config.LoadConfig(tempFile.Name())
+			cfg, err := config.ExportGroupConfig{}.LoadConfig(tempFile.Name())
 			Expect(err).ToNot(HaveOccurred())
-			Expect(cfg).ToNot(BeNil())
+			exportGroupCfg := cfg.(config.ExportGroupConfig)
+			Expect(exportGroupCfg).ToNot(BeNil())
 
-			Expect(cfg.Instances[0].Groups[0].Fields[0].IsMappedData()).To(Equal(true))
+			Expect(exportGroupCfg.Instances[0].Groups[0].Fields[0].IsMappedData()).To(Equal(true))
 		})
 	})
 })

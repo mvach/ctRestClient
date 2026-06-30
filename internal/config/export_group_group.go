@@ -8,7 +8,7 @@ import (
 
 type ExportGroupGroup struct {
 	Name   string  `yaml:"name"`
-	Fields []Field `yaml:"fields"`
+	Fields []ExportGroupField `yaml:"fields"`
 }
 
 func (g ExportGroupGroup) CSVFileName() string {

@@ -4,8 +4,8 @@ go 1.25.0
 
 require (
 	github.com/lithammer/dedent v1.1.0
-	github.com/onsi/ginkgo/v2 v2.28.0
-	github.com/onsi/gomega v1.39.1
+	github.com/onsi/ginkgo/v2 v2.32.0
+	github.com/onsi/gomega v1.42.1
 	github.com/spf13/cobra v1.10.2
 	golang.org/x/term v0.44.0
 	golang.org/x/text v0.38.0

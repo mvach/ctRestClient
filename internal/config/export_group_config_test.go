@@ -14,7 +14,7 @@ func ptr(s string) *string {
 	return &s
 }
 
-var _ = Describe("Config", func() {
+var _ = Describe("ExportGroupConfig", func() {
 	var (
 		tempFile *os.File
 		err      error
@@ -56,23 +56,25 @@ var _ = Describe("Config", func() {
 			Expect(err).ToNot(HaveOccurred())
 			tempFile.Close()
 
-			cfg, err := config.LoadConfig(tempFile.Name())
+			cfg, err := config.ExportGroupConfig{}.LoadConfig(tempFile.Name())
 			Expect(err).ToNot(HaveOccurred())
-			Expect(cfg.Instances).To(HaveLen(2))
 
-			Expect(cfg.Instances[0].Hostname).To(Equal("foo.com"))
-			Expect(cfg.Instances[0].TokenName).To(Equal("foo"))
-			Expect(cfg.Instances[0].Groups).To(HaveLen(2))
-			Expect(cfg.Instances[0].Groups[0].Name).To(Equal("foo_group_0"))
-			Expect(cfg.Instances[0].Groups[0].Fields).To(Equal([]config.Field{{FieldName: ptr("foo_field_1")}, {FieldName: ptr("foo_field_2")}}))
-			Expect(cfg.Instances[0].Groups[1].Name).To(Equal("foo_group_1"))
-			Expect(cfg.Instances[0].Groups[1].Fields).To(Equal([]config.Field{{Object: &config.FieldInformation{FieldName: "foo_field_3", ColumnName: "foo_column_3"}}}))
+			exportGroupCfg := cfg.(config.ExportGroupConfig)
+			Expect(exportGroupCfg.Instances).To(HaveLen(2))
 
-			Expect(cfg.Instances[1].Hostname).To(Equal("bar.com"))
-			Expect(cfg.Instances[1].TokenName).To(Equal("bar"))
-			Expect(cfg.Instances[1].Groups).To(HaveLen(1))
-			Expect(cfg.Instances[1].Groups[0].Name).To(Equal("bar_group_0"))
-			Expect(cfg.Instances[1].Groups[0].Fields).To(Equal([]config.Field{{FieldName: ptr("bar_field_1")}}))
+			Expect(exportGroupCfg.Instances[0].Hostname).To(Equal("foo.com"))
+			Expect(exportGroupCfg.Instances[0].TokenName).To(Equal("foo"))
+			Expect(exportGroupCfg.Instances[0].Groups).To(HaveLen(2))
+			Expect(exportGroupCfg.Instances[0].Groups[0].Name).To(Equal("foo_group_0"))
+			Expect(exportGroupCfg.Instances[0].Groups[0].Fields).To(Equal([]config.ExportGroupField{{FieldName: ptr("foo_field_1")}, {FieldName: ptr("foo_field_2")}}))
+			Expect(exportGroupCfg.Instances[0].Groups[1].Name).To(Equal("foo_group_1"))
+			Expect(exportGroupCfg.Instances[0].Groups[1].Fields).To(Equal([]config.ExportGroupField{{Object: &config.FieldInformation{FieldName: "foo_field_3", ColumnName: "foo_column_3"}}}))
+
+			Expect(exportGroupCfg.Instances[1].Hostname).To(Equal("bar.com"))
+			Expect(exportGroupCfg.Instances[1].TokenName).To(Equal("bar"))
+			Expect(exportGroupCfg.Instances[1].Groups).To(HaveLen(1))
+			Expect(exportGroupCfg.Instances[1].Groups[0].Name).To(Equal("bar_group_0"))
+			Expect(exportGroupCfg.Instances[1].Groups[0].Fields).To(Equal([]config.ExportGroupField{{FieldName: ptr("bar_field_1")}}))
 		})
 
 		// var _ = Describe("instances property errors", func() {
