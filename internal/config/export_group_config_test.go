@@ -10,10 +10,6 @@ import (
 	"ctRestClient/internal/testutil"
 )
 
-func ptr(s string) *string {
-	return &s
-}
-
 var _ = Describe("ExportGroupConfig", func() {
 	var (
 		tempFile *os.File
@@ -77,66 +73,62 @@ var _ = Describe("ExportGroupConfig", func() {
 			Expect(exportGroupCfg.Instances[1].Groups[0].Fields).To(Equal([]config.ExportGroupField{{FieldName: ptr("bar_field_1")}}))
 		})
 
-		// var _ = Describe("instances property errors", func() {
-		// 	It("returns an error if mandatory instances field is missing", func() {
-		// 		yamlContent := testutil.YamlToByteArray(`
-		// 			---
-		// 			`)
-		// 		_, err := tempFile.Write([]byte(yamlContent))
-		// 		Expect(err).ToNot(HaveOccurred())
-		// 		tempFile.Close()
+		var _ = Describe("instances property errors", func() {
+			It("returns an error if mandatory instances field is missing", func() {
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					`)
+				_, err := tempFile.Write([]byte(yamlContent))
+				Expect(err).ToNot(HaveOccurred())
+				tempFile.Close()
 
-		// 		cfg, err := config.LoadConfig(tempFile.Name())
-		// 		Expect(err).To(HaveOccurred())
-		// 		Expect(err.Error()).To(Equal("failed to validate the config file, property instances is not set"))
-		// 		Expect(cfg).To(BeNil())
-		// 	})
+				cfg, err := config.ExportGroupConfig{}.LoadConfig(tempFile.Name())
+				Expect(err.Error()).To(Equal("failed to validate the config file, property instances is not set"))
+				Expect(cfg).To(BeNil())
+			})
 
-		// 	It("returns an error if mandatory instances field is nil", func() {
-		// 		yamlContent := testutil.YamlToByteArray(`
-		// 			---
-		// 			instances:
-		// 			`)
-		// 		_, err := tempFile.Write([]byte(yamlContent))
-		// 		Expect(err).ToNot(HaveOccurred())
-		// 		tempFile.Close()
+			It("returns an error if mandatory instances field is nil", func() {
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances:
+					`)
+				_, err := tempFile.Write([]byte(yamlContent))
+				Expect(err).ToNot(HaveOccurred())
+				tempFile.Close()
 
-		// 		cfg, err := config.LoadConfig(tempFile.Name())
-		// 		Expect(err).To(HaveOccurred())
-		// 		Expect(err.Error()).To(Equal("failed to validate the config file, property instances is not set"))
-		// 		Expect(cfg).To(BeNil())
-		// 	})
+				cfg, err := config.ExportGroupConfig{}.LoadConfig(tempFile.Name())
+				Expect(err.Error()).To(Equal("failed to validate the config file, property instances is not set"))
+				Expect(cfg).To(BeNil())
+			})
 
-		// 	It("returns an error if mandatory instances field has wrong type", func() {
-		// 		yamlContent := testutil.YamlToByteArray(`
-		// 			---
-		// 			instances: "not_array"
-		// 			`)
-		// 		_, err := tempFile.Write([]byte(yamlContent))
-		// 		Expect(err).ToNot(HaveOccurred())
-		// 		tempFile.Close()
+			It("returns an error if mandatory instances field has wrong type", func() {
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances: "not_array"
+					`)
+				_, err := tempFile.Write([]byte(yamlContent))
+				Expect(err).ToNot(HaveOccurred())
+				tempFile.Close()
 
-		// 		cfg, err := config.LoadConfig(tempFile.Name())
-		// 		Expect(err).To(HaveOccurred())
-		// 		Expect(err.Error()).To(ContainSubstring("failed to load invalid config file"))
-		// 		Expect(cfg).To(BeNil())
-		// 	})
+				cfg, err := config.ExportGroupConfig{}.LoadConfig(tempFile.Name())
+				Expect(err.Error()).To(ContainSubstring("failed to load invalid config file"))
+				Expect(cfg).To(BeNil())
+			})
 
-		// 	It("returns an error if mandatory instances field is empty array", func() {
-		// 		yamlContent := testutil.YamlToByteArray(`
-		// 			---
-		// 			instances: []
-		// 			`)
-		// 		_, err := tempFile.Write([]byte(yamlContent))
-		// 		Expect(err).ToNot(HaveOccurred())
-		// 		tempFile.Close()
+			It("returns an error if mandatory instances field is empty array", func() {
+				yamlContent := testutil.YamlToByteArray(`
+					---
+					instances: []
+					`)
+				_, err := tempFile.Write([]byte(yamlContent))
+				Expect(err).ToNot(HaveOccurred())
+				tempFile.Close()
 
-		// 		cfg, err := config.LoadConfig(tempFile.Name())
-		// 		Expect(err).To(HaveOccurred())
-		// 		Expect(err.Error()).To(ContainSubstring("failed to validate the config file, property instances is not set"))
-		// 		Expect(cfg).To(BeNil())
-		// 	})
-		// })
+				cfg, err := config.ExportGroupConfig{}.LoadConfig(tempFile.Name())
+				Expect(err.Error()).To(ContainSubstring("failed to validate the config file, property instances is not set"))
+				Expect(cfg).To(BeNil())
+			})
+		})
 
 		// var _ = Describe("hostname property errors", func() {
 		// 	It("returns an error if mandatory hostname field is missing", func() {

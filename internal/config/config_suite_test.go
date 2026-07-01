@@ -11,3 +11,7 @@ func TestConfig(t *testing.T) {
     RegisterFailHandler(Fail)
     RunSpecs(t, "Config Suite")
 }
+
+func ptr(s string) *string {
+	return &s
+}
